@@ -1,4 +1,6 @@
-<div class="scene closing">
+<div class="scene closing bg-grid">
+  <div class="closing__orb closing__orb--1"></div>
+  <div class="closing__orb closing__orb--2"></div>
   {{#if data.tagline}}
   <h1 class="closing__tagline">{{data.tagline}}</h1>
   {{/if}}
@@ -14,36 +16,73 @@
 <style>
   .closing {
     text-align: center;
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background: linear-gradient(160deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
     gap: calc(var(--spacing-unit) * 2);
+  }
+
+  .closing__orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .closing__orb--1 {
+    width: 350px;
+    height: 350px;
+    background: var(--accent);
+    opacity: 0.06;
+    bottom: -10%;
+    left: 10%;
+  }
+
+  .closing__orb--2 {
+    width: 250px;
+    height: 250px;
+    background: var(--accent-tertiary, var(--accent-secondary));
+    opacity: 0.05;
+    top: -5%;
+    right: 15%;
   }
 
   .closing__tagline {
     font-family: var(--font-heading);
-    font-size: 2.8rem;
+    font-size: 3rem;
     font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.15;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.12;
     max-width: 75%;
+    letter-spacing: -0.02em;
   }
 
   .closing__accent {
-    width: 60px;
+    width: 80px;
     height: 4px;
     margin: calc(var(--spacing-unit) * 2) 0;
+    background: var(--accent-gradient);
   }
 
   .closing__cta {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     color: var(--accent);
-    font-weight: 500;
+    font-weight: 600;
     font-family: var(--font-mono);
+    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 4);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 100px;
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
   }
 
   .closing__timestamp {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
     margin-top: calc(var(--spacing-unit) * 2);
+    font-family: var(--font-mono);
+    letter-spacing: 0.03em;
   }
 </style>
 
@@ -51,26 +90,40 @@
   window.__buildTimeline = function() {
     var tl = gsap.timeline({ paused: true });
 
-    tl.from('.closing__tagline', {
-      y: 30,
+    tl.from('.closing__orb--1', {
+      scale: 0.3,
       opacity: 0,
-      duration: 0.5,
-      ease: 'back.out(1.7)'
-    });
+      duration: 0.8,
+      ease: 'power2.out'
+    }, 0);
+    tl.from('.closing__orb--2', {
+      scale: 0.3,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out'
+    }, 0.1);
+
+    tl.from('.closing__tagline', {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      ease: 'back.out(1.4)'
+    }, 0.15);
 
     tl.from('.closing__accent', {
       scaleX: 0,
       transformOrigin: 'center center',
-      duration: 0.3,
+      duration: 0.4,
       ease: 'power3.out'
     }, '-=0.2');
 
     tl.from('.closing__cta', {
       y: 15,
       opacity: 0,
-      duration: 0.4,
-      ease: 'power2.out'
-    }, '-=0.1');
+      scale: 0.95,
+      duration: 0.45,
+      ease: 'back.out(1.5)'
+    }, '-=0.15');
 
     tl.from('.closing__timestamp', {
       opacity: 0,

@@ -10,6 +10,7 @@ import { BrowserPool } from './browser-pool.js';
 import { captureFrames } from './frame-capture.js';
 import { encodeVideo, encodeGif } from './encoder.js';
 import { getGsapBundle } from '../motion/gsap-bundle.js';
+import { getD3Bundle } from '../motion/d3-bundle.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
@@ -66,6 +67,7 @@ function buildSceneHTML(
   scene: Scene,
   themeCSS: string,
   gsapBundle: string,
+  d3Bundle: string,
   width: number,
   height: number,
 ): string {
@@ -85,6 +87,7 @@ function buildSceneHTML(
     height,
     themeCSS,
     gsapBundle,
+    d3Bundle,
     sceneContent,
   });
 }
@@ -117,6 +120,17 @@ function preprocessSceneData(scene: Scene): Record<string, unknown> {
     }));
   }
 
+  // Inject serialized JSON for D3-powered chart scenes
+  if (['chart-bar', 'chart-donut', 'chart-line'].includes(scene.type)) {
+    data.chartDataJSON = JSON.stringify({
+      labels: data.labels,
+      datasets: data.datasets,
+      segments: data.segments,
+      series: data.series,
+      ...data,
+    });
+  }
+
   return data;
 }
 
@@ -145,6 +159,7 @@ export class Renderer {
 
     const themeCSS = loadThemeCSS(theme);
     const gsapBundle = getGsapBundle();
+    const d3Bundle = getD3Bundle();
     const renderSessionId = randomUUID();
     const tempBase = join(tmpdir(), `avengine-${renderSessionId}`);
     await mkdir(tempBase, { recursive: true });
@@ -159,7 +174,7 @@ export class Renderer {
 
       for (let i = 0; i < storyboard.scenes.length; i++) {
         const scene = storyboard.scenes[i]!;
-        const sceneHTML = buildSceneHTML(scene, themeCSS, gsapBundle, width, height);
+        const sceneHTML = buildSceneHTML(scene, themeCSS, gsapBundle, d3Bundle, width, height);
         const sceneDir = join(tempBase, `scene-${i}`);
 
         const result = await captureFrames(context, {
@@ -237,6 +252,7 @@ export class Renderer {
 
     const themeCSS = loadThemeCSS(theme);
     const gsapBundle = getGsapBundle();
+    const d3Bundle = getD3Bundle();
     const renderSessionId = randomUUID();
     const tempBase = join(tmpdir(), `avengine-scene-${renderSessionId}`);
     await mkdir(tempBase, { recursive: true });
@@ -244,7 +260,7 @@ export class Renderer {
     const context = await this.pool.acquire();
 
     try {
-      const sceneHTML = buildSceneHTML(scene, themeCSS, gsapBundle, width, height);
+      const sceneHTML = buildSceneHTML(scene, themeCSS, gsapBundle, d3Bundle, width, height);
 
       const result = await captureFrames(context, {
         html: sceneHTML,
@@ -300,6 +316,7 @@ export class Renderer {
 
     const themeCSS = loadThemeCSS(theme);
     const gsapBundle = getGsapBundle();
+    const d3Bundle = getD3Bundle();
     const renderSessionId = randomUUID();
     const tempBase = join(tmpdir(), `avengine-gif-${renderSessionId}`);
     await mkdir(tempBase, { recursive: true });
@@ -313,7 +330,7 @@ export class Renderer {
 
       for (let i = 0; i < storyboard.scenes.length; i++) {
         const scene = storyboard.scenes[i]!;
-        const sceneHTML = buildSceneHTML(scene, themeCSS, gsapBundle, width, height);
+        const sceneHTML = buildSceneHTML(scene, themeCSS, gsapBundle, d3Bundle, width, height);
         const sceneDir = join(tempBase, `scene-${i}`);
 
         const result = await captureFrames(context, {

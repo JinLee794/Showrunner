@@ -4,19 +4,31 @@
   {{/if}}
   <div class="comparison__columns">
     <div class="comparison__column comparison__left">
-      <h3 class="comparison__label">{{data.left.label}}</h3>
+      <div class="comparison__label-badge">
+        <h3 class="comparison__label">{{data.left.label}}</h3>
+      </div>
       <ul class="comparison__list">
         {{#each data.left.items}}
-        <li class="comparison__item comparison__item--left">{{this}}</li>
+        <li class="comparison__item comparison__item--left">
+          <span class="comparison__item-bullet"></span>
+          <span>{{this}}</span>
+        </li>
         {{/each}}
       </ul>
     </div>
-    <div class="comparison__divider"></div>
+    <div class="comparison__divider">
+      <div class="comparison__divider-dot"></div>
+    </div>
     <div class="comparison__column comparison__right">
-      <h3 class="comparison__label">{{data.right.label}}</h3>
+      <div class="comparison__label-badge">
+        <h3 class="comparison__label">{{data.right.label}}</h3>
+      </div>
       <ul class="comparison__list">
         {{#each data.right.items}}
-        <li class="comparison__item comparison__item--right">{{this}}</li>
+        <li class="comparison__item comparison__item--right">
+          <span class="comparison__item-bullet"></span>
+          <span>{{this}}</span>
+        </li>
         {{/each}}
       </ul>
     </div>
@@ -48,20 +60,40 @@
     gap: calc(var(--spacing-unit) * 2);
   }
 
+  .comparison__label-badge {
+    padding-bottom: calc(var(--spacing-unit) * 1.5);
+    border-bottom: 2px solid var(--accent);
+    margin-bottom: calc(var(--spacing-unit) * 0.5);
+  }
+
   .comparison__divider {
     width: 2px;
     align-self: stretch;
-    background: var(--accent);
-    opacity: 0.3;
+    background: linear-gradient(180deg, transparent, var(--accent), transparent);
+    opacity: 0.4;
     border-radius: 1px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .comparison__divider-dot {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
   }
 
   .comparison__label {
     font-family: var(--font-heading);
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 600;
     color: var(--accent);
-    margin-bottom: calc(var(--spacing-unit) * 1);
+    letter-spacing: 0.01em;
   }
 
   .comparison__list {
@@ -74,12 +106,28 @@
   }
 
   .comparison__item {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     color: var(--text-primary);
-    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
-    background: var(--bg-secondary);
+    padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 2.5);
+    background: var(--glass-bg, var(--bg-secondary));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
     border-radius: var(--border-radius-sm);
     line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    gap: calc(var(--spacing-unit) * 1.5);
+    box-shadow: var(--shadow-card);
+  }
+
+  .comparison__item-bullet {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 8px;
   }
 </style>
 
@@ -96,33 +144,40 @@
 
     tl.from('.comparison__divider', {
       scaleY: 0,
-      transformOrigin: 'top center',
-      duration: 0.4,
+      transformOrigin: 'center center',
+      duration: 0.5,
       ease: 'power3.out'
     }, '-=0.1');
 
-    tl.from('.comparison__label', {
-      y: 15,
+    tl.from('.comparison__divider-dot', {
+      scale: 0,
       opacity: 0,
       duration: 0.3,
+      ease: 'back.out(2)'
+    }, '-=0.15');
+
+    tl.from('.comparison__label-badge', {
+      y: 15,
+      opacity: 0,
+      duration: 0.35,
       stagger: 0.15,
       ease: 'power2.out'
     }, '-=0.2');
 
     tl.from('.comparison__item--left', {
-      x: -20,
+      x: -25,
       opacity: 0,
-      duration: 0.3,
+      duration: 0.35,
       stagger: 0.08,
-      ease: 'back.out(1.4)'
+      ease: 'back.out(1.2)'
     }, '-=0.1');
 
     tl.from('.comparison__item--right', {
-      x: 20,
+      x: 25,
       opacity: 0,
-      duration: 0.3,
+      duration: 0.35,
       stagger: 0.08,
-      ease: 'back.out(1.4)'
+      ease: 'back.out(1.2)'
     }, '<');
 
     tl.to({}, { duration: 0.3 });

@@ -1,0 +1,100 @@
+{
+  "title": "D3 Charts Demo",
+  "theme": "corporate-dark",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 3,
+      "transition": "fade",
+      "data": {
+        "title": "Showrunner Charts",
+        "subtitle": "D3.js-powered SVG visualizations with GSAP animation",
+        "date": "April 2026"
+      }
+    },
+    {
+      "type": "chart-bar",
+      "duration": 6,
+      "transition": "slide-left",
+      "data": {
+        "title": "Quarterly Revenue by Region",
+        "labels": ["North America", "EMEA", "APAC", "LATAM"],
+        "datasets": [
+          { "label": "Q1 2026", "values": [42, 28, 19, 11], "color": "#4fc3f7" },
+          { "label": "Q2 2026", "values": [48, 32, 24, 14], "color": "#a78bfa" }
+        ],
+        "annotation": "All figures in $M — Q2 shows 15% growth across all regions"
+      }
+    },
+    {
+      "type": "chart-donut",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "title": "Deal Pipeline by Stage",
+        "centerLabel": "Total Deals",
+        "segments": [
+          { "label": "Prospecting", "value": 142, "color": "#4fc3f7" },
+          { "label": "Qualification", "value": 89, "color": "#a78bfa" },
+          { "label": "Proposal", "value": 54, "color": "#f39c12" },
+          { "label": "Negotiation", "value": 28, "color": "#2ecc71" },
+          { "label": "Closed Won", "value": 37, "color": "#00bcd4" }
+        ]
+      }
+    },
+    {
+      "type": "chart-line",
+      "duration": 6,
+      "transition": "slide-left",
+      "data": {
+        "title": "Monthly Active Users",
+        "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        "series": [
+          { "label": "Prod", "values": [1200, 1800, 2400, 3100, 3800, 4200], "color": "#4fc3f7" },
+          { "label": "Staging", "values": [400, 600, 900, 1100, 1400, 1800], "color": "#a78bfa" }
+        ],
+        "annotation": "Prod MAU grew 250% in 6 months"
+      }
+    },
+    {
+      "type": "chart-bar",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "title": "Sprint Velocity",
+        "labels": ["Sprint 1", "Sprint 2", "Sprint 3", "Sprint 4", "Sprint 5", "Sprint 6"],
+        "datasets": [
+          { "label": "Story Points", "values": [21, 34, 29, 42, 38, 45], "color": "#2ecc71" }
+        ]
+      }
+    },
+    {
+      "type": "chart-donut",
+      "duration": 5,
+      "transition": "slide-left",
+      "data": {
+        "title": "Resource Allocation",
+        "centerLabel": "Headcount",
+        "segments": [
+          { "label": "Engineering", "value": 48, "color": "#4fc3f7" },
+          { "label": "Design", "value": 12, "color": "#e91e63" },
+          { "label": "Product", "value": 8, "color": "#a78bfa" },
+          { "label": "QA", "value": 16, "color": "#f39c12" },
+          { "label": "DevOps", "value": 6, "color": "#2ecc71" }
+        ]
+      }
+    },
+    {
+      "type": "closing",
+      "duration": 3,
+      "transition": "fade",
+      "data": {
+        "tagline": "Data, visualized beautifully.",
+        "cta": "Powered by D3.js + GSAP",
+        "timestamp": "Showrunner · April 2026"
+      }
+    }
+  ]
+}

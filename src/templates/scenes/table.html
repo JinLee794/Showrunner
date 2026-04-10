@@ -38,6 +38,11 @@
     width: 100%;
     overflow: hidden;
     border-radius: var(--border-radius);
+    background: var(--glass-bg, var(--bg-secondary));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
+    box-shadow: var(--shadow-card);
   }
 
   .data-table__table {
@@ -47,33 +52,53 @@
 
   .data-table__th {
     text-align: left;
-    padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
-    font-size: 0.9rem;
+    padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 3);
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     background: var(--bg-tertiary);
-    border-bottom: 2px solid var(--accent);
+    border-bottom: 2px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+  }
+
+  .data-table__header-row {
+    position: relative;
+  }
+
+  .data-table__header-row::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-gradient);
   }
 
   .data-table__td {
     padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
     font-size: 1.05rem;
     color: var(--text-primary);
-    border-bottom: 1px solid var(--bg-tertiary);
+    border-bottom: 1px solid var(--glass-border, rgba(255,255,255,0.04));
   }
 
   .data-table__row {
-    background: var(--bg-secondary);
+    background: transparent;
   }
 
   .data-table__row:nth-child(even) {
-    background: var(--bg-primary);
+    background: color-mix(in srgb, var(--bg-tertiary) 30%, transparent);
   }
 
   .data-table__row--highlight {
-    background: color-mix(in srgb, var(--accent) 15%, var(--bg-secondary)) !important;
+    background: color-mix(in srgb, var(--accent) 10%, transparent) !important;
+    position: relative;
+  }
+
+  .data-table__row--highlight td:first-child {
     border-left: 3px solid var(--accent);
   }
 </style>
@@ -89,18 +114,26 @@
       ease: 'back.out(1.7)'
     });
 
+    tl.from('.data-table__wrapper', {
+      y: 20,
+      opacity: 0,
+      scale: 0.98,
+      duration: 0.4,
+      ease: 'power2.out'
+    }, '-=0.1');
+
     tl.from('.data-table__header-row', {
       y: -15,
       opacity: 0,
       duration: 0.3,
       ease: 'power2.out'
-    }, '-=0.1');
+    }, '-=0.15');
 
     tl.from('.data-table__row', {
       y: 15,
       opacity: 0,
       duration: 0.3,
-      stagger: 0.08,
+      stagger: 0.06,
       ease: 'back.out(1.2)'
     }, '-=0.1');
 

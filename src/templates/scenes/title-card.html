@@ -1,9 +1,12 @@
-<div class="scene title-card">
+<div class="scene title-card bg-grid">
+  <div class="title-card__orb title-card__orb--1"></div>
+  <div class="title-card__orb title-card__orb--2"></div>
   <div class="title-card__logo accent-line"></div>
   <h1 class="title-card__title">{{data.title}}</h1>
   {{#if data.subtitle}}
   <p class="title-card__subtitle">{{data.subtitle}}</p>
   {{/if}}
+  <div class="title-card__divider"></div>
   {{#if data.date}}
   <p class="title-card__date">{{data.date}}</p>
   {{/if}}
@@ -15,23 +18,54 @@
 <style>
   .title-card {
     text-align: center;
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background: linear-gradient(160deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
     gap: calc(var(--spacing-unit) * 2);
+  }
+
+  .title-card__orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .title-card__orb--1 {
+    width: 400px;
+    height: 400px;
+    background: var(--accent);
+    opacity: 0.06;
+    top: -10%;
+    right: -5%;
+  }
+
+  .title-card__orb--2 {
+    width: 300px;
+    height: 300px;
+    background: var(--accent-tertiary, var(--accent-secondary));
+    opacity: 0.05;
+    bottom: -5%;
+    left: -5%;
   }
 
   .title-card__logo {
     width: 80px;
     height: 4px;
     margin-bottom: calc(var(--spacing-unit) * 3);
+    background: var(--accent-gradient);
   }
 
   .title-card__title {
     font-family: var(--font-heading);
-    font-size: 3.5rem;
+    font-size: 3.8rem;
     font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.1;
-    max-width: 80%;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.08;
+    max-width: 85%;
+    letter-spacing: -0.02em;
   }
 
   .title-card__subtitle {
@@ -39,18 +73,29 @@
     color: var(--text-secondary);
     font-weight: 400;
     max-width: 70%;
+    line-height: 1.4;
+  }
+
+  .title-card__divider {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.4;
+    margin: calc(var(--spacing-unit) * 1) 0;
   }
 
   .title-card__date {
     font-size: 1rem;
     color: var(--text-muted);
     font-family: var(--font-mono);
-    margin-top: calc(var(--spacing-unit) * 2);
+    margin-top: calc(var(--spacing-unit) * 1);
+    letter-spacing: 0.04em;
   }
 
   .title-card__presenter {
     font-size: 1.1rem;
     color: var(--text-secondary);
+    font-weight: 500;
   }
 </style>
 
@@ -58,26 +103,49 @@
   window.__buildTimeline = function() {
     const tl = gsap.timeline({ paused: true });
 
+    // Orbs drift in
+    tl.from('.title-card__orb--1', {
+      scale: 0.3,
+      opacity: 0,
+      x: 50,
+      duration: 0.8,
+      ease: 'power2.out'
+    }, 0);
+    tl.from('.title-card__orb--2', {
+      scale: 0.3,
+      opacity: 0,
+      x: -50,
+      duration: 0.8,
+      ease: 'power2.out'
+    }, 0.1);
+
     tl.from('.title-card__logo', {
       scaleX: 0,
       transformOrigin: 'center center',
-      duration: 0.3,
+      duration: 0.4,
       ease: 'power3.out'
-    })
+    }, 0.2)
     .from('.title-card__title', {
-      y: 30,
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      ease: 'back.out(1.4)'
+    }, '-=0.15')
+    .from('.title-card__subtitle', {
+      y: 25,
       opacity: 0,
       duration: 0.5,
-      ease: 'back.out(1.7)'
-    }, '-=0.1')
-    .from('.title-card__subtitle', {
-      y: 20,
-      opacity: 0,
-      duration: 0.4,
       ease: 'power2.out'
+    }, '-=0.25')
+    .from('.title-card__divider', {
+      scaleX: 0,
+      transformOrigin: 'center center',
+      duration: 0.4,
+      ease: 'power3.out'
     }, '-=0.2')
     .from('.title-card__date', {
       opacity: 0,
+      y: 8,
       duration: 0.3,
       ease: 'power2.out'
     }, '-=0.1')

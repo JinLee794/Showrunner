@@ -1,31 +1,50 @@
-<div class="scene section-header">
+<div class="scene section-header bg-grid">
+  <div class="section-header__orb"></div>
   <div class="section-header__accent accent-line"></div>
   <h1 class="section-header__heading">{{data.heading}}</h1>
   {{#if data.subheading}}
   <p class="section-header__subheading">{{data.subheading}}</p>
   {{/if}}
+  <div class="section-header__line"></div>
 </div>
 
 <style>
   .section-header {
     text-align: center;
-    background: var(--bg-primary);
+    background: linear-gradient(160deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
     gap: calc(var(--spacing-unit) * 2);
   }
 
+  .section-header__orb {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.05;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
   .section-header__accent {
-    width: 60px;
+    width: 80px;
     height: 4px;
     margin-bottom: calc(var(--spacing-unit) * 2);
+    background: var(--accent-gradient);
   }
 
   .section-header__heading {
     font-family: var(--font-heading);
-    font-size: 3rem;
+    font-size: 3.2rem;
     font-weight: 700;
-    color: var(--text-primary);
-    line-height: 1.15;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.12;
     max-width: 80%;
+    letter-spacing: -0.02em;
   }
 
   .section-header__subheading {
@@ -34,6 +53,15 @@
     font-weight: 400;
     max-width: 65%;
     margin-top: calc(var(--spacing-unit) * 1);
+    line-height: 1.45;
+  }
+
+  .section-header__line {
+    width: 160px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.3;
+    margin-top: calc(var(--spacing-unit) * 2);
   }
 </style>
 
@@ -41,23 +69,36 @@
   window.__buildTimeline = function() {
     var tl = gsap.timeline({ paused: true });
 
+    tl.from('.section-header__orb', {
+      scale: 0.2,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power2.out'
+    }, 0);
+
     tl.from('.section-header__accent', {
       scaleX: 0,
       transformOrigin: 'center center',
-      duration: 0.3,
+      duration: 0.4,
       ease: 'power3.out'
-    })
+    }, 0.15)
     .from('.section-header__heading', {
-      y: 30,
+      y: 35,
       opacity: 0,
-      duration: 0.5,
-      ease: 'back.out(1.7)'
-    }, '-=0.1')
+      duration: 0.6,
+      ease: 'back.out(1.4)'
+    }, '-=0.15')
     .from('.section-header__subheading', {
       y: 20,
       opacity: 0,
-      duration: 0.4,
+      duration: 0.45,
       ease: 'power2.out'
+    }, '-=0.25')
+    .from('.section-header__line', {
+      scaleX: 0,
+      transformOrigin: 'center center',
+      duration: 0.4,
+      ease: 'power3.out'
     }, '-=0.2')
     .to({}, { duration: 0.3 });
 

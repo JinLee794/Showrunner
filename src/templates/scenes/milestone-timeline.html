@@ -2,10 +2,17 @@
   <div class="milestone-timeline__track">
     {{#each data.milestones}}
     <div class="milestone-timeline__item">
-      <div class="milestone-timeline__dot milestone-timeline__dot--{{this.status}}"></div>
+      <div class="milestone-timeline__dot-wrap">
+        <div class="milestone-timeline__dot milestone-timeline__dot--{{this.status}}">
+          <div class="milestone-timeline__dot-ring"></div>
+        </div>
+      </div>
       <div class="milestone-timeline__connector"></div>
       <div class="milestone-timeline__card">
-        <div class="milestone-timeline__name">{{this.name}}</div>
+        <div class="milestone-timeline__card-header">
+          <div class="milestone-timeline__name">{{this.name}}</div>
+          <div class="milestone-timeline__status milestone-timeline__status--{{this.status}}">{{this.status}}</div>
+        </div>
         <div class="milestone-timeline__meta">
           <span class="milestone-timeline__owner">{{this.owner}}</span>
           <span class="milestone-timeline__due">{{this.due}}</span>
@@ -13,7 +20,6 @@
         {{#if this.note}}
         <div class="milestone-timeline__note">{{this.note}}</div>
         {{/if}}
-        <div class="milestone-timeline__status milestone-timeline__status--{{this.status}}">{{this.status}}</div>
       </div>
     </div>
     {{/each}}
@@ -39,30 +45,64 @@
     align-items: flex-start;
     gap: calc(var(--spacing-unit) * 3);
     position: relative;
-    padding-bottom: calc(var(--spacing-unit) * 2);
+    padding-bottom: calc(var(--spacing-unit) * 2.5);
   }
 
-  .milestone-timeline__dot {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
+  .milestone-timeline__dot-wrap {
     flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    position: relative;
     margin-top: 6px;
     z-index: 1;
   }
 
-  .milestone-timeline__dot--completed { background: var(--status-on-track, #2ecc71); }
-  .milestone-timeline__dot--on-track { background: var(--accent); }
-  .milestone-timeline__dot--at-risk { background: var(--status-at-risk, #f39c12); }
-  .milestone-timeline__dot--overdue { background: var(--status-overdue, #e74c3c); }
+  .milestone-timeline__dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .milestone-timeline__dot-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    opacity: 0.2;
+  }
+
+  .milestone-timeline__dot--completed {
+    background: var(--status-on-track, #2ecc71);
+    color: var(--status-on-track, #2ecc71);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--status-on-track, #2ecc71) 30%, transparent);
+  }
+  .milestone-timeline__dot--on-track {
+    background: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+  .milestone-timeline__dot--at-risk {
+    background: var(--status-at-risk, #f39c12);
+    color: var(--status-at-risk, #f39c12);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--status-at-risk, #f39c12) 30%, transparent);
+  }
+  .milestone-timeline__dot--overdue {
+    background: var(--status-overdue, #e74c3c);
+    color: var(--status-overdue, #e74c3c);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--status-overdue, #e74c3c) 30%, transparent);
+  }
 
   .milestone-timeline__connector {
     position: absolute;
-    left: 8px;
-    top: 24px;
+    left: 10px;
+    top: 30px;
     width: 2px;
-    height: calc(100% - 12px);
-    background: var(--bg-tertiary);
+    height: calc(100% - 16px);
+    background: linear-gradient(180deg, var(--bg-tertiary), transparent);
   }
 
   .milestone-timeline__item:last-child .milestone-timeline__connector {
@@ -71,12 +111,23 @@
 
   .milestone-timeline__card {
     flex: 1;
-    background: var(--bg-secondary);
+    background: var(--glass-bg, var(--bg-secondary));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
     border-radius: var(--border-radius);
-    padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+    padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 3);
     display: flex;
     flex-direction: column;
-    gap: calc(var(--spacing-unit) * 0.5);
+    gap: calc(var(--spacing-unit) * 0.75);
+    box-shadow: var(--shadow-card);
+  }
+
+  .milestone-timeline__card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--spacing-unit) * 2);
   }
 
   .milestone-timeline__name {
@@ -103,19 +154,20 @@
   }
 
   .milestone-timeline__status {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     width: fit-content;
-    padding: 2px 8px;
-    border-radius: 3px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    flex-shrink: 0;
   }
 
-  .milestone-timeline__status--completed { color: var(--status-on-track, #2ecc71); background: color-mix(in srgb, var(--status-on-track, #2ecc71) 15%, transparent); }
-  .milestone-timeline__status--on-track { color: var(--accent); background: color-mix(in srgb, var(--accent) 15%, transparent); }
-  .milestone-timeline__status--at-risk { color: var(--status-at-risk, #f39c12); background: color-mix(in srgb, var(--status-at-risk, #f39c12) 15%, transparent); }
-  .milestone-timeline__status--overdue { color: var(--status-overdue, #e74c3c); background: color-mix(in srgb, var(--status-overdue, #e74c3c) 15%, transparent); }
+  .milestone-timeline__status--completed { color: var(--status-on-track, #2ecc71); background: color-mix(in srgb, var(--status-on-track, #2ecc71) 12%, transparent); }
+  .milestone-timeline__status--on-track { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .milestone-timeline__status--at-risk { color: var(--status-at-risk, #f39c12); background: color-mix(in srgb, var(--status-at-risk, #f39c12) 12%, transparent); }
+  .milestone-timeline__status--overdue { color: var(--status-overdue, #e74c3c); background: color-mix(in srgb, var(--status-overdue, #e74c3c) 12%, transparent); }
 </style>
 
 <script>
@@ -124,33 +176,41 @@
 
     tl.from('.milestone-timeline__dot', {
       scale: 0,
-      duration: 0.3,
+      duration: 0.35,
       stagger: 0.12,
-      ease: 'back.out(2)'
+      ease: 'back.out(2.5)'
     });
 
-    tl.from('.milestone-timeline__connector', {
-      scaleY: 0,
-      transformOrigin: 'top center',
+    tl.from('.milestone-timeline__dot-ring', {
+      scale: 0,
+      opacity: 0,
       duration: 0.3,
       stagger: 0.12,
       ease: 'power2.out'
     }, '<0.1');
 
-    tl.from('.milestone-timeline__card', {
-      x: 20,
-      opacity: 0,
+    tl.from('.milestone-timeline__connector', {
+      scaleY: 0,
+      transformOrigin: 'top center',
       duration: 0.35,
       stagger: 0.12,
-      ease: 'back.out(1.4)'
+      ease: 'power2.out'
+    }, '<0.1');
+
+    tl.from('.milestone-timeline__card', {
+      x: 25,
+      opacity: 0,
+      duration: 0.4,
+      stagger: 0.12,
+      ease: 'back.out(1.2)'
     }, '<0.05');
 
     tl.from('.milestone-timeline__status', {
       scale: 0,
       opacity: 0,
-      duration: 0.2,
+      duration: 0.25,
       stagger: 0.1,
-      ease: 'back.out(2)'
+      ease: 'back.out(2.5)'
     }, '-=0.2');
 
     tl.to({}, { duration: 0.3 });

@@ -14,6 +14,7 @@
         <div class="action-items__meta">
           {{#if this.owner}}<span class="action-items__owner">{{this.owner}}</span>{{/if}}
           {{#if this.due}}<span class="action-items__due">Due: {{this.due}}</span>{{/if}}
+          {{#if this.priority}}<span class="action-items__priority action-items__priority--{{this.priority}}">{{this.priority}}</span>{{/if}}
         </div>
       </div>
     </div>
@@ -42,14 +43,19 @@
     display: flex;
     align-items: center;
     gap: calc(var(--spacing-unit) * 2);
-    background: var(--bg-secondary);
+    background: var(--glass-bg, var(--bg-secondary));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
     border-radius: var(--border-radius);
     padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 3);
     border-left: 3px solid transparent;
+    box-shadow: var(--shadow-card);
   }
 
   .action-items__item--high {
     border-left-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 4%, var(--glass-bg, var(--bg-secondary)));
   }
 
   .action-items__check {
@@ -70,11 +76,16 @@
 
   .action-items__number {
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--accent);
     font-weight: 700;
-    min-width: 24px;
-    text-align: center;
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border-radius: 50%;
   }
 
   .action-items__content {
@@ -85,16 +96,17 @@
   }
 
   .action-items__text {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     color: var(--text-primary);
     line-height: 1.4;
   }
 
   .action-items__meta {
     display: flex;
-    gap: calc(var(--spacing-unit) * 3);
+    gap: calc(var(--spacing-unit) * 2);
     font-size: 0.85rem;
     color: var(--text-muted);
+    align-items: center;
   }
 
   .action-items__owner {
@@ -103,6 +115,30 @@
 
   .action-items__due {
     font-family: var(--font-mono);
+  }
+
+  .action-items__priority {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+
+  .action-items__priority--high {
+    color: var(--risk-high, #ff6b35);
+    background: color-mix(in srgb, var(--risk-high, #ff6b35) 12%, transparent);
+  }
+
+  .action-items__priority--medium {
+    color: var(--risk-medium, #ffa726);
+    background: color-mix(in srgb, var(--risk-medium, #ffa726) 12%, transparent);
+  }
+
+  .action-items__priority--low {
+    color: var(--risk-low, #66bb6a);
+    background: color-mix(in srgb, var(--risk-low, #66bb6a) 12%, transparent);
   }
 </style>
 
@@ -120,29 +156,41 @@
 
     // Items slide up with spring stagger
     tl.from('.action-items__item', {
-      y: 25,
+      y: 30,
       opacity: 0,
-      duration: 0.4,
+      duration: 0.45,
       stagger: 0.1,
-      ease: 'back.out(1.4)'
+      ease: 'back.out(1.2)'
     }, '-=0.1');
 
     // Check circles draw their stroke
     tl.to('.action-items__check-circle', {
       strokeDashoffset: 0,
-      duration: 0.4,
+      duration: 0.45,
       stagger: 0.1,
       ease: 'power2.out'
     }, '-=0.3');
 
-    // Numbers appear
+    // Numbers pop in
     tl.from('.action-items__number', {
       scale: 0,
       opacity: 0,
-      duration: 0.2,
+      duration: 0.25,
       stagger: 0.1,
-      ease: 'back.out(2)'
+      ease: 'back.out(2.5)'
     }, '-=0.4');
+
+    // Priority badges
+    var priorities = document.querySelectorAll('.action-items__priority');
+    if (priorities.length > 0) {
+      tl.from(priorities, {
+        scale: 0,
+        opacity: 0,
+        duration: 0.2,
+        stagger: 0.05,
+        ease: 'back.out(2)'
+      }, '-=0.2');
+    }
 
     // High-priority border fades in
     var highItems = document.querySelectorAll('.action-items__item--high');

@@ -2,21 +2,28 @@
   <div class="kpi-scorecard__grid">
     {{#each data.kpis}}
     <div class="kpi-scorecard__card">
+      <div class="kpi-scorecard__card-glow"></div>
       <div class="kpi-scorecard__label">{{this.label}}</div>
-      <div class="kpi-scorecard__value" data-target="{{this.value}}">0</div>
-      {{#if this.unit}}
-      <div class="kpi-scorecard__unit">{{this.unit}}</div>
-      {{/if}}
+      <div class="kpi-scorecard__value-row">
+        <div class="kpi-scorecard__value" data-target="{{this.value}}">0</div>
+        {{#if this.unit}}
+        <div class="kpi-scorecard__unit">{{this.unit}}</div>
+        {{/if}}
+      </div>
       {{#if this.trend}}
       <div class="kpi-scorecard__trend kpi-scorecard__trend--{{this.trend}}">
-        {{#if (eq this.trend 'up')}}&#9650;{{/if}}
-        {{#if (eq this.trend 'down')}}&#9660;{{/if}}
-        {{#if (eq this.trend 'flat')}}&#9654;{{/if}}
+        <span class="kpi-scorecard__trend-icon">
+          {{#if (eq this.trend 'up')}}&#9650;{{/if}}
+          {{#if (eq this.trend 'down')}}&#9660;{{/if}}
+          {{#if (eq this.trend 'flat')}}&#9654;{{/if}}
+        </span>
+        <span class="kpi-scorecard__trend-label">{{this.trend}}</span>
       </div>
       {{/if}}
       {{#if this.target}}
       <div class="kpi-scorecard__target">Target: {{this.target}}</div>
       {{/if}}
+      <div class="kpi-scorecard__accent-bar"></div>
     </div>
     {{/each}}
   </div>
@@ -35,45 +42,105 @@
   }
 
   .kpi-scorecard__card {
-    background: var(--bg-secondary);
+    background: var(--glass-bg, var(--bg-secondary));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
     border-radius: var(--border-radius);
     padding: calc(var(--spacing-unit) * 4);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: calc(var(--spacing-unit) * 1);
-    border-top: 3px solid var(--accent);
+    gap: calc(var(--spacing-unit) * 1.5);
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+
+  .kpi-scorecard__card-glow {
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 160px;
+    background: var(--accent);
+    filter: blur(60px);
+    opacity: 0.06;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .kpi-scorecard__accent-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent-gradient);
+    border-radius: 3px 3px 0 0;
   }
 
   .kpi-scorecard__label {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: var(--text-secondary);
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+    margin-top: calc(var(--spacing-unit) * 1);
+  }
+
+  .kpi-scorecard__value-row {
+    display: flex;
+    align-items: baseline;
+    gap: calc(var(--spacing-unit) * 1);
   }
 
   .kpi-scorecard__value {
-    font-size: 3rem;
+    font-size: 3.2rem;
     font-weight: 700;
-    color: var(--text-primary);
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-family: var(--font-mono);
     line-height: 1.1;
   }
 
   .kpi-scorecard__unit {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--text-muted);
+    font-weight: 500;
   }
 
   .kpi-scorecard__trend {
-    font-size: 1.2rem;
-    margin-top: calc(var(--spacing-unit) * 0.5);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
-  .kpi-scorecard__trend--up { color: var(--status-on-track, #2ecc71); }
-  .kpi-scorecard__trend--down { color: var(--status-overdue, #e74c3c); }
-  .kpi-scorecard__trend--flat { color: var(--text-muted); }
+  .kpi-scorecard__trend-icon {
+    font-size: 0.7rem;
+  }
+
+  .kpi-scorecard__trend--up {
+    color: var(--status-on-track, #2ecc71);
+    background: color-mix(in srgb, var(--status-on-track, #2ecc71) 12%, transparent);
+  }
+  .kpi-scorecard__trend--down {
+    color: var(--status-overdue, #e74c3c);
+    background: color-mix(in srgb, var(--status-overdue, #e74c3c) 12%, transparent);
+  }
+  .kpi-scorecard__trend--flat {
+    color: var(--text-muted);
+    background: color-mix(in srgb, var(--text-muted) 12%, transparent);
+  }
 
   .kpi-scorecard__target {
     font-size: 0.85rem;
@@ -87,13 +154,22 @@
     var tl = gsap.timeline({ paused: true });
 
     tl.from('.kpi-scorecard__card', {
-      y: 30,
+      y: 40,
       opacity: 0,
-      scale: 0.95,
+      scale: 0.9,
+      duration: 0.5,
+      stagger: 0.12,
+      ease: 'back.out(1.4)'
+    });
+
+    // Accent bars sweep in
+    tl.from('.kpi-scorecard__accent-bar', {
+      scaleX: 0,
+      transformOrigin: 'left center',
       duration: 0.4,
       stagger: 0.1,
-      ease: 'back.out(1.7)'
-    });
+      ease: 'power3.out'
+    }, '-=0.3');
 
     // Count-up animation for numeric values
     var values = document.querySelectorAll('.kpi-scorecard__value');
@@ -106,7 +182,7 @@
         var decimals = isInt ? 0 : (raw.split('.')[1] || '').length;
         tl.to(obj, {
           val: target,
-          duration: 0.8,
+          duration: 1.0,
           ease: 'power2.out',
           onUpdate: function() {
             el.textContent = isInt ? Math.round(obj.val).toLocaleString() : obj.val.toFixed(decimals);
@@ -121,10 +197,19 @@
     tl.from('.kpi-scorecard__trend', {
       scale: 0,
       opacity: 0,
-      duration: 0.3,
+      duration: 0.35,
       stagger: 0.1,
-      ease: 'back.out(2)'
-    }, '-=0.3');
+      ease: 'back.out(2.5)'
+    }, '-=0.4');
+
+    // Glow pulse
+    tl.from('.kpi-scorecard__card-glow', {
+      opacity: 0,
+      scale: 0.5,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: 'power2.out'
+    }, '-=0.5');
 
     tl.to({}, { duration: 0.3 });
     return tl;

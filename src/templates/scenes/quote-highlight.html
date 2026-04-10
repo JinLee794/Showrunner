@@ -1,6 +1,8 @@
-<div class="scene quote-highlight">
-  <div class="quote-highlight__mark">"</div>
+<div class="scene quote-highlight bg-grid">
+  <div class="quote-highlight__orb"></div>
+  <div class="quote-highlight__mark">&ldquo;</div>
   <blockquote class="quote-highlight__quote">{{data.quote}}</blockquote>
+  <div class="quote-highlight__line"></div>
   {{#if data.attribution}}
   <cite class="quote-highlight__attribution">— {{data.attribution}}</cite>
   {{/if}}
@@ -9,34 +11,58 @@
 <style>
   .quote-highlight {
     text-align: center;
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background: linear-gradient(160deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
     padding: calc(var(--spacing-unit) * 10);
     gap: calc(var(--spacing-unit) * 2);
   }
 
+  .quote-highlight__orb {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.04;
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
   .quote-highlight__mark {
-    font-size: 6rem;
-    line-height: 1;
-    color: var(--accent);
-    font-family: Georgia, serif;
-    opacity: 0.5;
+    font-size: 8rem;
+    line-height: 0.8;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: Georgia, 'Times New Roman', serif;
+    opacity: 0.6;
   }
 
   .quote-highlight__quote {
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: var(--text-primary);
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.55;
     max-width: 75%;
     margin: 0;
     font-style: italic;
+    letter-spacing: -0.01em;
+  }
+
+  .quote-highlight__line {
+    width: 80px;
+    height: 2px;
+    background: var(--accent-gradient);
+    border-radius: 2px;
+    margin: calc(var(--spacing-unit) * 1) 0;
   }
 
   .quote-highlight__attribution {
-    font-size: 1.1rem;
-    color: var(--text-muted);
+    font-size: 1.15rem;
+    color: var(--text-secondary);
     font-style: normal;
-    margin-top: calc(var(--spacing-unit) * 2);
+    font-weight: 500;
   }
 </style>
 
@@ -44,26 +70,41 @@
   window.__buildTimeline = function() {
     var tl = gsap.timeline({ paused: true });
 
-    tl.from('.quote-highlight__mark', {
-      scale: 0,
+    tl.from('.quote-highlight__orb', {
+      scale: 0.2,
       opacity: 0,
-      duration: 0.4,
-      ease: 'back.out(2)'
-    });
+      duration: 0.8,
+      ease: 'power2.out'
+    }, 0);
+
+    tl.from('.quote-highlight__mark', {
+      scale: 0.3,
+      opacity: 0,
+      y: -20,
+      duration: 0.5,
+      ease: 'back.out(1.8)'
+    }, 0.1);
 
     tl.from('.quote-highlight__quote', {
-      y: 20,
+      y: 25,
       opacity: 0,
-      duration: 0.5,
+      duration: 0.6,
       ease: 'power2.out'
-    }, '-=0.1');
+    }, '-=0.2');
+
+    tl.from('.quote-highlight__line', {
+      scaleX: 0,
+      transformOrigin: 'center center',
+      duration: 0.4,
+      ease: 'power3.out'
+    }, '-=0.2');
 
     tl.from('.quote-highlight__attribution', {
-      y: 10,
+      y: 12,
       opacity: 0,
-      duration: 0.3,
+      duration: 0.4,
       ease: 'power2.out'
-    }, '-=0.1');
+    }, '-=0.15');
 
     tl.to({}, { duration: 0.5 });
     return tl;

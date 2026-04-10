@@ -6,6 +6,7 @@
       <div class="pipeline-funnel__label">{{this.name}}</div>
       <div class="pipeline-funnel__bar-track">
         <div class="pipeline-funnel__bar" data-width="{{this.widthPercent}}"></div>
+        <div class="pipeline-funnel__bar-shimmer"></div>
       </div>
       <div class="pipeline-funnel__meta">
         <span class="pipeline-funnel__count" data-target="{{this.count}}">0</span>
@@ -51,21 +52,43 @@
 
   .pipeline-funnel__bar-track {
     width: 100%;
-    height: 40px;
-    background: var(--bg-tertiary);
+    height: 44px;
+    background: var(--glass-bg, var(--bg-tertiary));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
     border-radius: var(--border-radius-sm);
     overflow: hidden;
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.04));
+    position: relative;
   }
 
   .pipeline-funnel__bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+    background: var(--accent-gradient);
     border-radius: var(--border-radius-sm);
     transform-origin: left center;
+    position: relative;
+  }
+
+  .pipeline-funnel__bar-shimmer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255,255,255,0.08) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
+    pointer-events: none;
   }
 
   .pipeline-funnel__stage--highlight .pipeline-funnel__bar {
-    box-shadow: var(--shadow-glow);
+    box-shadow: 0 0 20px var(--accent-glow);
   }
 
   .pipeline-funnel__meta {
@@ -75,9 +98,12 @@
   }
 
   .pipeline-funnel__count {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    color: var(--text-primary);
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-family: var(--font-mono);
   }
 
@@ -108,29 +134,29 @@
     // Bars grow left-to-right
     tl.from('.pipeline-funnel__bar', {
       scaleX: 0,
-      duration: 0.6,
-      stagger: 0.08,
+      duration: 0.7,
+      stagger: 0.1,
       ease: 'power3.out'
     }, '-=0.1');
 
     // Labels fade in alongside bars
     tl.from('.pipeline-funnel__label', {
       opacity: 0,
-      x: -10,
-      duration: 0.3,
+      x: -15,
+      duration: 0.35,
       stagger: 0.08,
       ease: 'power2.out'
     }, '<');
 
     // Count-up animation for numbers
     var counts = document.querySelectorAll('.pipeline-funnel__count');
-    var countStart = Math.max(0, tl.duration() - 0.4);
+    var countStart = Math.max(0, tl.duration() - 0.5);
     counts.forEach(function(el, i) {
       var target = parseInt(el.getAttribute('data-target') || '0', 10);
       var obj = { val: 0 };
       tl.to(obj, {
         val: target,
-        duration: 0.8,
+        duration: 1.0,
         ease: 'power2.out',
         onUpdate: function() {
           el.textContent = Math.round(obj.val).toLocaleString();
