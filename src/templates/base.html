@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width={{width}}, height={{height}}">
+  <style>{{{themeCSS}}}</style>
+  <style>
+    html, body {
+      width: {{width}}px;
+      height: {{height}}px;
+      overflow: hidden;
+    }
+  </style>
+  <script>{{{gsapBundle}}}</script>
+</head>
+<body>
+  {{{sceneContent}}}
+  <script>
+    // Expose seek function — renderer calls this each frame
+    // Scene scripts set window.__buildTimeline which returns the GSAP timeline
+    if (typeof window.__buildTimeline === 'function') {
+      const tl = window.__buildTimeline();
+      window.__seek = function(progress) {
+        tl.progress(progress);
+      };
+      window.__timelineReady = true;
+    }
+  </script>
+</body>
+</html>

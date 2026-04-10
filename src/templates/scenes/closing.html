@@ -1,0 +1,84 @@
+<div class="scene closing">
+  {{#if data.tagline}}
+  <h1 class="closing__tagline">{{data.tagline}}</h1>
+  {{/if}}
+  <div class="closing__accent accent-line"></div>
+  {{#if data.cta}}
+  <p class="closing__cta">{{data.cta}}</p>
+  {{/if}}
+  {{#if data.timestamp}}
+  <p class="closing__timestamp">{{data.timestamp}}</p>
+  {{/if}}
+</div>
+
+<style>
+  .closing {
+    text-align: center;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    gap: calc(var(--spacing-unit) * 2);
+  }
+
+  .closing__tagline {
+    font-family: var(--font-heading);
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.15;
+    max-width: 75%;
+  }
+
+  .closing__accent {
+    width: 60px;
+    height: 4px;
+    margin: calc(var(--spacing-unit) * 2) 0;
+  }
+
+  .closing__cta {
+    font-size: 1.2rem;
+    color: var(--accent);
+    font-weight: 500;
+    font-family: var(--font-mono);
+  }
+
+  .closing__timestamp {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-top: calc(var(--spacing-unit) * 2);
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+
+    tl.from('.closing__tagline', {
+      y: 30,
+      opacity: 0,
+      duration: 0.5,
+      ease: 'back.out(1.7)'
+    });
+
+    tl.from('.closing__accent', {
+      scaleX: 0,
+      transformOrigin: 'center center',
+      duration: 0.3,
+      ease: 'power3.out'
+    }, '-=0.2');
+
+    tl.from('.closing__cta', {
+      y: 15,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'power2.out'
+    }, '-=0.1');
+
+    tl.from('.closing__timestamp', {
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.out'
+    }, '-=0.1');
+
+    tl.to({}, { duration: 0.5 });
+    return tl;
+  };
+</script>

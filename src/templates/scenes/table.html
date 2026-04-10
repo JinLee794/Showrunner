@@ -1,0 +1,119 @@
+<div class="scene data-table">
+  {{#if data.title}}
+  <h2 class="scene-title data-table__title">{{data.title}}</h2>
+  {{/if}}
+  <div class="data-table__wrapper">
+    <table class="data-table__table">
+      <thead>
+        <tr class="data-table__header-row">
+          {{#each data.columns}}
+          <th class="data-table__th" {{#if this.width}}style="width:{{this.width}}"{{/if}}>{{this.label}}</th>
+          {{/each}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each data.rows}}
+        <tr class="data-table__row {{#if this._highlight}}data-table__row--highlight{{/if}}">
+          {{#each ../data.columns}}
+          <td class="data-table__td">{{lookup ../this this.key}}</td>
+          {{/each}}
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .data-table {
+    align-items: flex-start;
+    padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 10);
+  }
+
+  .data-table__title {
+    margin-bottom: calc(var(--spacing-unit) * 4);
+  }
+
+  .data-table__wrapper {
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+  }
+
+  .data-table__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table__th {
+    text-align: left;
+    padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--bg-tertiary);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .data-table__td {
+    padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 3);
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--bg-tertiary);
+  }
+
+  .data-table__row {
+    background: var(--bg-secondary);
+  }
+
+  .data-table__row:nth-child(even) {
+    background: var(--bg-primary);
+  }
+
+  .data-table__row--highlight {
+    background: color-mix(in srgb, var(--accent) 15%, var(--bg-secondary)) !important;
+    border-left: 3px solid var(--accent);
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+
+    tl.from('.data-table__title', {
+      y: 30,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'back.out(1.7)'
+    });
+
+    tl.from('.data-table__header-row', {
+      y: -15,
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.out'
+    }, '-=0.1');
+
+    tl.from('.data-table__row', {
+      y: 15,
+      opacity: 0,
+      duration: 0.3,
+      stagger: 0.08,
+      ease: 'back.out(1.2)'
+    }, '-=0.1');
+
+    var highlighted = document.querySelectorAll('.data-table__row--highlight');
+    if (highlighted.length > 0) {
+      tl.from(highlighted, {
+        borderLeftColor: 'transparent',
+        duration: 0.3,
+        ease: 'power2.out'
+      }, '-=0.1');
+    }
+
+    tl.to({}, { duration: 0.3 });
+    return tl;
+  };
+</script>

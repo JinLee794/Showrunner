@@ -1,0 +1,182 @@
+<div class="scene scene-showcase">
+  {{#if data.title}}
+  <h2 class="scene-title scene-showcase__title">{{data.title}}</h2>
+  {{/if}}
+  {{#if data.subtitle}}
+  <p class="scene-showcase__subtitle">{{data.subtitle}}</p>
+  {{/if}}
+  <div class="scene-showcase__grid">
+    {{#each data.cards}}
+    <div class="scene-showcase__card">
+      <div class="scene-showcase__card-preview scene-showcase__card-preview--{{this.style}}">
+        <div class="scene-showcase__card-icon">{{{this.icon}}}</div>
+      </div>
+      <div class="scene-showcase__card-info">
+        <div class="scene-showcase__card-name">{{this.name}}</div>
+        <div class="scene-showcase__card-desc">{{this.description}}</div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<style>
+  .scene-showcase {
+    align-items: flex-start;
+    padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 8);
+  }
+
+  .scene-showcase__title {
+    margin-bottom: calc(var(--spacing-unit) * 1);
+    align-self: center;
+  }
+
+  .scene-showcase__subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    align-self: center;
+    text-align: center;
+  }
+
+  .scene-showcase__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: calc(var(--spacing-unit) * 3);
+    width: 100%;
+  }
+
+  .scene-showcase__card {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: transform 0.2s;
+  }
+
+  .scene-showcase__card-preview {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scene-showcase__card-preview--bars {
+    background: linear-gradient(135deg, #1a1b2e 0%, #1e2040 100%);
+  }
+  .scene-showcase__card-preview--bars .scene-showcase__card-icon {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 80px;
+  }
+  .scene-showcase__card-preview--bars .scene-showcase__card-icon::before,
+  .scene-showcase__card-preview--bars .scene-showcase__card-icon::after {
+    content: '';
+    display: block;
+    border-radius: 3px 3px 0 0;
+  }
+  .scene-showcase__card-preview--bars .scene-showcase__card-icon::before {
+    width: 24px; height: 50px; background: var(--accent);
+  }
+  .scene-showcase__card-preview--bars .scene-showcase__card-icon::after {
+    width: 24px; height: 70px; background: color-mix(in srgb, var(--accent) 60%, white);
+  }
+
+  .scene-showcase__card-preview--funnel {
+    background: linear-gradient(135deg, #1a1b2e 0%, #1e2040 100%);
+  }
+
+  .scene-showcase__card-preview--timeline {
+    background: linear-gradient(135deg, #1a2e1a 0%, #1e401e 100%);
+  }
+
+  .scene-showcase__card-preview--kpi {
+    background: linear-gradient(135deg, #2e1a2e 0%, #401e40 100%);
+  }
+
+  .scene-showcase__card-preview--table {
+    background: linear-gradient(135deg, #1a2e2e 0%, #1e4040 100%);
+  }
+
+  .scene-showcase__card-preview--risk {
+    background: linear-gradient(135deg, #2e1a1a 0%, #401e1e 100%);
+  }
+
+  .scene-showcase__card-icon {
+    font-size: 3rem;
+    opacity: 0.85;
+  }
+
+  .scene-showcase__card-info {
+    padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 2.5);
+  }
+
+  .scene-showcase__card-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .scene-showcase__card-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+
+    tl.from('.scene-showcase__title', {
+      y: 30,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'back.out(1.7)'
+    });
+
+    var subtitle = document.querySelector('.scene-showcase__subtitle');
+    if (subtitle) {
+      tl.from(subtitle, {
+        y: 15,
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.out'
+      }, '-=0.2');
+    }
+
+    tl.from('.scene-showcase__card', {
+      y: 30,
+      opacity: 0,
+      scale: 0.92,
+      duration: 0.4,
+      stagger: 0.08,
+      ease: 'back.out(1.5)'
+    }, '-=0.1');
+
+    // Icons animate in after cards
+    tl.from('.scene-showcase__card-icon', {
+      scale: 0,
+      opacity: 0,
+      duration: 0.3,
+      stagger: 0.06,
+      ease: 'back.out(2)'
+    }, '-=0.3');
+
+    // Card names slide in
+    tl.from('.scene-showcase__card-name', {
+      x: -10,
+      opacity: 0,
+      duration: 0.2,
+      stagger: 0.06,
+      ease: 'power2.out'
+    }, '-=0.2');
+
+    tl.to({}, { duration: 0.3 });
+    return tl;
+  };
+</script>

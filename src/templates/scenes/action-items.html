@@ -1,0 +1,162 @@
+<div class="scene action-items">
+  <h2 class="scene-title action-items__title">Action Items</h2>
+  <div class="action-items__list">
+    {{#each data.items}}
+    <div class="action-items__item {{#if (eq this.priority 'high')}}action-items__item--high{{/if}}">
+      <div class="action-items__check">
+        <svg viewBox="0 0 24 24" class="action-items__check-svg">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="var(--accent)" stroke-width="2" class="action-items__check-circle"/>
+        </svg>
+      </div>
+      <div class="action-items__number">{{this.index}}</div>
+      <div class="action-items__content">
+        <div class="action-items__text">{{this.text}}</div>
+        <div class="action-items__meta">
+          {{#if this.owner}}<span class="action-items__owner">{{this.owner}}</span>{{/if}}
+          {{#if this.due}}<span class="action-items__due">Due: {{this.due}}</span>{{/if}}
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<style>
+  .action-items {
+    align-items: flex-start;
+    padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 12);
+  }
+
+  .action-items__title {
+    margin-bottom: calc(var(--spacing-unit) * 4);
+  }
+
+  .action-items__list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 2);
+  }
+
+  .action-items__item {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 2);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 3);
+    border-left: 3px solid transparent;
+  }
+
+  .action-items__item--high {
+    border-left-color: var(--accent);
+  }
+
+  .action-items__check {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+  }
+
+  .action-items__check-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .action-items__check-circle {
+    stroke-dasharray: 63;
+    stroke-dashoffset: 63;
+  }
+
+  .action-items__number {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--accent);
+    font-weight: 700;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .action-items__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .action-items__text {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  .action-items__meta {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 3);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .action-items__owner {
+    color: var(--text-secondary);
+  }
+
+  .action-items__due {
+    font-family: var(--font-mono);
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+
+    // Title entrance
+    tl.from('.action-items__title', {
+      y: 30,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'back.out(1.7)'
+    });
+
+    // Items slide up with spring stagger
+    tl.from('.action-items__item', {
+      y: 25,
+      opacity: 0,
+      duration: 0.4,
+      stagger: 0.1,
+      ease: 'back.out(1.4)'
+    }, '-=0.1');
+
+    // Check circles draw their stroke
+    tl.to('.action-items__check-circle', {
+      strokeDashoffset: 0,
+      duration: 0.4,
+      stagger: 0.1,
+      ease: 'power2.out'
+    }, '-=0.3');
+
+    // Numbers appear
+    tl.from('.action-items__number', {
+      scale: 0,
+      opacity: 0,
+      duration: 0.2,
+      stagger: 0.1,
+      ease: 'back.out(2)'
+    }, '-=0.4');
+
+    // High-priority border fades in
+    var highItems = document.querySelectorAll('.action-items__item--high');
+    if (highItems.length > 0) {
+      tl.from(highItems, {
+        borderLeftColor: 'transparent',
+        duration: 0.3,
+        ease: 'power2.out'
+      }, '-=0.2');
+    }
+
+    // Hold
+    tl.to({}, { duration: 0.3 });
+
+    return tl;
+  };
+</script>

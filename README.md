@@ -1,0 +1,271 @@
+<div align="center">
+  <img src="docs/assets/avatar.png" width="160" />
+  <h1>Showrunner</h1>
+  <p><strong>Your AI crew's cinematographer.</strong> Send a storyboard JSON, get back an MP4 with spring-based motion, animated charts, and professional pacing.</p>
+  <p>
+    <code>MCP stdio</code> for local dev &nbsp;·&nbsp; <code>MCP HTTP</code> for Azure &nbsp;·&nbsp; same tools, same storyboard
+  </p>
+</div>
+
+---
+
+No Remotion. No subscription. No framework lock-in. Just Playwright frames, GSAP timelines, and ffmpeg encoding.
+
+## How It Works
+
+```
+Agent sends storyboard JSON
+        │
+        ▼
+  Showrunner MCP Server (stdio or HTTP)
+        │
+        ▼
+  Zod validation → Theme CSS + Scene HTML + GSAP bundle
+        │
+        ▼
+  Playwright (warm browser)
+    Frame-by-frame capture via GSAP timeline.progress()
+        │
+        ▼
+  ffmpeg encode → H.264 MP4
+        │
+        ▼
+  File path (local) or Blob URL (Azure)
+```
+
+Each scene template builds a paused GSAP timeline. The renderer scrubs `.progress(0..1)` for every frame, screenshots, and encodes. Deterministic — same input always produces the same frames.
+
+## Prerequisites
+
+- **Node.js** ≥ 20
+- **ffmpeg** on PATH
+- **Playwright Chromium** (installed via `npx playwright install chromium`)
+
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Install Playwright browser
+npx playwright install chromium
+
+# Build
+npm run build
+
+# Render the demo storyboard
+node --input-type=module << 'EOF'
+import { Renderer } from './dist/renderer/index.js';
+import { BrowserPool } from './dist/renderer/browser-pool.js';
+import { StoryboardSchema } from './dist/schema/storyboard.js';
+import fs from 'fs';
+
+const storyboard = StoryboardSchema.parse(
+  JSON.parse(fs.readFileSync('fixtures/demo-storyboard.json', 'utf8'))
+);
+
+const pool = new BrowserPool();
+const renderer = new Renderer(pool);
+
+const result = await renderer.renderStoryboard(storyboard, 'output/demo.mp4', 'medium');
+console.log(result);
+await pool.close();
+EOF
+```
+
+## Showrunner MCP Server
+
+### stdio (local dev)
+
+```bash
+TRANSPORT=stdio node dist/server.js
+```
+
+Agent config:
+
+```json
+{
+  "mcpServers": {
+    "showrunner": {
+      "command": "node",
+      "args": ["path/to/showrunner/dist/server.js"],
+      "transport": "stdio"
+    }
+  }
+}
+```
+
+### HTTP (remote / Azure)
+
+```bash
+TRANSPORT=http PORT=8080 node dist/server.js
+```
+
+Agent config:
+
+```json
+{
+  "mcpServers": {
+    "showrunner": {
+      "url": "https://<your-function-app>.azurewebsites.net/mcp",
+      "transport": "http"
+    }
+  }
+}
+```
+
+## Tools
+
+| Tool | Description | Returns |
+|---|---|---|
+| `render_video` | Render a full storyboard to MP4 | `{ path, duration, frames, fileSize }` |
+| `render_scene` | Render a single scene to MP4/GIF | `{ path }` |
+| `preview_storyboard` | Generate interactive HTML preview (no Playwright/ffmpeg) | `{ path }` |
+| `validate_storyboard` | Dry-run validation with error reporting | `{ valid, errors?, summary? }` |
+| `list_scene_types` | List all scene types with data schemas | `Array<{ type, description, dataSchema }>` |
+
+## Scene Types
+
+| Type | Description |
+|---|---|
+| `title-card` | Full-screen branded intro with logo, title, subtitle |
+| `section-header` | Transition slide between sections |
+| `pipeline-funnel` | Horizontal bars with staggered spring animation + count-up values |
+| `milestone-timeline` | Vertical timeline with status dots and owner labels |
+| `risk-callout` | Cards with severity stripes and context text |
+| `action-items` | Numbered checklist with priority indicators |
+| `deal-team` | Avatar grid with role labels |
+| `kpi-scorecard` | 2×2 / 3×2 KPI cards with count-up and trend arrows |
+| `chart-bar` | Animated bar chart with staggered spring |
+| `chart-line` | SVG path draw-on line chart |
+| `chart-donut` | Clockwise-fill donut with center count-up |
+| `table` | Animated row-by-row table |
+| `quote-highlight` | Quote with word-by-word reveal and sentiment accent |
+| `comparison` | Side-by-side comparison with alternating slide-in |
+| `closing` | Branded outro with tagline and CTA |
+
+## Storyboard Schema
+
+```json
+{
+  "title": "Q2 Pipeline Review",
+  "theme": "corporate-dark",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 4,
+      "transition": "fade",
+      "data": {
+        "title": "Q2 Pipeline Review",
+        "subtitle": "Enterprise Accounts",
+        "date": "April 2026"
+      }
+    },
+    {
+      "type": "kpi-scorecard",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "kpis": [
+          { "label": "Pipeline", "value": 28400000, "unit": "$", "trend": "up", "animateCount": true },
+          { "label": "Win Rate", "value": 34, "unit": "%", "trend": "up", "animateCount": true }
+        ]
+      }
+    },
+    {
+      "type": "closing",
+      "duration": 3,
+      "transition": "fade",
+      "data": { "tagline": "Generated by AI" }
+    }
+  ]
+}
+```
+
+See [`fixtures/sample-storyboard.json`](fixtures/sample-storyboard.json) and [`fixtures/demo-storyboard.json`](fixtures/demo-storyboard.json) for full examples.
+
+## Themes
+
+| Theme | Description |
+|---|---|
+| `corporate-dark` | Dark navy, white text, gold accent (default) |
+| `corporate-light` | White background, dark text, blue accent |
+| `minimal` | Near-white, subtle grays |
+| `microsoft` | Microsoft brand guidelines |
+| `custom` | Uses `branding` overrides from storyboard |
+
+## Transitions
+
+Applied between consecutive scenes with a 0.5s overlap:
+
+| Type | Effect |
+|---|---|
+| `cut` | Hard cut, no overlap |
+| `fade` | Cross-fade (default) |
+| `slide-left` | Outgoing slides left, incoming slides from right |
+| `slide-up` | Outgoing slides up, incoming slides from below |
+| `zoom` | Outgoing zooms + fades, incoming scales in |
+
+## Render Quality
+
+| Quality | Frame format | CRF | Best for |
+|---|---|---|---|
+| `high` | PNG | 18 | Final output |
+| `medium` | JPEG 90% | 23 | Default / preview |
+| `fast` | JPEG 70% | 28 | Iteration |
+
+## Animation System
+
+GSAP (GreenSock) drives all motion. Each scene template builds a paused `gsap.timeline()` with springs, staggers, easing, and count-up animations. The renderer calls `window.__seek(progress)` per frame — fully deterministic, no requestAnimationFrame, no timing jitter.
+
+Key GSAP features used: `stagger`, `back.out` / `elastic.out` / `power3.out` easing, `snap: { textContent: 1 }` for count-up, `DrawSVGPlugin` for line charts, `SplitText` for word-by-word reveals, nested timeline composition.
+
+## Project Structure
+
+```
+src/
+├── server.ts                # Showrunner MCP server — stdio + HTTP transports
+├── tools/                   # MCP tool handlers
+├── renderer/
+│   ├── index.ts             # Main render pipeline
+│   ├── frame-capture.ts     # Playwright frame loop
+│   ├── encoder.ts           # ffmpeg encoding
+│   ├── transitions.ts       # Scene transition compositing
+│   ├── browser-pool.ts      # Warm browser management
+│   └── preview.ts           # HTML preview generator
+├── output/
+│   ├── local.ts             # File path output
+│   └── blob.ts              # Azure Blob Storage output
+├── motion/
+│   ├── gsap-bundle.ts       # GSAP core + plugins for page injection
+│   └── presets.ts            # Reusable animation presets
+├── templates/
+│   ├── base.html            # Common layout with theme + GSAP injection
+│   └── scenes/              # Per-scene-type HTML templates
+├── themes/                  # CSS custom property theme files
+├── schema/
+│   └── storyboard.ts       # Zod schemas
+└── types/
+    └── index.ts
+```
+
+## Scripts
+
+```bash
+npm run build    # tsc + copy templates/themes to dist/
+npm run dev      # tsc --watch
+npm start        # node dist/server.js
+npm test         # vitest
+```
+
+## License
+
+Internal tool — not published.
+
+---
+
+<div align="center">
+  <sub>Built with 🎬 by the Showrunner crew</sub>
+</div>

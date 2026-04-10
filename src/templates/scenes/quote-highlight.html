@@ -1,0 +1,71 @@
+<div class="scene quote-highlight">
+  <div class="quote-highlight__mark">"</div>
+  <blockquote class="quote-highlight__quote">{{data.quote}}</blockquote>
+  {{#if data.attribution}}
+  <cite class="quote-highlight__attribution">— {{data.attribution}}</cite>
+  {{/if}}
+</div>
+
+<style>
+  .quote-highlight {
+    text-align: center;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    padding: calc(var(--spacing-unit) * 10);
+    gap: calc(var(--spacing-unit) * 2);
+  }
+
+  .quote-highlight__mark {
+    font-size: 6rem;
+    line-height: 1;
+    color: var(--accent);
+    font-family: Georgia, serif;
+    opacity: 0.5;
+  }
+
+  .quote-highlight__quote {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    font-weight: 400;
+    line-height: 1.5;
+    max-width: 75%;
+    margin: 0;
+    font-style: italic;
+  }
+
+  .quote-highlight__attribution {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-style: normal;
+    margin-top: calc(var(--spacing-unit) * 2);
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+
+    tl.from('.quote-highlight__mark', {
+      scale: 0,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'back.out(2)'
+    });
+
+    tl.from('.quote-highlight__quote', {
+      y: 20,
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power2.out'
+    }, '-=0.1');
+
+    tl.from('.quote-highlight__attribution', {
+      y: 10,
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.out'
+    }, '-=0.1');
+
+    tl.to({}, { duration: 0.5 });
+    return tl;
+  };
+</script>

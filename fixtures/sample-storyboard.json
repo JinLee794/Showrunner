@@ -1,0 +1,66 @@
+{
+  "title": "Q2 Pipeline Review",
+  "theme": "corporate-dark",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 4,
+      "transition": "fade",
+      "data": {
+        "title": "Q2 Pipeline Review",
+        "subtitle": "Enterprise Accounts — Weekly Sync",
+        "date": "April 10, 2026",
+        "presenter": "Deal Strategy Team"
+      }
+    },
+    {
+      "type": "pipeline-funnel",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "stages": [
+          { "name": "Qualified", "count": 142, "value": "$28.4M" },
+          { "name": "Technical Win", "count": 87, "value": "$19.1M" },
+          { "name": "Proposal", "count": 34, "value": "$11.2M", "highlight": true },
+          { "name": "Negotiate", "count": 18, "value": "$7.8M" },
+          { "name": "Closed Won", "count": 9, "value": "$4.2M" }
+        ]
+      }
+    },
+    {
+      "type": "action-items",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "items": [
+          {
+            "text": "Schedule executive sponsor meeting with Contoso CTO",
+            "owner": "Sarah Chen",
+            "due": "April 14",
+            "priority": "high"
+          },
+          {
+            "text": "Update pricing model for Fabrikam 3-year proposal",
+            "owner": "James Wilson",
+            "due": "April 12",
+            "priority": "high"
+          },
+          {
+            "text": "Complete technical validation for Northwind deployment",
+            "owner": "Priya Patel",
+            "due": "April 16",
+            "priority": "normal"
+          },
+          {
+            "text": "Prepare competitive displacement deck for Woodgrove",
+            "owner": "Marcus Johnson",
+            "due": "April 18",
+            "priority": "normal"
+          }
+        ]
+      }
+    }
+  ]
+}

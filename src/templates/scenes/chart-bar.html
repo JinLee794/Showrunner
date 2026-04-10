@@ -1,0 +1,177 @@
+<div class="scene chart-bar">
+  {{#if data.title}}
+  <h2 class="scene-title chart-bar__title">{{data.title}}</h2>
+  {{/if}}
+  <div class="chart-bar__container">
+    <div class="chart-bar__chart">
+      {{#each data.labels}}
+      <div class="chart-bar__group" data-index="{{@index}}">
+        <div class="chart-bar__bars">
+          {{#each ../../data.datasets}}
+          <div class="chart-bar__bar" data-value="{{lookup this.values @../index}}" style="background:{{this.color}}; --bar-color:{{this.color}}"></div>
+          {{/each}}
+        </div>
+        <div class="chart-bar__label">{{this}}</div>
+      </div>
+      {{/each}}
+    </div>
+    {{#if data.datasets}}
+    <div class="chart-bar__legend">
+      {{#each data.datasets}}
+      <div class="chart-bar__legend-item">
+        <span class="chart-bar__legend-swatch" style="background:{{this.color}}"></span>
+        <span>{{this.label}}</span>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+  </div>
+  {{#if data.annotation}}
+  <p class="chart-bar__annotation">{{data.annotation}}</p>
+  {{/if}}
+</div>
+
+<style>
+  .chart-bar {
+    align-items: flex-start;
+    padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 10);
+  }
+
+  .chart-bar__title {
+    margin-bottom: calc(var(--spacing-unit) * 3);
+  }
+
+  .chart-bar__container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 3);
+  }
+
+  .chart-bar__chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 350px;
+    width: 100%;
+    padding-bottom: calc(var(--spacing-unit) * 4);
+    border-bottom: 2px solid var(--bg-tertiary);
+    border-left: 2px solid var(--bg-tertiary);
+  }
+
+  .chart-bar__group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 1);
+    flex: 1;
+  }
+
+  .chart-bar__bars {
+    display: flex;
+    gap: 4px;
+    align-items: flex-end;
+    height: 100%;
+  }
+
+  .chart-bar__bar {
+    width: 40px;
+    border-radius: var(--border-radius-sm) var(--border-radius-sm) 0 0;
+    transform-origin: bottom center;
+  }
+
+  .chart-bar__label {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .chart-bar__legend {
+    display: flex;
+    justify-content: center;
+    gap: calc(var(--spacing-unit) * 4);
+  }
+
+  .chart-bar__legend-item {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 1);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+  }
+
+  .chart-bar__legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+  }
+
+  .chart-bar__annotation {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+
+    // Compute max value, set bar heights
+    var bars = document.querySelectorAll('.chart-bar__bar');
+    var maxVal = 0;
+    bars.forEach(function(bar) {
+      var v = parseFloat(bar.getAttribute('data-value') || '0');
+      if (v > maxVal) maxVal = v;
+    });
+    bars.forEach(function(bar) {
+      var v = parseFloat(bar.getAttribute('data-value') || '0');
+      var pct = maxVal > 0 ? (v / maxVal) * 100 : 0;
+      bar.style.height = pct + '%';
+    });
+
+    tl.from('.chart-bar__title', {
+      y: 30,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'back.out(1.7)'
+    });
+
+    tl.from('.chart-bar__bar', {
+      scaleY: 0,
+      duration: 0.5,
+      stagger: 0.06,
+      ease: 'back.out(1.4)'
+    }, '-=0.1');
+
+    tl.from('.chart-bar__label', {
+      opacity: 0,
+      y: 10,
+      duration: 0.3,
+      stagger: 0.06,
+      ease: 'power2.out'
+    }, '-=0.3');
+
+    tl.from('.chart-bar__legend-item', {
+      opacity: 0,
+      y: 10,
+      duration: 0.3,
+      stagger: 0.1,
+      ease: 'power2.out'
+    }, '-=0.2');
+
+    var annotation = document.querySelector('.chart-bar__annotation');
+    if (annotation) {
+      tl.from(annotation, {
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.out'
+      }, '-=0.1');
+    }
+
+    tl.to({}, { duration: 0.3 });
+    return tl;
+  };
+</script>

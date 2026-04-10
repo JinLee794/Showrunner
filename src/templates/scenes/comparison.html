@@ -1,0 +1,131 @@
+<div class="scene comparison">
+  {{#if data.title}}
+  <h2 class="scene-title comparison__title">{{data.title}}</h2>
+  {{/if}}
+  <div class="comparison__columns">
+    <div class="comparison__column comparison__left">
+      <h3 class="comparison__label">{{data.left.label}}</h3>
+      <ul class="comparison__list">
+        {{#each data.left.items}}
+        <li class="comparison__item comparison__item--left">{{this}}</li>
+        {{/each}}
+      </ul>
+    </div>
+    <div class="comparison__divider"></div>
+    <div class="comparison__column comparison__right">
+      <h3 class="comparison__label">{{data.right.label}}</h3>
+      <ul class="comparison__list">
+        {{#each data.right.items}}
+        <li class="comparison__item comparison__item--right">{{this}}</li>
+        {{/each}}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  .comparison {
+    align-items: flex-start;
+    padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 10);
+  }
+
+  .comparison__title {
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    align-self: center;
+  }
+
+  .comparison__columns {
+    display: flex;
+    width: 100%;
+    gap: calc(var(--spacing-unit) * 4);
+    align-items: flex-start;
+  }
+
+  .comparison__column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 2);
+  }
+
+  .comparison__divider {
+    width: 2px;
+    align-self: stretch;
+    background: var(--accent);
+    opacity: 0.3;
+    border-radius: 1px;
+  }
+
+  .comparison__label {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: calc(var(--spacing-unit) * 1);
+  }
+
+  .comparison__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 1.5);
+  }
+
+  .comparison__item {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    padding: calc(var(--spacing-unit) * 1.5) calc(var(--spacing-unit) * 2);
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+    line-height: 1.4;
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+
+    tl.from('.comparison__title', {
+      y: 30,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'back.out(1.7)'
+    });
+
+    tl.from('.comparison__divider', {
+      scaleY: 0,
+      transformOrigin: 'top center',
+      duration: 0.4,
+      ease: 'power3.out'
+    }, '-=0.1');
+
+    tl.from('.comparison__label', {
+      y: 15,
+      opacity: 0,
+      duration: 0.3,
+      stagger: 0.15,
+      ease: 'power2.out'
+    }, '-=0.2');
+
+    tl.from('.comparison__item--left', {
+      x: -20,
+      opacity: 0,
+      duration: 0.3,
+      stagger: 0.08,
+      ease: 'back.out(1.4)'
+    }, '-=0.1');
+
+    tl.from('.comparison__item--right', {
+      x: 20,
+      opacity: 0,
+      duration: 0.3,
+      stagger: 0.08,
+      ease: 'back.out(1.4)'
+    }, '<');
+
+    tl.to({}, { duration: 0.3 });
+    return tl;
+  };
+</script>

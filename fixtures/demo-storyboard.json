@@ -1,0 +1,329 @@
+{
+  "title": "Showrunner — What It Does",
+  "theme": "microsoft",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "title": "Showrunner",
+        "subtitle": "Turn structured data into polished MP4s — no editor, no templates, no subscriptions",
+        "date": "April 2026",
+        "presenter": "MCP Server Demo"
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-left",
+      "data": {
+        "heading": "The Problem",
+        "subheading": "Agents produce data. Humans consume video."
+      }
+    },
+    {
+      "type": "comparison",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "title": "Before vs After",
+        "left": {
+          "label": "Without Showrunner",
+          "items": [
+            "Raw tables pasted into chat",
+            "Static screenshots of dashboards",
+            "Walls of text nobody reads",
+            "Manual PowerPoint assembly"
+          ]
+        },
+        "right": {
+          "label": "With Showrunner",
+          "items": [
+            "Animated MP4 with pacing",
+            "Spring-eased chart animations",
+            "Visual hierarchy and motion",
+            "One JSON → one video"
+          ]
+        }
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-left",
+      "data": {
+        "heading": "Step 1: Configure the MCP Server",
+        "subheading": "Add it to your agent's MCP config — that's it."
+      }
+    },
+    {
+      "type": "code-terminal",
+      "duration": 8,
+      "transition": "fade",
+      "data": {
+        "title": "Agent MCP Configuration",
+        "shell": "~/.config/mcp.json",
+        "lines": [
+          { "kind": "comment", "text": "Add to your agent's MCP server config:" },
+          { "kind": "blank" },
+          { "kind": "prompt", "text": "<span class=\"keyword\">{</span>" },
+          { "kind": "output", "text": "<span class=\"string\">\"mcpServers\"</span>: {" },
+          { "kind": "output", "text": "  <span class=\"string\">\"video-engine\"</span>: {" },
+          { "kind": "output", "text": "    <span class=\"string\">\"command\"</span>: <span class=\"string\">\"node\"</span>," },
+          { "kind": "output", "text": "    <span class=\"string\">\"args\"</span>: [<span class=\"string\">\"dist/server.js\"</span>]," },
+          { "kind": "output", "text": "    <span class=\"string\">\"transport\"</span>: <span class=\"string\">\"stdio\"</span>" },
+          { "kind": "output", "text": "  }" },
+          { "kind": "output", "text": "}" },
+          { "kind": "prompt", "text": "<span class=\"keyword\">}</span>" },
+          { "kind": "blank" },
+          { "kind": "success", "text": "✓ MCP server registered — agent can now call video tools" }
+        ]
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-left",
+      "data": {
+        "heading": "Step 2: Ask the Agent",
+        "subheading": "Describe what you want. The agent builds the storyboard."
+      }
+    },
+    {
+      "type": "code-terminal",
+      "duration": 10,
+      "transition": "fade",
+      "data": {
+        "title": "Prompting the Agent to Generate a Video",
+        "shell": "Copilot Chat",
+        "lines": [
+          { "kind": "comment", "text": "You type a prompt to the agent:" },
+          { "kind": "blank" },
+          { "kind": "prompt", "text": "Create a 30-second video summarizing our Q2 pipeline review." },
+          { "kind": "prompt", "text": "Include a funnel chart, KPI scorecard, top risks, and action items." },
+          { "kind": "prompt", "text": "Use the microsoft theme." },
+          { "kind": "blank" },
+          { "kind": "comment", "text": "The agent calls list_scene_types, builds a storyboard, then:" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "→ Calling MCP tool: <span class=\"accent\">validate_storyboard</span>" },
+          { "kind": "success", "text": "  ✓ Valid — 6 scenes, 32s duration, 960 frames" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "→ Calling MCP tool: <span class=\"accent\">render_video</span>" },
+          { "kind": "output", "text": "  ⠋ Rendering scene 1/6: title-card..." },
+          { "kind": "output", "text": "  ⠙ Rendering scene 2/6: pipeline-funnel..." },
+          { "kind": "output", "text": "  ⠹ Rendering scene 3/6: kpi-scorecard..." },
+          { "kind": "output", "text": "  ⠸ Encoding H.264 MP4..." },
+          { "kind": "blank" },
+          { "kind": "success", "text": "  ✓ Video rendered: <span class=\"string\">/output/q2-pipeline-review.mp4</span>" },
+          { "kind": "success", "text": "    Duration: <span class=\"number\">32s</span> | Frames: <span class=\"number\">960</span> | Size: <span class=\"number\">1.4 MB</span>" }
+        ]
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-up",
+      "data": {
+        "heading": "What Comes Out",
+        "subheading": "The video the agent just rendered — scene by scene"
+      }
+    },
+    {
+      "type": "scene-showcase",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "title": "Sample Video Output",
+        "subtitle": "Each scene animates with spring physics, staggered entrances, and count-up numbers",
+        "cards": [
+          { "name": "Title Card", "description": "Branded intro with spring-scaled logo and sliding title", "icon": "🎬", "style": "bars" },
+          { "name": "Pipeline Funnel", "description": "Bars grow left-to-right with staggered spring easing", "icon": "📊", "style": "funnel" },
+          { "name": "KPI Scorecard", "description": "Numbers count up from zero with trend arrows", "icon": "📈", "style": "kpi" },
+          { "name": "Risk Callout", "description": "Cards slide in with severity color coding", "icon": "⚠️", "style": "risk" },
+          { "name": "Action Items", "description": "Numbered list with check-circle draw animation", "icon": "✅", "style": "table" },
+          { "name": "Closing", "description": "Branded outro with tagline and CTA", "icon": "🎯", "style": "timeline" }
+        ]
+      }
+    },
+
+    {
+      "type": "pipeline-funnel",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "stages": [
+          { "name": "Qualified", "count": 142, "value": "$28.4M" },
+          { "name": "Technical Win", "count": 87, "value": "$19.1M" },
+          { "name": "Proposal", "count": 34, "value": "$11.2M", "highlight": true },
+          { "name": "Negotiate", "count": 18, "value": "$7.8M" },
+          { "name": "Closed Won", "count": 9, "value": "$4.2M" }
+        ]
+      },
+      "notes": "Live demo of a pipeline funnel scene"
+    },
+    {
+      "type": "kpi-scorecard",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "kpis": [
+          { "label": "Pipeline Value", "value": "$28.4M", "trend": "up" },
+          { "label": "Win Rate", "value": 34, "unit": "%", "trend": "up", "animateCount": true },
+          { "label": "Avg Deal Size", "value": "$420K", "trend": "flat" },
+          { "label": "Days to Close", "value": 67, "trend": "down", "animateCount": true }
+        ]
+      }
+    },
+    {
+      "type": "chart-bar",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "title": "Revenue by Region — Animated Bar Chart",
+        "labels": ["Americas", "EMEA", "APAC", "LATAM"],
+        "datasets": [
+          { "label": "Q1", "values": [42, 28, 19, 8], "color": "#0078D4" },
+          { "label": "Q2", "values": [48, 31, 22, 11], "color": "#50E6FF" }
+        ],
+        "annotation": "Every bar, label, and value animates with GSAP spring physics"
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-left",
+      "data": {
+        "heading": "Under the Hood",
+        "subheading": "Playwright + GSAP timelines + ffmpeg"
+      }
+    },
+    {
+      "type": "code-terminal",
+      "duration": 9,
+      "transition": "fade",
+      "data": {
+        "title": "The Render Pipeline",
+        "shell": "showrunner",
+        "lines": [
+          { "kind": "comment", "text": "What happens when render_video is called:" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "1. <span class=\"accent\">Validate</span> storyboard against Zod schema" },
+          { "kind": "highlight", "text": "2. <span class=\"accent\">Resolve</span> theme CSS + scene HTML templates + GSAP bundle" },
+          { "kind": "highlight", "text": "3. <span class=\"accent\">Acquire</span> warm Playwright browser from pool" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "4. For each scene:" },
+          { "kind": "output", "text": "   Build HTML page → inject theme + GSAP + scene data" },
+          { "kind": "output", "text": "   Scene JS builds a <span class=\"accent\">paused GSAP timeline</span>" },
+          { "kind": "output", "text": "   For each frame: <span class=\"keyword\">window.__seek(progress)</span>" },
+          { "kind": "output", "text": "   GSAP scrubs all animations to that point" },
+          { "kind": "output", "text": "   Playwright captures screenshot → frame saved" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "5. <span class=\"accent\">ffmpeg</span> encodes frames → H.264 MP4" },
+          { "kind": "highlight", "text": "6. Return <span class=\"string\">{ path, duration, frames, fileSize }</span>" },
+          { "kind": "blank" },
+          { "kind": "success", "text": "✓ Deterministic — same input always produces same video" }
+        ]
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-left",
+      "data": {
+        "heading": "The Full Tool Surface",
+        "subheading": "Five MCP tools — discover, validate, preview, render"
+      }
+    },
+    {
+      "type": "table",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "title": "MCP Tools",
+        "columns": [
+          { "key": "tool", "label": "Tool", "width": "30%" },
+          { "key": "purpose", "label": "Purpose", "width": "45%" },
+          { "key": "output", "label": "Output", "width": "25%" }
+        ],
+        "rows": [
+          { "tool": "list_scene_types", "purpose": "Discover available scene types + schemas", "output": "JSON array" },
+          { "tool": "validate_storyboard", "purpose": "Dry-run validation", "output": "Errors / summary" },
+          { "tool": "preview_storyboard", "purpose": "Instant HTML preview (no ffmpeg)", "output": "HTML file" },
+          { "tool": "render_scene", "purpose": "Single scene → MP4 or GIF", "output": "MP4 / GIF" },
+          { "tool": "render_video", "purpose": "Full storyboard → MP4", "output": "MP4 file" }
+        ],
+        "highlightRows": [4]
+      }
+    },
+
+    {
+      "type": "comparison",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "title": "Deploy Anywhere",
+        "left": {
+          "label": "stdio (Local)",
+          "items": [
+            "Agent spawns node dist/server.js",
+            "Local Playwright + ffmpeg",
+            "File path on disk",
+            "~2s startup, great for dev"
+          ]
+        },
+        "right": {
+          "label": "HTTP/SSE (Azure)",
+          "items": [
+            "Agent connects via HTTPS",
+            "Containerized rendering",
+            "Blob Storage URL output",
+            "<1s warm start, scales out"
+          ]
+        }
+      }
+    },
+
+    {
+      "type": "quote-highlight",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "quote": "No Remotion. No subscription. No framework lock-in. Just Playwright frames and ffmpeg encoding.",
+        "attribution": "Showrunner — Design Principle",
+        "sentiment": "positive"
+      }
+    },
+    {
+      "type": "action-items",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "items": [
+          { "text": "Add the MCP server to your agent config", "priority": "high" },
+          { "text": "Call list_scene_types to discover what's available", "priority": "normal" },
+          { "text": "Prompt your agent: 'Make me a video of the Q2 review'", "priority": "normal" },
+          { "text": "Get back a polished MP4 — ready for Teams, email, or Slack", "priority": "high" }
+        ]
+      }
+    },
+    {
+      "type": "closing",
+      "duration": 4,
+      "transition": "fade",
+      "data": {
+        "tagline": "Structured data in. Polished video out.",
+        "cta": "github.com/showrunner",
+        "timestamp": "April 2026"
+      }
+    }
+  ]
+}

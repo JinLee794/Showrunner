@@ -1,0 +1,130 @@
+<div class="scene kpi-scorecard">
+  <div class="kpi-scorecard__grid">
+    {{#each data.kpis}}
+    <div class="kpi-scorecard__card">
+      <div class="kpi-scorecard__label">{{this.label}}</div>
+      <div class="kpi-scorecard__value" data-target="{{this.value}}">0</div>
+      {{#if this.unit}}
+      <div class="kpi-scorecard__unit">{{this.unit}}</div>
+      {{/if}}
+      {{#if this.trend}}
+      <div class="kpi-scorecard__trend kpi-scorecard__trend--{{this.trend}}">
+        {{#if (eq this.trend 'up')}}&#9650;{{/if}}
+        {{#if (eq this.trend 'down')}}&#9660;{{/if}}
+        {{#if (eq this.trend 'flat')}}&#9654;{{/if}}
+      </div>
+      {{/if}}
+      {{#if this.target}}
+      <div class="kpi-scorecard__target">Target: {{this.target}}</div>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<style>
+  .kpi-scorecard {
+    padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 10);
+  }
+
+  .kpi-scorecard__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: calc(var(--spacing-unit) * 4);
+    width: 100%;
+  }
+
+  .kpi-scorecard__card {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: calc(var(--spacing-unit) * 4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 1);
+    border-top: 3px solid var(--accent);
+  }
+
+  .kpi-scorecard__label {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .kpi-scorecard__value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    line-height: 1.1;
+  }
+
+  .kpi-scorecard__unit {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .kpi-scorecard__trend {
+    font-size: 1.2rem;
+    margin-top: calc(var(--spacing-unit) * 0.5);
+  }
+
+  .kpi-scorecard__trend--up { color: var(--status-on-track, #2ecc71); }
+  .kpi-scorecard__trend--down { color: var(--status-overdue, #e74c3c); }
+  .kpi-scorecard__trend--flat { color: var(--text-muted); }
+
+  .kpi-scorecard__target {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+
+    tl.from('.kpi-scorecard__card', {
+      y: 30,
+      opacity: 0,
+      scale: 0.95,
+      duration: 0.4,
+      stagger: 0.1,
+      ease: 'back.out(1.7)'
+    });
+
+    // Count-up animation for numeric values
+    var values = document.querySelectorAll('.kpi-scorecard__value');
+    values.forEach(function(el) {
+      var raw = el.getAttribute('data-target') || '0';
+      var target = parseFloat(raw);
+      if (!isNaN(target)) {
+        var obj = { val: 0 };
+        tl.to(obj, {
+          val: target,
+          duration: 0.8,
+          ease: 'power2.out',
+          onUpdate: function() {
+            el.textContent = Math.round(obj.val).toLocaleString();
+          }
+        }, '<');
+      } else {
+        el.textContent = raw;
+        tl.from(el, { opacity: 0, duration: 0.3 }, '<');
+      }
+    });
+
+    tl.from('.kpi-scorecard__trend', {
+      scale: 0,
+      opacity: 0,
+      duration: 0.3,
+      stagger: 0.1,
+      ease: 'back.out(2)'
+    }, '-=0.3');
+
+    tl.to({}, { duration: 0.3 });
+    return tl;
+  };
+</script>

@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "showrunner": {
+      "command": "node",
+      "args": ["dist/server.js"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

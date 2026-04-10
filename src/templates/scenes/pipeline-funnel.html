@@ -1,0 +1,171 @@
+<div class="scene pipeline-funnel">
+  <h2 class="scene-title pipeline-funnel__title">Pipeline Overview</h2>
+  <div class="pipeline-funnel__stages">
+    {{#each data.stages}}
+    <div class="pipeline-funnel__stage {{#if this.highlight}}pipeline-funnel__stage--highlight{{/if}}">
+      <div class="pipeline-funnel__label">{{this.name}}</div>
+      <div class="pipeline-funnel__bar-track">
+        <div class="pipeline-funnel__bar" data-width="{{this.widthPercent}}"></div>
+      </div>
+      <div class="pipeline-funnel__meta">
+        <span class="pipeline-funnel__count" data-target="{{this.count}}">0</span>
+        <span class="pipeline-funnel__value">{{this.value}}</span>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<style>
+  .pipeline-funnel {
+    align-items: flex-start;
+    padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 12);
+    gap: 0;
+  }
+
+  .pipeline-funnel__title {
+    align-self: flex-start;
+    margin-bottom: calc(var(--spacing-unit) * 5);
+  }
+
+  .pipeline-funnel__stages {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 3);
+  }
+
+  .pipeline-funnel__stage {
+    display: grid;
+    grid-template-columns: 180px 1fr 200px;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 3);
+  }
+
+  .pipeline-funnel__label {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    text-align: right;
+    font-weight: 500;
+  }
+
+  .pipeline-funnel__bar-track {
+    width: 100%;
+    height: 40px;
+    background: var(--bg-tertiary);
+    border-radius: var(--border-radius-sm);
+    overflow: hidden;
+  }
+
+  .pipeline-funnel__bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+    border-radius: var(--border-radius-sm);
+    transform-origin: left center;
+  }
+
+  .pipeline-funnel__stage--highlight .pipeline-funnel__bar {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .pipeline-funnel__meta {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 2);
+    align-items: baseline;
+  }
+
+  .pipeline-funnel__count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+  }
+
+  .pipeline-funnel__value {
+    font-size: 1rem;
+    color: var(--text-secondary);
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    const tl = gsap.timeline({ paused: true });
+
+    // Title entrance
+    tl.from('.pipeline-funnel__title', {
+      y: 30,
+      opacity: 0,
+      duration: 0.4,
+      ease: 'back.out(1.7)'
+    });
+
+    // Set bar widths from data attributes
+    document.querySelectorAll('.pipeline-funnel__bar').forEach(function(bar) {
+      var w = bar.getAttribute('data-width') || '50';
+      bar.style.width = w + '%';
+    });
+
+    // Bars grow left-to-right
+    tl.from('.pipeline-funnel__bar', {
+      scaleX: 0,
+      duration: 0.6,
+      stagger: 0.08,
+      ease: 'power3.out'
+    }, '-=0.1');
+
+    // Labels fade in alongside bars
+    tl.from('.pipeline-funnel__label', {
+      opacity: 0,
+      x: -10,
+      duration: 0.3,
+      stagger: 0.08,
+      ease: 'power2.out'
+    }, '<');
+
+    // Count-up animation for numbers
+    var counts = document.querySelectorAll('.pipeline-funnel__count');
+    counts.forEach(function(el) {
+      var target = parseInt(el.getAttribute('data-target') || '0', 10);
+      el._target = target;
+    });
+
+    tl.from('.pipeline-funnel__count', {
+      textContent: 0,
+      duration: 0.8,
+      stagger: 0.08,
+      ease: 'power2.out',
+      snap: { textContent: 1 },
+      onUpdate: function() {
+        counts.forEach(function(el) {
+          var val = Math.round(parseFloat(el.textContent) / el._target * el._target);
+          el.textContent = Number(el.textContent).toLocaleString();
+        });
+      }
+    }, '-=0.4');
+
+    // Values fade in
+    tl.from('.pipeline-funnel__value', {
+      opacity: 0,
+      duration: 0.3,
+      stagger: 0.08,
+      ease: 'power2.out'
+    }, '-=0.6');
+
+    // Highlight pulse for highlighted stages
+    var highlighted = document.querySelectorAll('.pipeline-funnel__stage--highlight .pipeline-funnel__bar');
+    if (highlighted.length > 0) {
+      tl.to(highlighted, {
+        boxShadow: '0 0 30px var(--accent-glow)',
+        duration: 0.3,
+        ease: 'power2.inOut',
+        yoyo: true,
+        repeat: 1
+      });
+    }
+
+    // Hold
+    tl.to({}, { duration: 0.3 });
+
+    return tl;
+  };
+</script>
