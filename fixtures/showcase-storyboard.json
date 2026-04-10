@@ -1,0 +1,489 @@
+{
+  "title": "Showrunner — Onboarding & Art of the Possible",
+  "theme": "microsoft",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "branding": {
+    "accent": "#0078D4"
+  },
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "title": "Showrunner",
+        "subtitle": "An MCP server that turns structured data into cinematic MP4 videos",
+        "date": "April 2026",
+        "presenter": "Onboarding & Capabilities Showcase"
+      },
+      "notes": "Opening — set the stage for what this tool is"
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-left",
+      "data": {
+        "heading": "Why Showrunner?",
+        "subheading": "Your AI agents produce data. Your stakeholders consume video."
+      }
+    },
+
+    {
+      "type": "comparison",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "title": "The Gap Between Agents and Audiences",
+        "left": {
+          "label": "What Agents Output Today",
+          "items": [
+            "JSON payloads nobody opens",
+            "Markdown tables lost in chat",
+            "Static PNGs with no narrative",
+            "PDFs that sit unread in SharePoint"
+          ]
+        },
+        "right": {
+          "label": "What Showrunner Delivers",
+          "items": [
+            "Animated MP4 with pacing & flow",
+            "Charts that build themselves on screen",
+            "Code walkthroughs with syntax color",
+            "One JSON storyboard → polished video"
+          ]
+        }
+      },
+      "notes": "Establish the problem-solution framing"
+    },
+
+    {
+      "type": "quote-highlight",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "quote": "The best way to communicate data is to turn it into a story — with motion, pacing, and visual hierarchy.",
+        "attribution": "Showrunner Design Philosophy",
+        "sentiment": "positive"
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-up",
+      "data": {
+        "heading": "Getting Started",
+        "subheading": "Three steps: configure → prompt → render"
+      }
+    },
+
+    {
+      "type": "code-terminal",
+      "duration": 8,
+      "transition": "fade",
+      "data": {
+        "title": "Step 1 — Add the MCP Server",
+        "shell": "~/.config/mcp.json",
+        "lines": [
+          { "kind": "comment", "text": "Register Showrunner in your agent's MCP config:" },
+          { "kind": "blank" },
+          { "kind": "prompt", "text": "<span class=\"keyword\">{</span>" },
+          { "kind": "output", "text": "  <span class=\"string\">\"mcpServers\"</span>: {" },
+          { "kind": "output", "text": "    <span class=\"string\">\"showrunner\"</span>: {" },
+          { "kind": "output", "text": "      <span class=\"string\">\"command\"</span>: <span class=\"string\">\"node\"</span>," },
+          { "kind": "output", "text": "      <span class=\"string\">\"args\"</span>: [<span class=\"string\">\"dist/server.js\"</span>]," },
+          { "kind": "output", "text": "      <span class=\"string\">\"transport\"</span>: <span class=\"string\">\"stdio\"</span>" },
+          { "kind": "output", "text": "    }" },
+          { "kind": "output", "text": "  }" },
+          { "kind": "prompt", "text": "<span class=\"keyword\">}</span>" },
+          { "kind": "blank" },
+          { "kind": "success", "text": "✓ That's it — your agent can now produce videos" }
+        ]
+      },
+      "notes": "Show how trivial setup is"
+    },
+
+    {
+      "type": "code-terminal",
+      "duration": 10,
+      "transition": "fade",
+      "data": {
+        "title": "Step 2 — Prompt Your Agent",
+        "shell": "Copilot Chat",
+        "lines": [
+          { "kind": "comment", "text": "Talk to your agent in natural language:" },
+          { "kind": "blank" },
+          { "kind": "prompt", "text": "Create a 45-second video recap of our sprint." },
+          { "kind": "prompt", "text": "Show KPIs, a burndown chart, top risks, and action items." },
+          { "kind": "prompt", "text": "Use the microsoft theme." },
+          { "kind": "blank" },
+          { "kind": "comment", "text": "The agent discovers scene types, builds a storyboard, then renders:" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "→ <span class=\"accent\">list_scene_types</span>  ← discover what's available" },
+          { "kind": "highlight", "text": "→ <span class=\"accent\">validate_storyboard</span>  ← dry-run check" },
+          { "kind": "success", "text": "  ✓ Valid — 8 scenes, 44s, 1320 frames" },
+          { "kind": "highlight", "text": "→ <span class=\"accent\">render_video</span>  ← full render pipeline" },
+          { "kind": "output", "text": "  ⠋ Rendering scene 1/8: title-card ..." },
+          { "kind": "output", "text": "  ⠙ Rendering scene 4/8: chart-bar ..." },
+          { "kind": "output", "text": "  ⠸ Encoding H.264 MP4 ..." },
+          { "kind": "blank" },
+          { "kind": "success", "text": "  ✓ Done — <span class=\"string\">/output/sprint-recap.mp4</span>" },
+          { "kind": "success", "text": "    44s | 1320 frames | 2.1 MB" }
+        ]
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-left",
+      "data": {
+        "heading": "Scene Types — Live Demos",
+        "subheading": "Every scene you're about to see was rendered by Showrunner itself"
+      }
+    },
+
+    {
+      "type": "scene-showcase",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "title": "17 Built-In Scene Types",
+        "subtitle": "Each one animates with GSAP spring physics, staggered entrances, and polished easing",
+        "cards": [
+          { "name": "Title Card", "description": "Branded intro with spring-scaled entrance", "icon": "🎬", "style": "bars" },
+          { "name": "Section Header", "description": "Chapter dividers with slide transitions", "icon": "📑", "style": "timeline" },
+          { "name": "Code Terminal", "description": "Syntax-colored lines typing in sequentially", "icon": "💻", "style": "risk" },
+          { "name": "Chart — Bar", "description": "Multi-dataset bars with animated growth", "icon": "📊", "style": "bars" },
+          { "name": "KPI Scorecard", "description": "Count-up numbers with trend indicators", "icon": "📈", "style": "kpi" },
+          { "name": "Pipeline Funnel", "description": "Stage-by-stage pipeline visualization", "icon": "🔻", "style": "funnel" },
+          { "name": "Comparison", "description": "Side-by-side pro/con or before/after", "icon": "⚖️", "style": "table" },
+          { "name": "Table", "description": "Row-staggered data tables", "icon": "📋", "style": "table" },
+          { "name": "Timeline", "description": "Milestones with status indicators", "icon": "🗓️", "style": "timeline" },
+          { "name": "Quote", "description": "Pull-quote with attribution", "icon": "💬", "style": "kpi" },
+          { "name": "Action Items", "description": "Checklist with priority badges", "icon": "✅", "style": "table" },
+          { "name": "Closing", "description": "Branded outro with CTA", "icon": "🎯", "style": "timeline" }
+        ]
+      },
+      "notes": "Overview card grid of all available scene types"
+    },
+
+    {
+      "type": "section-header",
+      "duration": 2,
+      "transition": "slide-up",
+      "data": {
+        "heading": "📊 Charts That Build Themselves",
+        "subheading": "Watch bars, values, and labels animate in with spring easing"
+      }
+    },
+
+    {
+      "type": "chart-bar",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "title": "Engineering Velocity — Commits per Sprint",
+        "labels": ["Sprint 21", "Sprint 22", "Sprint 23", "Sprint 24", "Sprint 25"],
+        "datasets": [
+          { "label": "Features", "values": [34, 41, 38, 52, 61], "color": "#0078D4" },
+          { "label": "Bug Fixes", "values": [12, 8, 15, 9, 6], "color": "#50E6FF" }
+        ],
+        "annotation": "Multi-dataset bar charts with per-bar spring animations"
+      },
+      "animation": { "stagger": 0.06, "easing": "spring" },
+      "notes": "Live demo of animated bar chart"
+    },
+
+    {
+      "type": "kpi-scorecard",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "kpis": [
+          { "label": "Sprint Velocity", "value": 67, "unit": "pts", "trend": "up", "animateCount": true },
+          { "label": "Cycle Time", "value": 3.2, "unit": "days", "trend": "down", "animateCount": true },
+          { "label": "Deploy Frequency", "value": 14, "unit": "/wk", "trend": "up", "animateCount": true },
+          { "label": "Incident Rate", "value": 0.4, "unit": "%", "trend": "down", "animateCount": true }
+        ]
+      },
+      "notes": "KPI cards with count-up animation and trend arrows"
+    },
+
+    {
+      "type": "section-header",
+      "duration": 2,
+      "transition": "slide-left",
+      "data": {
+        "heading": "💻 Code That Types Itself",
+        "subheading": "Syntax-highlighted terminal animations for walkthroughs and demos"
+      }
+    },
+
+    {
+      "type": "code-terminal",
+      "duration": 9,
+      "transition": "fade",
+      "data": {
+        "title": "Building a Storyboard Programmatically",
+        "shell": "node",
+        "lines": [
+          { "kind": "comment", "text": "Use the SDK to build storyboards in your agent:" },
+          { "kind": "blank" },
+          { "kind": "prompt", "text": "<span class=\"keyword\">import</span> { StoryboardSchema } <span class=\"keyword\">from</span> <span class=\"string\">'showrunner'</span>;" },
+          { "kind": "blank" },
+          { "kind": "prompt", "text": "<span class=\"keyword\">const</span> storyboard = StoryboardSchema.<span class=\"accent\">parse</span>({" },
+          { "kind": "output", "text": "  title: <span class=\"string\">'Q2 Pipeline Review'</span>," },
+          { "kind": "output", "text": "  theme: <span class=\"string\">'microsoft'</span>," },
+          { "kind": "output", "text": "  scenes: [" },
+          { "kind": "output", "text": "    { type: <span class=\"string\">'title-card'</span>, duration: <span class=\"number\">5</span>, data: { ... } }," },
+          { "kind": "output", "text": "    { type: <span class=\"string\">'chart-bar'</span>, duration: <span class=\"number\">7</span>, data: { ... } }," },
+          { "kind": "output", "text": "    { type: <span class=\"string\">'kpi-scorecard'</span>, duration: <span class=\"number\">6</span>, data: { ... } }," },
+          { "kind": "output", "text": "  ]" },
+          { "kind": "output", "text": "});" },
+          { "kind": "blank" },
+          { "kind": "success", "text": "✓ Zod validates every field — type-safe at build time" }
+        ]
+      },
+      "notes": "Show the programmatic API with syntax highlighting"
+    },
+
+    {
+      "type": "code-terminal",
+      "duration": 8,
+      "transition": "fade",
+      "data": {
+        "title": "The Rendering Pipeline — Under the Hood",
+        "shell": "showrunner internals",
+        "lines": [
+          { "kind": "comment", "text": "What happens when you call render_video:" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "1. <span class=\"accent\">Parse</span> — Validate storyboard against Zod schema" },
+          { "kind": "highlight", "text": "2. <span class=\"accent\">Resolve</span> — Load theme CSS + HTML templates + GSAP bundle" },
+          { "kind": "highlight", "text": "3. <span class=\"accent\">Pool</span> — Acquire warm Chromium from browser pool" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "4. <span class=\"accent\">For each scene:</span>" },
+          { "kind": "output", "text": "   → Inject data into Handlebars template" },
+          { "kind": "output", "text": "   → Scene JS builds a <span class=\"accent\">paused GSAP timeline</span>" },
+          { "kind": "output", "text": "   → For each frame: <span class=\"keyword\">window.__seek(t)</span>" },
+          { "kind": "output", "text": "   → GSAP scrubs all animations to time t" },
+          { "kind": "output", "text": "   → Playwright captures screenshot → PNG frame" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "5. <span class=\"accent\">Encode</span> — ffmpeg assembles frames → H.264 MP4" },
+          { "kind": "highlight", "text": "6. <span class=\"accent\">Return</span> — { path, duration, frames, fileSize }" },
+          { "kind": "blank" },
+          { "kind": "success", "text": "✓ Deterministic — same input always produces same output" }
+        ]
+      },
+      "notes": "Technical deep-dive into the architecture"
+    },
+
+    {
+      "type": "section-header",
+      "duration": 2,
+      "transition": "slide-left",
+      "data": {
+        "heading": "🔻 Funnel & Pipeline Scenes",
+        "subheading": "Visualize sales pipelines, conversion funnels, and stage progressions"
+      }
+    },
+
+    {
+      "type": "pipeline-funnel",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "stages": [
+          { "name": "Awareness", "count": 10000, "value": "10K visitors" },
+          { "name": "Interest", "count": 3200, "value": "32% engaged" },
+          { "name": "Evaluation", "count": 840, "value": "840 trials", "highlight": true },
+          { "name": "Commitment", "count": 210, "value": "210 deals" },
+          { "name": "Closed Won", "count": 126, "value": "$2.4M ARR" }
+        ]
+      },
+      "animation": { "stagger": 0.1, "easing": "spring" },
+      "notes": "Pipeline funnel with spring-animated bars"
+    },
+
+    {
+      "type": "section-header",
+      "duration": 2,
+      "transition": "slide-up",
+      "data": {
+        "heading": "🗓️ Timelines & Milestones",
+        "subheading": "Track project milestones with status-colored indicators"
+      }
+    },
+
+    {
+      "type": "milestone-timeline",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "milestones": [
+          { "name": "MCP Server Scaffolded", "due": "Mar 15", "status": "completed", "owner": "Platform Team", "note": "stdio + HTTP transport ready" },
+          { "name": "Scene Templates Built", "due": "Mar 25", "status": "completed", "owner": "Design", "note": "17 scene types shipped" },
+          { "name": "GSAP Animation Engine", "due": "Apr 1", "status": "completed", "owner": "Motion Eng", "note": "Spring physics + stagger" },
+          { "name": "Azure Blob Output", "due": "Apr 10", "status": "on-track", "owner": "Cloud Infra" },
+          { "name": "Container Deployment", "due": "Apr 20", "status": "on-track", "owner": "DevOps" },
+          { "name": "GA Release", "due": "May 1", "status": "at-risk", "owner": "PM" }
+        ]
+      },
+      "notes": "Timeline with status-colored dots"
+    },
+
+    {
+      "type": "section-header",
+      "duration": 2,
+      "transition": "slide-left",
+      "data": {
+        "heading": "📋 Tables & Data",
+        "subheading": "Staggered row animations make tabular data engaging"
+      }
+    },
+
+    {
+      "type": "table",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "title": "MCP Tool Surface — Five Tools, Full Control",
+        "columns": [
+          { "key": "tool", "label": "Tool", "width": "28%" },
+          { "key": "purpose", "label": "What It Does", "width": "42%" },
+          { "key": "output", "label": "Returns", "width": "30%" }
+        ],
+        "rows": [
+          { "tool": "list_scene_types", "purpose": "Discover all 17 scene types and their data schemas", "output": "JSON schema array" },
+          { "tool": "validate_storyboard", "purpose": "Dry-run validation — catch errors before rendering", "output": "Errors or summary" },
+          { "tool": "preview_storyboard", "purpose": "Instant HTML preview (no ffmpeg needed)", "output": "HTML file path" },
+          { "tool": "render_scene", "purpose": "Render a single scene as MP4 or GIF", "output": "MP4 / GIF file" },
+          { "tool": "render_video", "purpose": "Full storyboard → production MP4 with transitions", "output": "MP4 file path" }
+        ],
+        "highlightRows": [4]
+      },
+      "notes": "The five MCP tools with row stagger animation"
+    },
+
+    {
+      "type": "section-header",
+      "duration": 2,
+      "transition": "slide-up",
+      "data": {
+        "heading": "⚖️ Deployment Options",
+        "subheading": "Run locally or deploy to the cloud — same storyboard, same output"
+      }
+    },
+
+    {
+      "type": "comparison",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "title": "Local vs Cloud Deployment",
+        "left": {
+          "label": "stdio — Local Dev",
+          "items": [
+            "Agent spawns node dist/server.js",
+            "Local Playwright + ffmpeg",
+            "Output: file path on disk",
+            "~2s startup — great for iteration"
+          ]
+        },
+        "right": {
+          "label": "HTTP/SSE — Azure",
+          "items": [
+            "Agent connects over HTTPS",
+            "Containerized Chromium + ffmpeg",
+            "Output: Blob Storage URL",
+            "<1s warm start — scales to N agents"
+          ]
+        }
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 2,
+      "transition": "slide-left",
+      "data": {
+        "heading": "🎨 Art of the Possible",
+        "subheading": "Use cases your agents can produce today"
+      }
+    },
+
+    {
+      "type": "chart-bar",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "title": "Use Cases by Persona — Who Benefits Most",
+        "labels": ["Account Teams", "Engineering", "Leadership", "Marketing", "Customer Success"],
+        "datasets": [
+          { "label": "Time Saved (hrs/wk)", "values": [6, 4, 3, 5, 4], "color": "#0078D4" },
+          { "label": "Videos Generated", "values": [12, 8, 4, 10, 7], "color": "#50E6FF" }
+        ],
+        "annotation": "Every team that produces recurring updates can benefit"
+      },
+      "notes": "Chart showing broad applicability"
+    },
+
+    {
+      "type": "scene-showcase",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "title": "What Agents Can Build With Showrunner",
+        "subtitle": "Any agent with MCP access can produce these — no human editing required",
+        "cards": [
+          { "name": "Pipeline Reviews", "description": "Weekly pipeline walkthroughs with funnel charts and KPIs", "icon": "📈", "style": "funnel" },
+          { "name": "Sprint Recaps", "description": "Burndown charts, velocity, and action items", "icon": "🏃", "style": "bars" },
+          { "name": "Incident Reports", "description": "Timeline of events with severity and resolution", "icon": "🚨", "style": "risk" },
+          { "name": "Onboarding Videos", "description": "Code walkthroughs with syntax highlighting", "icon": "🎓", "style": "timeline" },
+          { "name": "Executive Briefings", "description": "KPI scorecards with trend indicators for leadership", "icon": "👔", "style": "kpi" },
+          { "name": "Release Notes", "description": "Feature showcases with comparison views", "icon": "🚀", "style": "table" }
+        ]
+      }
+    },
+
+    {
+      "type": "action-items",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "items": [
+          { "text": "Add Showrunner to your agent's MCP server config", "owner": "You", "priority": "high" },
+          { "text": "Run list_scene_types to explore what's available", "owner": "You", "priority": "normal" },
+          { "text": "Prompt: 'Make a video of our Q2 pipeline review'", "owner": "Your Agent", "priority": "normal" },
+          { "text": "Share the MP4 in Teams, Slack, or email — no player needed", "owner": "You", "priority": "normal" },
+          { "text": "Automate recurring videos with scheduled agent runs", "owner": "Platform Team", "priority": "high" }
+        ]
+      },
+      "notes": "Clear next steps for the viewer"
+    },
+
+    {
+      "type": "quote-highlight",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "quote": "No Remotion. No After Effects. No subscriptions. Just Playwright frames, GSAP timelines, and ffmpeg.",
+        "attribution": "Showrunner — Zero-Dependency Philosophy",
+        "sentiment": "positive"
+      }
+    },
+
+    {
+      "type": "closing",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "tagline": "Structured data in. Polished video out.",
+        "cta": "github.com/JinLee794/Showrunner",
+        "timestamp": "April 2026 — Built with Showrunner v1.0"
+      }
+    }
+  ]
+}

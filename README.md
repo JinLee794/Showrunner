@@ -5,6 +5,12 @@
   <p>
     <code>MCP stdio</code> for local dev &nbsp;·&nbsp; <code>MCP HTTP</code> for Azure &nbsp;·&nbsp; same tools, same storyboard
   </p>
+  <br/>
+  <a href="docs/assets/showrunner-showcase.mp4">
+    <img src="docs/assets/showrunner-showcase.gif" alt="Showrunner showcase video" width="640" />
+  </a>
+  <br/>
+  <sub>▶ Click for full video</sub>
 </div>
 
 ---
@@ -119,6 +125,7 @@ Agent config:
 | Tool | Description | Returns |
 |---|---|---|
 | `render_video` | Render a full storyboard to MP4 | `{ path, duration, frames, fileSize }` |
+| `render_gif` | Render a storyboard to animated GIF with speed/size control | `{ path, duration, frames, fileSize }` |
 | `render_scene` | Render a single scene to MP4/GIF | `{ path }` |
 | `preview_storyboard` | Generate interactive HTML preview (no Playwright/ffmpeg) | `{ path }` |
 | `validate_storyboard` | Dry-run validation with error reporting | `{ valid, errors?, summary? }` |

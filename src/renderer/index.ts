@@ -8,7 +8,7 @@ import Handlebars from 'handlebars';
 import type { Storyboard, Scene, RenderQuality, RenderResult } from '../types/index.js';
 import { BrowserPool } from './browser-pool.js';
 import { captureFrames } from './frame-capture.js';
-import { encodeVideo } from './encoder.js';
+import { encodeVideo, encodeGif } from './encoder.js';
 import { getGsapBundle } from '../motion/gsap-bundle.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -272,6 +272,96 @@ export class Renderer {
         path: options.outputPath,
         duration: scene.duration,
         frames: result.frameCount,
+        fileSize: stats.size,
+      };
+    } finally {
+      await this.pool.release(context);
+      await rm(tempBase, { recursive: true, force: true }).catch(() => {});
+    }
+  }
+
+  /**
+   * Render a full storyboard to animated GIF.
+   */
+  async renderGif(
+    storyboard: Storyboard,
+    outputPath: string,
+    options: {
+      quality?: RenderQuality;
+      gifWidth?: number;
+      speed?: number;
+      maxColors?: number;
+    } = {}
+  ): Promise<RenderResult> {
+    const fps = storyboard.fps ?? 30;
+    const [width, height] = storyboard.resolution ?? [1920, 1080];
+    const theme = storyboard.theme ?? 'corporate-dark';
+    const quality = options.quality ?? 'medium';
+
+    const themeCSS = loadThemeCSS(theme);
+    const gsapBundle = getGsapBundle();
+    const renderSessionId = randomUUID();
+    const tempBase = join(tmpdir(), `avengine-gif-${renderSessionId}`);
+    await mkdir(tempBase, { recursive: true });
+
+    const context = await this.pool.acquire();
+    let totalFrameCount = 0;
+    let totalDuration = 0;
+
+    try {
+      const sceneDirs: Array<{ dir: string; pattern: string; count: number; duration: number }> = [];
+
+      for (let i = 0; i < storyboard.scenes.length; i++) {
+        const scene = storyboard.scenes[i]!;
+        const sceneHTML = buildSceneHTML(scene, themeCSS, gsapBundle, width, height);
+        const sceneDir = join(tempBase, `scene-${i}`);
+
+        const result = await captureFrames(context, {
+          html: sceneHTML,
+          width,
+          height,
+          fps,
+          duration: scene.duration,
+          quality,
+          outputDir: sceneDir,
+          framePrefix: `scene${i}`,
+        });
+
+        sceneDirs.push({
+          dir: result.frameDir,
+          pattern: result.framePattern,
+          count: result.frameCount,
+          duration: scene.duration,
+        });
+
+        totalFrameCount += result.frameCount;
+        totalDuration += scene.duration;
+      }
+
+      const mergedDir = join(tempBase, 'merged');
+      await mkdir(mergedDir, { recursive: true });
+      await mergeFrames(sceneDirs, mergedDir);
+
+      const mergedPattern = `frame-%06d.${quality === 'high' ? 'png' : 'jpeg'}`;
+
+      await encodeGif({
+        frameDir: mergedDir,
+        framePattern: mergedPattern,
+        fps,
+        width,
+        height,
+        outputPath,
+        gifWidth: options.gifWidth,
+        speed: options.speed,
+        maxColors: options.maxColors,
+      });
+
+      const stats = statSync(outputPath);
+
+      return {
+        path: outputPath,
+        duration: totalDuration,
+        frames: totalFrameCount,
         fileSize: stats.size,
       };
     } finally {

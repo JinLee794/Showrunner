@@ -10,6 +10,7 @@ import { handleRenderScene, renderSceneTool } from './tools/render-scene.js';
 import { handleValidateStoryboard, validateStoryboardTool } from './tools/validate-storyboard.js';
 import { handlePreviewStoryboard, previewStoryboardTool } from './tools/preview-storyboard.js';
 import { handleListSceneTypes, listSceneTypesTool } from './tools/list-scene-types.js';
+import { handleRenderGif, renderGifTool } from './tools/render-gif.js';
 
 const pool = new BrowserPool();
 const renderer = new Renderer(pool);
@@ -65,6 +66,21 @@ function createServer(): McpServer {
       outputPath: z.string().optional(),
     },
     async (args) => handlePreviewStoryboard(args)
+  );
+
+  // render_gif
+  server.tool(
+    renderGifTool.name,
+    renderGifTool.description,
+    {
+      storyboard: z.record(z.unknown()),
+      outputPath: z.string().optional(),
+      quality: z.enum(['high', 'medium', 'fast']).optional(),
+      width: z.number().optional(),
+      speed: z.number().optional(),
+      maxColors: z.number().optional(),
+    },
+    async (args) => handleRenderGif(args, renderer)
   );
 
   // list_scene_types

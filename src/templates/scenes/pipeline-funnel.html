@@ -1,5 +1,5 @@
 <div class="scene pipeline-funnel">
-  <h2 class="scene-title pipeline-funnel__title">Pipeline Overview</h2>
+  <h2 class="scene-title pipeline-funnel__title">{{#if data.title}}{{data.title}}{{else}}Pipeline Overview{{/if}}</h2>
   <div class="pipeline-funnel__stages">
     {{#each data.stages}}
     <div class="pipeline-funnel__stage {{#if this.highlight}}pipeline-funnel__stage--highlight{{/if}}">
@@ -124,24 +124,19 @@
 
     // Count-up animation for numbers
     var counts = document.querySelectorAll('.pipeline-funnel__count');
-    counts.forEach(function(el) {
+    var countStart = Math.max(0, tl.duration() - 0.4);
+    counts.forEach(function(el, i) {
       var target = parseInt(el.getAttribute('data-target') || '0', 10);
-      el._target = target;
+      var obj = { val: 0 };
+      tl.to(obj, {
+        val: target,
+        duration: 0.8,
+        ease: 'power2.out',
+        onUpdate: function() {
+          el.textContent = Math.round(obj.val).toLocaleString();
+        }
+      }, countStart + i * 0.08);
     });
-
-    tl.from('.pipeline-funnel__count', {
-      textContent: 0,
-      duration: 0.8,
-      stagger: 0.08,
-      ease: 'power2.out',
-      snap: { textContent: 1 },
-      onUpdate: function() {
-        counts.forEach(function(el) {
-          var val = Math.round(parseFloat(el.textContent) / el._target * el._target);
-          el.textContent = Number(el.textContent).toLocaleString();
-        });
-      }
-    }, '-=0.4');
 
     // Values fade in
     tl.from('.pipeline-funnel__value', {

@@ -1,8 +1,17 @@
 # Showrunner — Product Spec
 
 > An MCP server for programmatic video generation.
-> Any agent sends a storyboard JSON, gets back an MP4 with Remotion-quality motion.
-> Runs locally via stdio or remotely via Azure Function App — same tools, same storyboard.
+> Target state: any agent sends a storyboard JSON and gets back a polished video artifact.
+> Current state: a working local MP4 renderer with a smaller feature surface than the surrounding docs currently claim.
+
+## Status
+
+This document mixes two things:
+
+- The product vision for Showrunner.
+- The current implementation reality in this repo.
+
+Right now, the implementation is a capable prototype with a real render loop, not a finished platform. The renderer works. The surrounding product surface is ahead of the code. This spec now calls that out explicitly so the roadmap is driven by facts instead of launch-copy momentum.
 
 ## Problem
 
@@ -59,7 +68,143 @@ The calling agent assembles a **storyboard** (declarative JSON). This engine val
 
 ---
 
+## Reality Check
+
+The repo is strongest at one thing: taking supported HTML scene templates, scrubbing GSAP timelines frame-by-frame in Playwright, and encoding the results into an MP4. Everything around that core is uneven. The fast roast version is: the codebase built a solid engine, then dressed it up like the rest of the car had already been assembled.
+
+The spec and README have been promising the future tense in the present tense. That drift is now product debt.
+
+### Current Gap Register
+
+| Area | What the docs imply | What the repo actually does today | Priority |
+|---|---|---|---|
+| Public contract parity | The public surface reads like a complete product | The repo is a prototype with a narrower supported path than the docs advertise | P0 |
+| Scene catalog parity | All listed scene types are renderable | Multiple scene types are present in the schema but have no matching template implementation (`risk-callout`, `deal-team`, `chart-line`, `chart-donut`) | P0 |
+| Theme parity | Four built-in themes plus custom branding are available | Only `corporate-dark` and `microsoft` ship as real theme files | P0 |
+| Validation parity | Rendering is protected by the full storyboard and scene-specific contracts | Only `validate_storyboard` runs per-scene data validation; the actual render and preview paths mostly rely on broad schemas and can fail later | P0 |
+| Tool contract parity | `render_scene` supports multiple output formats and transport-aware outputs | Current handlers only render local MP4s; Blob output is a placeholder and format selection is not wired through | P0 |
+| Transition parity | Transitions are overlap-rendered and composited | Transition helpers exist, but the main render pipeline does not perform the compositing flow described elsewhere in this spec | P1 |
+| Preview architecture | Preview mode is the fast, safe mirror of runtime behavior | Preview duplicates preprocessing logic and executes scene scripts via `eval`, which is brittle and hard to reason about | P1 |
+| Testing story | The project is backed by renderer, schema, and template tests | `npm test` exists, but there are currently no test files in the repo | P0 |
+| Build and packaging | Asset handling is production-ready | The build is TypeScript plus manual directory copies, which is workable but fragile as the surface area grows | P2 |
+
+### Recovery Goals
+
+1. Make every public claim either true in code or explicitly marked as planned.
+2. Ensure the render path validates the same contracts the validation tool validates.
+3. Reduce the supported surface to what can be tested, then grow it back intentionally.
+4. Stop shipping placeholders as if they are features.
+
+### Recovery Workstreams
+
+#### W1. Spec and README truth pass
+
+Problem:
+The current docs market the destination as if it is already the current release.
+
+Required changes:
+- Mark target-state sections as planned where needed.
+- Remove or qualify unsupported claims about themes, scene types, transitions, output modes, and formats.
+- Align tool docs with actual handler behavior.
+
+Acceptance criteria:
+- A new contributor can read the README and spec without being misled about what works today.
+- No unsupported scene type, theme, output mode, or format is described as currently available.
+- The documented tool contracts match the shipped MCP handlers.
+
+#### W2. Enforce validation on the real render path
+
+Problem:
+Validation is currently strongest in the one tool that does not render anything.
+
+Required changes:
+- Reuse scene-type validation in `render_video`, `render_scene`, and `preview_storyboard`.
+- Fail early with actionable errors before template loading or frame capture begins.
+- Add fixture coverage for valid and invalid storyboards.
+
+Acceptance criteria:
+- Invalid scene data is rejected before rendering starts.
+- Validation error messages identify the scene index, scene type, and failing field.
+- `validate_storyboard` and the render tools accept and reject the same inputs.
+
+#### W3. Close schema/template/theme drift
+
+Problem:
+The schema advertises a broader scene and theme catalog than the repo actually implements.
+
+Required changes:
+- Either implement the missing scene templates and themes or remove them from the supported enum and docs until they exist.
+- Add a parity check that asserts schema entries map to actual templates and themes.
+- Decide whether `custom` branding is a supported theme mode or still planned work.
+
+Acceptance criteria:
+- Every supported scene type has a template, validation schema, and example fixture coverage.
+- Every supported theme resolves to a real file.
+- Unsupported options fail with explicit messages instead of surfacing later as missing files.
+
+#### W4. Bring tool contracts back under control
+
+Problem:
+The spec describes a richer tool interface than the handlers actually honor.
+
+Required changes:
+- Decide whether `render_scene` genuinely supports `gif` and `png-sequence`; if not, cut those claims for now.
+- Either implement output strategies in the transport layer or document local-path-only behavior until remote output exists.
+- Remove placeholder abstractions from public promises until they are wired into the runtime.
+
+Acceptance criteria:
+- Every advertised tool argument changes runtime behavior in a tested way.
+- Remote output is either implemented end-to-end or documented as future work.
+- There are no placeholder classes described as production behavior.
+
+#### W5. Finish or cut transitions
+
+Problem:
+Transition behavior is documented in detail, but the render pipeline still behaves like sequential scene concatenation.
+
+Required changes:
+- Implement overlap rendering and compositing, or narrow the current transition contract to `cut` only.
+- Add visual smoke tests or snapshot checks for the supported transitions.
+- Keep the transition docs tied to what is actually executable.
+
+Acceptance criteria:
+- Supported transitions produce visibly distinct output in a fixture render.
+- Unsupported transitions are rejected or omitted from the public contract.
+- Transition helpers are either integrated or removed.
+
+#### W6. Harden preview mode
+
+Problem:
+Preview is useful, but it currently mirrors runtime behavior through duplicated logic and dynamic script evaluation.
+
+Required changes:
+- Extract shared scene preprocessing so preview and render use the same code path.
+- Remove or isolate `eval`-driven execution where possible.
+- Add smoke coverage ensuring preview loads every supported scene type.
+
+Acceptance criteria:
+- Preview and render share scene preprocessing logic.
+- Preview can load all supported fixtures without custom per-scene hacks.
+- The preview runtime is easier to inspect and debug than it is today.
+
+#### W7. Add a real test floor
+
+Problem:
+Right now the test command is mostly decorative.
+
+Required changes:
+- Add schema validation tests, template render smoke tests, and at least one end-to-end renderer smoke test.
+- Add parity tests for schema-to-template and theme-to-file mapping.
+- Gate future feature claims behind tests.
+
+Acceptance criteria:
+- `npm test` executes real automated coverage.
+- Core paths fail loudly when a scene template, theme file, or tool contract drifts.
+- The repo has a minimum confidence floor before adding new surface area.
+
 ## MCP Server Interface
+
+The interface below is the target product surface. Unless otherwise noted in the Reality Check section, treat unshipped capabilities here as roadmap items rather than current guarantees.
 
 The engine exposes the same MCP tools over two transports:
 
@@ -796,6 +941,15 @@ showrunner/
 ---
 
 ## Milestones
+
+The original milestone list assumed a smoother path from prototype to product than the codebase actually took. The first milestone now needs to be a stabilization pass.
+
+### M0: Stop Lying To Ourselves
+- Align the README, spec, tool schemas, and handler behavior.
+- Enforce scene-specific validation on render and preview paths.
+- Cut or implement unsupported scene types, themes, transitions, and output modes.
+- Add a minimum automated test floor for schema parity, template coverage, and renderer smoke tests.
+- Decide which features are truly v1 and remove placeholder promises for the rest.
 
 ### M1: MCP Server + Static Render (stdio)
 - MCP server (**stdio** transport) with `render_video` and `validate_storyboard` tools
