@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Publish to GitHub Packages
 
 on:
   release:
@@ -11,21 +11,20 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read   # checkout code
-      id-token: write  # npm provenance attestation (OIDC)
-    environment: npm    # optional: use a GitHub Environment for deployment protection rules
+      contents: read    # checkout code
+      packages: write   # publish to GitHub Packages
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: https://registry.npmjs.org
+          registry-url: https://npm.pkg.github.com
 
       - run: npm ci
 
       - run: npm run build
 
-      - run: npm publish --provenance --access public
+      - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
