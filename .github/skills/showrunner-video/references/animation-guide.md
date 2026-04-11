@@ -1,11 +1,10 @@
-# Showrunner Animation Prompt Engineering Guide
+# Animation Overrides Reference
 
-> **For AI agents** generating storyboard JSON — how to use animation overrides
-> to control pacing, text effects, and visual quality.
+> How to control pacing, text effects, and visual quality using the `animation` object on any scene.
 
 ---
 
-## Animation Overrides Schema
+## Animation Object Schema
 
 Every scene accepts an optional `animation` object:
 
@@ -28,21 +27,19 @@ Every scene accepts an optional `animation` object:
 }
 ```
 
-### Field Reference
-
-| Field | Type | Default | Purpose |
-|-------|------|---------|---------|
-| `easing` | EasingType | `"easeOut"` | Global easing for the scene's entrance animations |
-| `textEffect` | TextEffect | none | Text display mechanism for primary text |
-| `stagger` | number | varies | Delay between staggered items (seconds) |
-| `direction` | `up\|down\|left\|right` | `up` | Direction elements enter from |
-| `speed` | number (0.1–5) | 1 | Timeline speed multiplier |
-| `delay` | number | 0 | Delay before entrance begins |
-| `exitAnimation` | `fade\|slide-up\|slide-down\|scale-down\|none` | `none` | How the scene exits |
-| `pacing.entrance` | 0–1 | 0.3 | Fraction of duration for entrance |
-| `pacing.hold` | 0–1 | 0.5 | Fraction of duration showing final state |
-| `pacing.exit` | 0–1 | 0.2 | Fraction of duration for exit |
-| `emphasis` | number[] | [] | Indices of items to emphasize (pulse/highlight) |
+| Field | Type | Default | Range | Purpose |
+|-------|------|---------|-------|---------|
+| `easing` | enum | `easeOut` | See table below | Global easing for entrance animations |
+| `textEffect` | enum | none | See table below | Text display mechanism |
+| `stagger` | number | varies | seconds | Delay between staggered items |
+| `direction` | enum | `up` | `up`, `down`, `left`, `right` | Direction elements enter from |
+| `speed` | number | 1 | 0.1–5 | Timeline speed multiplier |
+| `delay` | number | 0 | 0+ | Delay before entrance begins |
+| `exitAnimation` | enum | `none` | `fade`, `slide-up`, `slide-down`, `scale-down`, `none` | How scene exits |
+| `pacing.entrance` | number | 0.3 | 0–1 | Fraction of duration for entrance |
+| `pacing.hold` | number | 0.5 | 0–1 | Fraction showing final state |
+| `pacing.exit` | number | 0.2 | 0–1 | Fraction for exit |
+| `emphasis` | number[] | [] | — | Indices of items to pulse/highlight |
 
 ---
 
@@ -51,61 +48,59 @@ Every scene accepts an optional `animation` object:
 | Name | Feel | Best For |
 |------|------|----------|
 | `linear` | Constant speed | Progress bars, loading |
-| `easeOut` | Fast start, gentle stop | General UI, default |
+| `easeOut` | Fast start, gentle stop | **Default. Safe for anything** |
 | `easeInOut` | Smooth start and end | Transitions, transforms |
-| `spring` | Overshoot bounce-back | Cards, buttons, emphasis |
+| `spring` | Overshoot bounce-back | Cards, buttons, general emphasis |
 | `bouncy` | Elastic wobble | Playful, attention-grabbing |
-| `elastic` | Tight elastic snap | Tech demos, precise |
-| `slow` | Dramatic slow-motion feel | Cinematic reveals |
+| `elastic` | Tight elastic snap | Tech demos, precise data |
+| `slow` | Dramatic slow-motion | Cinematic reveals |
 | `snap` | Sharp decisive movement | Strong professional |
-| `power1` | Gentle, subtle motion | Backgrounds, ambient |
+| `power1` | Gentle, subtle | Backgrounds, ambient |
 | `power4` | Aggressive, punchy | Impactful stat reveals |
 | `circ` | Circular arc motion | Geometric, clean |
 | `expo` | Exponential acceleration | Dramatic entrances |
-| `steps` | Stepped/discrete frames | Retro, technical |
+| `steps` | Stepped/discrete frames | Retro, technical only |
 
 ---
 
 ## Text Effects
 
-| Effect | Description | Best For |
-|--------|-------------|----------|
-| `typewriter` | Characters appear one-by-one with cursor | Code, technical, hacker feel |
-| `word-reveal` | Words fade up individually | Headlines, key messages |
-| `char-cascade` | Characters cascade in with 3D rotation | Dramatic reveals, titles |
-| `fade-lines` | Lines fade in sequentially | Body text, paragraphs |
-| `highlight-sweep` | Text highlight sweeps across | Emphasis, key phrases |
-| `counter` | Number counts up from 0 | Metrics, statistics |
+| Effect | Description | Best For | Avoid With |
+|--------|-------------|----------|------------|
+| `typewriter` | Characters appear one-by-one with cursor | Code, technical content | Long text (>100 chars at <5s) |
+| `word-reveal` | Words fade up individually | Headlines, key messages | Short durations (<3s) |
+| `char-cascade` | Characters cascade with 3D rotation | Dramatic title reveals | Gradient text (use `word-reveal`) |
+| `fade-lines` | Lines fade in sequentially | Body text, paragraphs | Single-line content |
+| `highlight-sweep` | Highlight sweeps across text | Key phrases, emphasis | Multiple paragraphs |
+| `counter` | Number counts up from 0 | Metrics, statistics | Non-numeric content |
 
 ---
 
-## Pacing Strategy Guide
+## Pacing Strategies
+
+Pacing controls how the scene's duration is divided between entrance animation, holding the final state, and exit animation. Values are fractions (0–1) and should sum to 1.
 
 ### Short scenes (3–4s) — Fast pace
 ```json
-"animation": { "pacing": { "entrance": 0.5, "hold": 0.5, "exit": 0 } }
+"pacing": { "entrance": 0.5, "hold": 0.5, "exit": 0 }
 ```
 No exit animation. All motion up front, hold the rest.
 
 ### Standard scenes (5–7s) — Balanced
 ```json
-"animation": { "pacing": { "entrance": 0.3, "hold": 0.5, "exit": 0.2 } }
+"pacing": { "entrance": 0.3, "hold": 0.5, "exit": 0.2 }
 ```
-Default feel. Entrance animations complete in first third.
+Default feel. Entrance completes in first third.
 
 ### Long/complex scenes (8–15s) — Deliberate
 ```json
-"animation": {
-  "pacing": { "entrance": 0.2, "hold": 0.6, "exit": 0.2 },
-  "stagger": 0.2,
-  "speed": 0.8
-}
+"pacing": { "entrance": 0.2, "hold": 0.6, "exit": 0.2 }
 ```
 Slower stagger so items appear gradually. More hold time to read.
 
-### Dramatic reveal scenes — Cinematic
+### Dramatic reveal — Cinematic
 ```json
-"animation": {
+{
   "textEffect": "word-reveal",
   "easing": "slow",
   "delay": 0.5,
@@ -116,102 +111,58 @@ Slower stagger so items appear gradually. More hold time to read.
 
 ---
 
-## Scene Type × Animation Pairing Recommendations
+## Scene Type × Animation Pairings
 
-### Data-heavy scenes (kpi-scorecard, table, chart-*)
-- Use `stagger: 0.08–0.15` so items don't pile up
+Recommended pairings by scene category. Use these as defaults; only override for specific creative intent.
+
+### Data-heavy scenes (`kpi-scorecard`, `table`, `chart-*`, `stat-counter`)
+- `stagger: 0.08–0.15` so items don't pile up
 - `easing: "spring"` for cards, `"easeOut"` for bars/lines
-- Longer hold times: `pacing.hold: 0.6`
+- Longer hold: `pacing.hold: 0.6`
 - `speed: 0.9` gives readers time to absorb numbers
 
-### Narrative scenes (text-reveal, quote-highlight, section-header)
+### Narrative scenes (`text-reveal`, `quote-highlight`, `section-header`)
 - `textEffect: "word-reveal"` or `"char-cascade"` for drama
 - `easing: "slow"` or `"expo"` for cinematic feel
 - `exitAnimation: "fade"` for smooth transitions
-- Use `delay: 0.3` to let the previous scene settle
+- `delay: 0.3` to let the previous scene settle
 
-### List scenes (bullet-list, action-items, comparison)
+### List scenes (`bullet-list`, `action-items`, `comparison`)
 - `stagger: 0.12–0.2` — enough gap to read each item
-- `direction: "left"` for left-aligned lists, `"up"` for centered
+- `direction: "left"` for left-aligned lists
 - `easing: "spring"` for playful, `"easeOut"` for corporate
 - `emphasis: [0, 2]` to highlight key items
 
-### Title/transition scenes (title-card, section-header, closing)
+### Title/transition scenes (`title-card`, `section-header`, `closing`)
 - `textEffect: "word-reveal"` or `"char-cascade"`
 - `easing: "spring"` or `"expo"` for impact
 - `exitAnimation: "slide-up"` before content scenes
-- Keep `duration: 4–5s` — enough for text to land
+- Keep `duration: 4–5s`
 
-### Counter/metric scenes (stat-counter, kpi-scorecard)
+### Counter/metric scenes (`stat-counter`, `kpi-scorecard`)
 - `easing: "power4"` makes numbers feel punchy
 - `stagger: 0.15` between cards
 - No text effect needed — count-up is built in
 - `speed: 0.8` to savor the count-up
 
----
+### Quick Pairing Table
 
-## Example: Mixed-Pace Storyboard
-
-```json
-{
-  "title": "Q2 Business Review",
-  "theme": "microsoft",
-  "fps": 30,
-  "scenes": [
-    {
-      "type": "title-card",
-      "duration": 5,
-      "data": { "title": "Q2 Business Review", "subtitle": "Engineering Excellence", "date": "2026-Q2" },
-      "animation": { "textEffect": "word-reveal", "easing": "expo", "exitAnimation": "fade" }
-    },
-    {
-      "type": "stat-counter",
-      "duration": 7,
-      "data": {
-        "title": "Key Metrics",
-        "stats": [
-          { "value": 2847, "label": "Deployments", "suffix": "+", "change": "+34%", "changeDirection": "up", "progress": 85 },
-          { "value": 99.97, "label": "Uptime", "suffix": "%", "progress": 99 },
-          { "value": 142, "label": "Team Size", "change": "+18", "changeDirection": "up", "progress": 71 }
-        ]
-      },
-      "animation": { "easing": "power4", "stagger": 0.18, "pacing": { "entrance": 0.25, "hold": 0.6, "exit": 0.15 } }
-    },
-    {
-      "type": "bullet-list",
-      "duration": 6,
-      "data": {
-        "title": "Top Priorities",
-        "items": [
-          { "text": "Zero-downtime migration to v3 API", "sub": "Target: August 2026", "highlight": true },
-          { "text": "Reduce P50 latency below 50ms", "sub": "Currently: 73ms" },
-          { "text": "Ship mobile SDK public beta", "icon": "📱" },
-          { "text": "SOC 2 Type II certification", "sub": "Audit scheduled Q3" }
-        ]
-      },
-      "animation": { "stagger": 0.18, "easing": "spring", "direction": "left" }
-    },
-    {
-      "type": "text-reveal",
-      "duration": 5,
-      "data": {
-        "eyebrow": "Our Mission",
-        "headline": "Build tools that make <em>every developer</em> more productive",
-        "body": "We ship with confidence, measure with precision, and iterate with purpose."
-      },
-      "animation": { "textEffect": "word-reveal", "easing": "slow", "delay": 0.3, "exitAnimation": "fade" }
-    }
-  ]
-}
-```
-
----
-
-## Anti-Patterns to Avoid
-
-1. **Don't over-animate** — Not every scene needs `textEffect` + custom easing + exit. Save drama for 1–2 key moments.
-2. **Don't use `bouncy` on data scenes** — Elastic wobble on charts/tables looks unprofessional.
-3. **Don't set `speed` below 0.5** — Timeline gets sluggish and frames waste render time.
-4. **Don't combine `typewriter` with short durations** — At 3s with 100 chars, characters fly by too fast.
-5. **Don't use `steps` easing on smooth animations** — It's designed for discrete/retro effects only.
-6. **Don't set stagger > 0.3 unless very few items** — 8 items × 0.3s stagger = 2.4s just for entrance.
+| Scene Type | Recommended Override | Example |
+|------------|---------------------|---------|
+| `title-card` | `easing: "spring"` | `{ "easing": "spring" }` |
+| `chart-bar` | stagger + spring | `{ "stagger": 0.1, "easing": "spring" }` |
+| `chart-line` | spring | `{ "easing": "spring" }` |
+| `chart-donut` | spring | `{ "easing": "spring" }` |
+| `kpi-scorecard` | stagger + elastic | `{ "stagger": 0.12, "easing": "elastic" }` |
+| `stat-counter` | stagger + power4 | `{ "stagger": 0.15, "easing": "power4" }` |
+| `bullet-list` | stagger + direction | `{ "stagger": 0.15, "easing": "spring", "direction": "left" }` |
+| `action-items` | stagger + spring | `{ "stagger": 0.12, "easing": "spring" }` |
+| `comparison` | stagger + direction | `{ "stagger": 0.08, "direction": "left" }` |
+| `table` | stagger + spring | `{ "stagger": 0.08, "easing": "spring" }` |
+| `pipeline-funnel` | stagger + bouncy | `{ "stagger": 0.12, "easing": "bouncy" }` |
+| `milestone-timeline` | stagger + up | `{ "stagger": 0.1, "easing": "spring" }` |
+| `text-reveal` | textEffect + slow | `{ "textEffect": "word-reveal", "easing": "slow" }` |
+| `quote-highlight` | slow + delay | `{ "easing": "slow", "delay": 0.3 }` |
+| `code-terminal` | none needed | Built-in typing animation |
+| `section-header` | optional textEffect | `{ "textEffect": "word-reveal" }` |
+| `closing` | spring + exit | `{ "easing": "spring", "exitAnimation": "fade" }` |

@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const require = createRequire(__filename);
 
 let gsapCoreCache: string | null = null;
 
@@ -13,8 +14,8 @@ let gsapCoreCache: string | null = null;
 export function getGsapBundle(): string {
   if (gsapCoreCache) return gsapCoreCache;
 
-  // Read the GSAP UMD bundle from node_modules
-  const gsapPath = join(__dirname, '..', '..', 'node_modules', 'gsap', 'dist', 'gsap.min.js');
+  // Resolve GSAP relative to this package regardless of install location
+  const gsapPath = require.resolve('gsap/dist/gsap.min.js');
   gsapCoreCache = readFileSync(gsapPath, 'utf-8');
   return gsapCoreCache;
 }

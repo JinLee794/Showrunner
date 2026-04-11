@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const require = createRequire(__filename);
 
 let d3Cache: string | null = null;
 
@@ -13,7 +14,7 @@ let d3Cache: string | null = null;
 export function getD3Bundle(): string {
   if (d3Cache) return d3Cache;
 
-  const d3Path = join(__dirname, '..', '..', 'node_modules', 'd3', 'dist', 'd3.min.js');
+  const d3Path = require.resolve('d3/dist/d3.min.js');
   d3Cache = readFileSync(d3Path, 'utf-8');
   return d3Cache;
 }

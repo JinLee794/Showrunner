@@ -2,11 +2,14 @@
 name: showrunner-video
 description: 'Generate Showrunner storyboard JSON for rendering animated MP4 videos. Use when asked to create a video, render a presentation, build an animated recap, or produce visual content from data. Covers scene type selection, animation overrides, asset references, branding, and storyboard structure. Triggers: create video, render video, make a video, video recap, animated presentation, showrunner, storyboard, render MP4, video from data.'
 argument-hint: 'Describe what the video should contain — topic, data, audience, tone'
+allowed-tools: mcp_showrunner_*
 ---
 
 # Showrunner Video Generation
 
 Generate well-structured storyboard JSON that the Showrunner MCP server renders into polished MP4 videos with GSAP-powered animations.
+
+> **MANDATORY**: Before executing any workflow step, read the corresponding reference document listed below. Do not call MCP tools without following the workflow. Reference docs contain required schemas, validation rules, and anti-patterns.
 
 ## When to Use
 
@@ -15,189 +18,94 @@ Generate well-structured storyboard JSON that the Showrunner MCP server renders 
 - User has data (KPIs, charts, timelines) they want visualized
 - User mentions Showrunner, storyboard, or render_video
 
-## MCP Tools Available
+## Reference Documents
 
-Call these via the Showrunner MCP server:
+Load these on demand — do NOT read all at once. Read only the reference needed for the current workflow step.
+
+| Reference | When to Read | Content |
+|-----------|-------------|---------|
+| [storyboard-schema](references/storyboard-schema.md) | Step 2 — building storyboard JSON | Top-level fields, scene object structure, assets, branding |
+| [scene-types](references/scene-types.md) | Step 2 — choosing scene types and populating `data` | All 18+ scene types with full data schemas and examples |
+| [animation-guide](references/animation-guide.md) | Step 3 — adding animation overrides | Easing types, text effects, pacing strategies, scene×animation pairings |
+| [guardrails](references/guardrails.md) | Always — review before calling render | Duration limits, anti-patterns, error handling, common mistakes |
+
+## Workflow
+
+Follow these steps in order for every video generation request.
+
+### Step 1: Gather Requirements
+
+Determine from the user's request:
+- **Content**: What data, message, or story should the video convey?
+- **Audience/tone**: Corporate, casual, technical, cinematic?
+- **Branding**: Logo URL, accent color, theme preference?
+- **Output**: MP4 (default), GIF, or HTML preview?
+
+If the request is ambiguous, ask one clarifying question — do not guess at data the user hasn't provided.
+
+### Step 2: Build the Storyboard
+
+1. Read [storyboard-schema](references/storyboard-schema.md) for the JSON envelope structure.
+2. Read [scene-types](references/scene-types.md) to select appropriate types and populate `data` fields.
+3. Call `mcp_showrunner_list_scene_types` if you need to confirm available types or their exact data schemas.
+4. Construct the storyboard JSON. Use the scene routing table below to pick types.
+
+### Step 3: Add Animation (Optional)
+
+Read [animation-guide](references/animation-guide.md) for easing, text effects, and pacing recommendations. Only add `animation` overrides when the user requests specific motion, or when default animations would be inadequate for the content. The built-in defaults are good for most cases.
+
+### Step 4: Validate
+
+**ALWAYS call `mcp_showrunner_validate_storyboard` before rendering.** This catches schema errors, missing required fields, and invalid references without the cost of a full render. Fix any reported issues before proceeding.
+
+### Step 5: Render
+
+Read [guardrails](references/guardrails.md) before calling render tools.
 
 | Tool | Purpose | When |
 |------|---------|------|
-| `list_scene_types` | Get all 18+ scene types with data schemas | Before building a storyboard — discover what's available |
-| `validate_storyboard` | Dry-run validation without rendering | After building JSON — catch errors before the slow render |
-| `render_video` | Full render → MP4 | Final step — produces the video file |
-| `render_scene` | Render a single scene | Testing one scene type |
-| `render_gif` | Render → animated GIF | For previews or docs |
-| `preview_storyboard` | Instant HTML preview | Quick iteration, no ffmpeg needed |
+| `mcp_showrunner_render_video` | Full render → MP4 | Default final output |
+| `mcp_showrunner_render_scene` | Render a single scene → MP4 | Testing one scene type |
+| `mcp_showrunner_render_gif` | Render → animated GIF | Previews, docs, lightweight sharing |
+| `mcp_showrunner_preview_storyboard` | Instant HTML preview | Quick iteration, no ffmpeg needed |
 
-## Storyboard Structure
+For storyboards with >10 scenes or >60s total duration, use `mcp_showrunner_preview_storyboard` first for a quick check, then render the final MP4.
 
-```json
-{
-  "title": "Video Title",
-  "theme": "microsoft",
-  "fps": 30,
-  "resolution": [1920, 1080],
-  "branding": {
-    "logo": "$asset:logo",
-    "accent": "#0078D4"
-  },
-  "assets": {
-    "logo": "https://example.com/logo.png"
-  },
-  "scenes": [
-    {
-      "type": "title-card",
-      "duration": 5,
-      "transition": "fade",
-      "data": { "title": "...", "subtitle": "...", "image": "$asset:logo" },
-      "animation": { "easing": "spring" }
-    }
-  ]
-}
-```
+## Scene Type Routing
 
-### Key Fields
+Use this table to select scene types. For full data schemas, read [scene-types](references/scene-types.md).
 
-| Field | Required | Notes |
-|-------|----------|-------|
-| `title` | Yes | Video title (metadata) |
-| `theme` | No | `corporate-dark` (default), `microsoft`, `corporate-light` |
-| `fps` | No | 24, 30 (default), or 60 |
-| `resolution` | No | `[1920, 1080]` default. Also supports `[1280, 720]` |
-| `branding.logo` | No | Renders as persistent watermark on every scene (bottom-right) |
-| `assets` | No | Map of key → URL/path. Referenced as `$asset:key` in scene data |
-| `scenes` | Yes | Array of scene objects (min 1) |
+| Category | Type | Use For |
+|----------|------|---------|
+| **Narrative** | `title-card` | Opening slide with logo |
+| | `section-header` | Chapter dividers |
+| | `closing` | Closing slide with CTA |
+| | `text-reveal` | Dramatic text moments |
+| | `quote-highlight` | Pull quotes |
+| **Data** | `chart-bar` | Bar charts (multi-dataset) |
+| | `chart-line` | Line charts with area fills |
+| | `chart-donut` | Donut/pie charts |
+| | `kpi-scorecard` | Metric cards with trends |
+| | `stat-counter` | Large animated counters |
+| **Lists** | `bullet-list` | Bulleted items with icons |
+| | `action-items` | Checklist with owners |
+| | `comparison` | Side-by-side pro/con |
+| | `table` | Data tables with highlights |
+| **Visual** | `pipeline-funnel` | Sales/conversion funnels |
+| | `milestone-timeline` | Project timelines |
+| | `code-terminal` | Code walkthroughs |
+| | `image-card` | Full-bleed images |
+| | `scene-showcase` | Card grids |
 
-### Scene Object
+## Critical Rules
 
-| Field | Required | Notes |
-|-------|----------|-------|
-| `type` | Yes | One of the 18+ scene types |
-| `duration` | Yes | Seconds (2–15 typical) |
-| `transition` | No | `cut`, `fade`, `slide-left`, `slide-up`, `zoom` |
-| `data` | Yes | Scene-specific data (varies by type) |
-| `animation` | No | Override default animation behavior |
-| `notes` | No | Agent notes (not rendered) |
-
-## Scene Types Quick Reference
-
-### Narrative / Structure
-| Type | Use For | Key Data Fields |
-|------|---------|----------------|
-| `title-card` | Opening slide with logo | `title`, `subtitle`, `date`, `presenter`, `image` |
-| `section-header` | Chapter dividers | `heading`, `subheading`, `image` |
-| `closing` | Closing slide with CTA | `tagline`, `cta`, `timestamp`, `image` |
-| `text-reveal` | Dramatic text moments | `eyebrow`, `headline`, `body`, `footnote` |
-| `quote-highlight` | Pull quotes | `quote`, `attribution`, `sentiment` |
-
-### Data / Charts
-| Type | Use For | Key Data Fields |
-|------|---------|----------------|
-| `chart-bar` | Bar charts (multi-dataset) | `title`, `labels[]`, `datasets[{label, values[], color}]` |
-| `chart-line` | Line charts with area fills | `title`, `labels[]`, `series[{label, values[], color}]` |
-| `chart-donut` | Donut/pie charts | `title`, `segments[{label, value, color}]` |
-| `kpi-scorecard` | Metric cards with trends | `kpis[{label, value, unit, trend, animateCount}]` |
-| `stat-counter` | Large animated counters | `stats[{value, label, prefix, suffix, change, progress}]` |
-
-### Lists / Comparisons
-| Type | Use For | Key Data Fields |
-|------|---------|----------------|
-| `bullet-list` | Bulleted items with icons | `title`, `items[{text, sub, icon, highlight}]` |
-| `action-items` | Checklist with owners | `items[{text, owner, due, priority}]` |
-| `comparison` | Side-by-side pro/con | `title`, `left{label, items[]}`, `right{label, items[]}` |
-| `table` | Data tables with highlights | `title`, `columns[{key, label}]`, `rows[]`, `highlightRows[]` |
-
-### Visual / Technical
-| Type | Use For | Key Data Fields |
-|------|---------|----------------|
-| `pipeline-funnel` | Sales/conversion funnels | `stages[{name, count, value, highlight}]` |
-| `milestone-timeline` | Project timelines | `milestones[{name, due, status, owner, note}]` |
-| `code-terminal` | Code walkthroughs | `title`, `shell`, `lines[{kind, text}]` |
-| `image-card` | Full-bleed images | `image`, `caption`, `title`, `overlay`, `effect`, `fit` |
-| `scene-showcase` | Card grids | `title`, `subtitle`, `cards[{name, description, icon}]` |
-
-## Animation Overrides
-
-Add `animation` to any scene to control motion:
-
-```json
-"animation": {
-  "easing": "spring",
-  "textEffect": "word-reveal",
-  "stagger": 0.12,
-  "direction": "up",
-  "speed": 1.0,
-  "delay": 0.3,
-  "exitAnimation": "fade",
-  "pacing": { "entrance": 0.3, "hold": 0.5, "exit": 0.2 }
-}
-```
-
-### Easing Guide
-
-| Easing | Feel | Best For |
-|--------|------|----------|
-| `spring` | Overshoot bounce-back | Cards, KPIs, general use |
-| `easeOut` | Fast start, gentle stop | Default, safe choice |
-| `elastic` | Tight snap | Tech demos, data |
-| `bouncy` | Playful wobble | Casual, fun content |
-| `power4` | Punchy, aggressive | Stat reveals, impact |
-| `expo` | Dramatic acceleration | Title entrances |
-| `slow` | Cinematic slow-motion | Dramatic text reveals |
-| `snap` | Sharp decisive | Professional, corporate |
-
-### Text Effects
-
-| Effect | Best For | Avoid With |
-|--------|----------|------------|
-| `word-reveal` | Headlines, key messages | Short durations (<3s) |
-| `typewriter` | Code, technical content | Long text (>100 chars at <5s) |
-| `char-cascade` | Dramatic title reveals | Gradient text (use `word-reveal` instead) |
-| `fade-lines` | Body text, paragraphs | Single-line content |
-| `highlight-sweep` | Emphasis phrases | Multiple paragraphs |
-| `counter` | Metrics, statistics | Non-numeric content |
-
-### Scene Type × Animation Pairings
-
-| Scene Type | Recommended | Example |
-|------------|-------------|---------|
-| `title-card` | `easing: "spring"` | `{ "easing": "spring" }` |
-| `chart-bar` | `stagger: 0.1, easing: "spring"` | `{ "stagger": 0.1, "easing": "spring" }` |
-| `chart-line` | `easing: "spring"` | `{ "easing": "spring" }` |
-| `chart-donut` | `easing: "spring"` | `{ "easing": "spring" }` |
-| `kpi-scorecard` | `stagger: 0.12, easing: "elastic"` | `{ "stagger": 0.12, "easing": "elastic" }` |
-| `stat-counter` | `stagger: 0.15, easing: "power4"` | `{ "stagger": 0.15, "easing": "power4" }` |
-| `bullet-list` | `stagger: 0.15, direction: "left"` | `{ "stagger": 0.15, "easing": "spring", "direction": "left" }` |
-| `action-items` | `stagger: 0.12, easing: "spring"` | `{ "stagger": 0.12, "easing": "spring" }` |
-| `comparison` | `stagger: 0.08, direction: "left"` | `{ "stagger": 0.08, "direction": "left" }` |
-| `table` | `stagger: 0.08, easing: "spring"` | `{ "stagger": 0.08, "easing": "spring" }` |
-| `pipeline-funnel` | `stagger: 0.12, easing: "bouncy"` | `{ "stagger": 0.12, "easing": "bouncy" }` |
-| `milestone-timeline` | `stagger: 0.1, direction: "up"` | `{ "stagger": 0.1, "easing": "spring" }` |
-| `text-reveal` | `textEffect: "word-reveal"` | `{ "textEffect": "word-reveal", "easing": "slow" }` |
-| `quote-highlight` | `easing: "slow"` | `{ "easing": "slow", "delay": 0.3 }` |
-| `code-terminal` | default (built-in typing) | No overrides needed |
-| `section-header` | default or `textEffect` | `{ "textEffect": "word-reveal" }` |
-| `closing` | `easing: "spring"` | `{ "easing": "spring", "exitAnimation": "fade" }` |
-
-## Asset References
-
-Declare assets once, reference everywhere with `$asset:key`:
-
-```json
-{
-  "assets": {
-    "logo": "https://cdn.example.com/logo.png",
-    "hero": "docs/assets/hero.jpg"
-  },
-  "branding": { "logo": "$asset:logo" },
-  "scenes": [{
-    "type": "title-card",
-    "data": { "image": "$asset:logo" }
-  }]
-}
-```
-
-Supported: `https://` URLs, local file paths, `data:` URIs.
-Supported formats: PNG, JPG, GIF, WebP, SVG.
+1. **ALWAYS validate before rendering** — `validate_storyboard` is fast; render is slow and expensive.
+2. **Total duration should be 30–90s** for most videos. Under 15s feels rushed; over 120s loses attention.
+3. **3–10 scenes is the sweet spot.** 1–2 scenes is a slide, not a video. >15 scenes is a marathon.
+4. **Each scene needs 3–8s duration.** Under 2s is unreadable; over 12s is boring.
+5. **Do not over-animate.** Save dramatic effects (`textEffect`, custom easing, exit animations) for 1–2 key moments. Defaults are good.
+6. **Use `$asset:key` references** for images used in multiple scenes — never duplicate URLs.
+7. **Confirm output path with the user** before rendering if not obvious from context.
 
 ### Image-Card Effects
 
