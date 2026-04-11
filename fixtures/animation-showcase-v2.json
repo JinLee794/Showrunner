@@ -1,0 +1,422 @@
+{
+  "title": "Showrunner v2 — Complete Effects Showcase",
+  "theme": "microsoft",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "scenes": [
+
+    {
+      "type": "title-card",
+      "duration": 5,
+      "data": {
+        "title": "Animation System v2",
+        "subtitle": "Every Effect Demonstrated",
+        "date": "April 2026"
+      },
+      "animation": { "textEffect": "char-cascade", "easing": "expo" }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Text Effect 1 of 6",
+        "subheading": "word-reveal — words fade up one by one"
+      },
+      "animation": { "easing": "spring" }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 6,
+      "data": {
+        "eyebrow": "WORD REVEAL",
+        "headline": "Each word fades up individually creating a flowing reading rhythm",
+        "body": "The audience reads each word as it appears. Ideal for mission statements and key messages.",
+        "footnote": "animation.textEffect = \"word-reveal\""
+      },
+      "animation": { "textEffect": "word-reveal", "easing": "expo", "stagger": 0.12, "exitAnimation": "fade" }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Text Effect 2 of 6",
+        "subheading": "char-cascade — characters tumble in with 3D rotation"
+      },
+      "animation": { "easing": "spring" }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 6,
+      "data": {
+        "eyebrow": "CHARACTER CASCADE",
+        "headline": "Letters cascade in with depth and rotation",
+        "body": "Dramatic character-by-character entrance with 3D perspective rotation.",
+        "footnote": "animation.textEffect = \"char-cascade\""
+      },
+      "animation": { "textEffect": "char-cascade", "easing": "spring", "stagger": 0.025, "exitAnimation": "slide-up" }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Text Effect 3 of 6",
+        "subheading": "typewriter — characters typed one at a time"
+      },
+      "animation": { "easing": "spring" }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 7,
+      "data": {
+        "eyebrow": "TYPEWRITER",
+        "headline": "Text appears character by character like someone is typing it live",
+        "body": "Perfect for terminal output, developer content, and technical presentations.",
+        "footnote": "animation.textEffect = \"typewriter\""
+      },
+      "animation": { "textEffect": "typewriter", "easing": "linear", "exitAnimation": "fade" }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Text Effect 4 of 6",
+        "subheading": "highlight-sweep — accent color sweeps across the text"
+      },
+      "animation": { "easing": "spring" }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 6,
+      "data": {
+        "eyebrow": "HIGHLIGHT SWEEP",
+        "headline": "A color highlight sweeps across the key phrase",
+        "body": "Draws the viewer's eye to the most important text on screen.",
+        "footnote": "animation.textEffect = \"highlight-sweep\""
+      },
+      "animation": { "textEffect": "highlight-sweep", "easing": "easeInOut", "exitAnimation": "fade" }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Text Effect 5 of 6",
+        "subheading": "fade-lines — sentences appear one by one"
+      },
+      "animation": { "easing": "spring" }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 6,
+      "data": {
+        "eyebrow": "FADE LINES",
+        "headline": "First point lands. Second point follows. Third drives it home.",
+        "body": "Each sentence fades in sequentially. Great for building an argument step by step.",
+        "footnote": "animation.textEffect = \"fade-lines\""
+      },
+      "animation": { "textEffect": "fade-lines", "easing": "easeOut", "stagger": 0.25, "exitAnimation": "slide-down" }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Text Effect 6 of 6",
+        "subheading": "counter — numbers count up from zero"
+      },
+      "animation": { "easing": "spring" }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 6,
+      "data": {
+        "eyebrow": "COUNTER",
+        "headline": "12,847 deployments shipped",
+        "body": "Numeric values in the headline animate from zero to the target. Great for impact metrics.",
+        "footnote": "animation.textEffect = \"counter\""
+      },
+      "animation": { "textEffect": "counter", "easing": "power4", "exitAnimation": "fade" }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Exit Animations",
+        "subheading": "Four ways scenes can transition out"
+      },
+      "animation": { "textEffect": "word-reveal", "easing": "expo" }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 4,
+      "data": {
+        "eyebrow": "EXIT: FADE",
+        "headline": "This scene fades out to nothing",
+        "footnote": "exitAnimation = \"fade\""
+      },
+      "animation": { "textEffect": "word-reveal", "exitAnimation": "fade", "pacing": { "entrance": 0.3, "hold": 0.3, "exit": 0.4 } }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 4,
+      "data": {
+        "eyebrow": "EXIT: SLIDE UP",
+        "headline": "This scene slides up and away",
+        "footnote": "exitAnimation = \"slide-up\""
+      },
+      "animation": { "textEffect": "word-reveal", "exitAnimation": "slide-up", "pacing": { "entrance": 0.3, "hold": 0.3, "exit": 0.4 } }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 4,
+      "data": {
+        "eyebrow": "EXIT: SLIDE DOWN",
+        "headline": "This scene slides down and away",
+        "footnote": "exitAnimation = \"slide-down\""
+      },
+      "animation": { "textEffect": "word-reveal", "exitAnimation": "slide-down", "pacing": { "entrance": 0.3, "hold": 0.3, "exit": 0.4 } }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 4,
+      "data": {
+        "eyebrow": "EXIT: SCALE DOWN",
+        "headline": "This scene shrinks down and vanishes",
+        "footnote": "exitAnimation = \"scale-down\""
+      },
+      "animation": { "textEffect": "word-reveal", "exitAnimation": "scale-down", "pacing": { "entrance": 0.3, "hold": 0.3, "exit": 0.4 } }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Direction Control",
+        "subheading": "Elements enter from any direction"
+      },
+      "animation": { "easing": "expo" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 5,
+      "data": {
+        "title": "Direction: UP (default)",
+        "items": [
+          { "text": "Items slide up into view", "icon": "⬆️" },
+          { "text": "Natural reading flow", "icon": "⬆️" },
+          { "text": "The most common entrance", "icon": "⬆️" }
+        ]
+      },
+      "animation": { "stagger": 0.2, "easing": "spring", "direction": "up", "exitAnimation": "fade" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 5,
+      "data": {
+        "title": "Direction: LEFT",
+        "items": [
+          { "text": "Items slide in from the left", "icon": "⬅️" },
+          { "text": "Good for left-aligned lists", "icon": "⬅️" },
+          { "text": "Progressive reveal feel", "icon": "⬅️" }
+        ]
+      },
+      "animation": { "stagger": 0.2, "easing": "spring", "direction": "left", "exitAnimation": "fade" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 5,
+      "data": {
+        "title": "Direction: RIGHT",
+        "items": [
+          { "text": "Items slide in from the right", "icon": "➡️" },
+          { "text": "Creates a spotlight effect", "icon": "➡️" },
+          { "text": "Useful for counterpoint", "icon": "➡️" }
+        ]
+      },
+      "animation": { "stagger": 0.2, "easing": "spring", "direction": "right", "exitAnimation": "fade" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 5,
+      "data": {
+        "title": "Direction: DOWN",
+        "items": [
+          { "text": "Items drop in from above", "icon": "⬇️" },
+          { "text": "Gravity-driven entrance", "icon": "⬇️" },
+          { "text": "Great for alerts and callouts", "icon": "⬇️" }
+        ]
+      },
+      "animation": { "stagger": 0.2, "easing": "spring", "direction": "down", "exitAnimation": "fade" }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Easing Comparison",
+        "subheading": "Same content — different curves"
+      },
+      "animation": { "easing": "expo" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 5,
+      "data": {
+        "title": "Easing: spring — bouncy overshoot",
+        "items": [
+          { "text": "Items overshoot their target", "highlight": true },
+          { "text": "Then settle back into place" },
+          { "text": "Playful, energetic motion" }
+        ]
+      },
+      "animation": { "stagger": 0.15, "easing": "spring", "exitAnimation": "fade" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 5,
+      "data": {
+        "title": "Easing: expo — dramatic punch",
+        "items": [
+          { "text": "Fast initial burst of motion", "highlight": true },
+          { "text": "Exponential deceleration" },
+          { "text": "Sharp, impactful entrance" }
+        ]
+      },
+      "animation": { "stagger": 0.15, "easing": "expo", "exitAnimation": "fade" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 5,
+      "data": {
+        "title": "Easing: slow — cinematic reveal",
+        "items": [
+          { "text": "Gradual, deliberate motion", "highlight": true },
+          { "text": "Builds suspense and weight" },
+          { "text": "For dramatic moments" }
+        ]
+      },
+      "animation": { "stagger": 0.2, "easing": "slow", "exitAnimation": "fade" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 5,
+      "data": {
+        "title": "Easing: bouncy — elastic wobble",
+        "items": [
+          { "text": "Items wobble as they land", "highlight": true },
+          { "text": "Multiple oscillations" },
+          { "text": "Attention-grabbing, fun" }
+        ]
+      },
+      "animation": { "stagger": 0.18, "easing": "bouncy", "exitAnimation": "fade" }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Stagger Comparison",
+        "subheading": "Timing changes how content feels"
+      },
+      "animation": { "easing": "expo" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 5,
+      "data": {
+        "title": "Tight Stagger (0.06s)",
+        "subtitle": "Items arrive almost together — rapid fire",
+        "items": [
+          { "text": "First item" },
+          { "text": "Second item" },
+          { "text": "Third item" },
+          { "text": "Fourth item" },
+          { "text": "Fifth item" }
+        ]
+      },
+      "animation": { "stagger": 0.06, "easing": "spring", "exitAnimation": "fade" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 6,
+      "data": {
+        "title": "Wide Stagger (0.3s)",
+        "subtitle": "Each item gets its moment — deliberate pacing",
+        "items": [
+          { "text": "First item" },
+          { "text": "Second item" },
+          { "text": "Third item" },
+          { "text": "Fourth item" },
+          { "text": "Fifth item" }
+        ]
+      },
+      "animation": { "stagger": 0.3, "easing": "spring", "exitAnimation": "fade" }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "New Scene Types",
+        "subheading": "bullet-list · stat-counter · text-reveal"
+      },
+      "animation": { "textEffect": "word-reveal", "easing": "expo" }
+    },
+    {
+      "type": "stat-counter",
+      "duration": 7,
+      "data": {
+        "title": "stat-counter — Animated Metrics",
+        "stats": [
+          { "value": 2847, "label": "Deployments", "suffix": "+", "change": "+34%", "changeDirection": "up", "progress": 85 },
+          { "value": 99.97, "label": "Uptime", "suffix": "%", "progress": 99 },
+          { "value": 142, "label": "Engineers", "change": "+18", "changeDirection": "up", "progress": 71 },
+          { "value": 47, "label": "Services", "suffix": "ms P50", "description": "Response latency", "progress": 94 }
+        ]
+      },
+      "animation": { "easing": "power4", "stagger": 0.2, "exitAnimation": "fade" }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 6,
+      "data": {
+        "title": "bullet-list — Structured Content",
+        "subtitle": "Supports icons, highlights, sub-text, and all animation overrides",
+        "items": [
+          { "text": "Rich text items with descriptions", "sub": "Each item can have secondary detail text", "highlight": true },
+          { "text": "Custom emoji icons", "sub": "Replace the default dot bullet", "icon": "🎯" },
+          { "text": "Highlight borders", "sub": "Accent-colored left border for emphasis", "highlight": true },
+          { "text": "Fully themeable", "sub": "Inherits glassmorphism from the active theme", "icon": "🎨" }
+        ]
+      },
+      "animation": { "stagger": 0.18, "easing": "spring", "direction": "left", "exitAnimation": "slide-up" }
+    },
+
+    {
+      "type": "text-reveal",
+      "duration": 5,
+      "data": {
+        "eyebrow": "THAT'S THE FULL SYSTEM",
+        "headline": "6 text effects. 13 easings. 4 exits. 4 directions. 3 new scenes.",
+        "body": "All controllable from the storyboard JSON via animation overrides."
+      },
+      "animation": { "textEffect": "word-reveal", "easing": "slow", "delay": 0.3, "exitAnimation": "fade" }
+    },
+
+    {
+      "type": "closing",
+      "duration": 4,
+      "data": {
+        "tagline": "Showrunner Animation System v2",
+        "cta": "docs/animation-prompt-guide.md",
+        "timestamp": "April 2026"
+      },
+      "animation": { "easing": "expo" }
+    }
+  ]
+}

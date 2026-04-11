@@ -1,7 +1,11 @@
 <div class="scene title-card bg-grid">
   <div class="title-card__orb title-card__orb--1"></div>
   <div class="title-card__orb title-card__orb--2"></div>
+  {{#if data.image}}
+  <img class="title-card__image" src="{{{data.image}}}" alt="" />
+  {{else}}
   <div class="title-card__logo accent-line"></div>
+  {{/if}}
   <h1 class="title-card__title">{{data.title}}</h1>
   {{#if data.subtitle}}
   <p class="title-card__subtitle">{{data.subtitle}}</p>
@@ -55,6 +59,14 @@
     background: var(--accent-gradient);
   }
 
+  .title-card__image {
+    max-width: 400px;
+    max-height: 300px;
+    object-fit: contain;
+    margin-bottom: calc(var(--spacing-unit) * 4);
+    filter: drop-shadow(0 6px 32px rgba(0,0,0,0.35));
+  }
+
   .title-card__title {
     font-family: var(--font-heading);
     font-size: 3.8rem;
@@ -102,6 +114,8 @@
 <script>
   window.__buildTimeline = function() {
     const tl = gsap.timeline({ paused: true });
+    const anim = window.__anim || {};
+    const ease = window.__getEase ? window.__getEase('back.out(1.4)') : 'back.out(1.4)';
 
     // Orbs drift in
     tl.from('.title-card__orb--1', {
@@ -119,19 +133,38 @@
       ease: 'power2.out'
     }, 0.1);
 
-    tl.from('.title-card__logo', {
-      scaleX: 0,
-      transformOrigin: 'center center',
-      duration: 0.4,
-      ease: 'power3.out'
-    }, 0.2)
-    .from('.title-card__title', {
-      y: 40,
-      opacity: 0,
-      duration: 0.6,
-      ease: 'back.out(1.4)'
-    }, '-=0.15')
-    .from('.title-card__subtitle', {
+    if (document.querySelector('.title-card__image')) {
+      tl.from('.title-card__image', {
+        scale: 0.5,
+        opacity: 0,
+        transformOrigin: 'center center',
+        duration: 0.6,
+        ease: 'back.out(1.7)'
+      }, 0.2);
+    } else {
+      tl.from('.title-card__logo', {
+        scaleX: 0,
+        opacity: 0,
+        transformOrigin: 'center center',
+        duration: 0.4,
+        ease: 'power3.out'
+      }, 0.2);
+    }
+
+    // Title — use text effect if specified
+    var titleEl = document.querySelector('.title-card__title');
+    if (titleEl && anim.textEffect && window.__textEffect) {
+      tl.add(window.__textEffect(titleEl, anim.textEffect, { ease: ease }), '-=0.15');
+    } else {
+      tl.from('.title-card__title', {
+        y: 40,
+        opacity: 0,
+        duration: 0.6,
+        ease: ease
+      }, '-=0.15');
+    }
+
+    tl.from('.title-card__subtitle', {
       y: 25,
       opacity: 0,
       duration: 0.5,
@@ -154,9 +187,14 @@
       opacity: 0,
       duration: 0.3,
       ease: 'power2.out'
-    }, '-=0.1')
-    // Hold final state for remaining duration
-    .to({}, { duration: 0.5 });
+    }, '-=0.1');
+
+    // Hold — proportional to entrance
+    var holdDuration = Math.max(0.8, tl.duration() * 0.5);
+    tl.to({}, { duration: holdDuration });
+
+    // Exit animation
+    if (window.__buildExit) tl.add(window.__buildExit());
 
     return tl;
   };

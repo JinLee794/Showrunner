@@ -11,6 +11,8 @@ import { captureFrames } from './frame-capture.js';
 import { encodeVideo, encodeGif } from './encoder.js';
 import { getGsapBundle } from '../motion/gsap-bundle.js';
 import { getD3Bundle } from '../motion/d3-bundle.js';
+import { buildAnimationRuntime } from '../motion/runtime.js';
+import { resolveAssets, injectAssetRefs } from './assets.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
@@ -70,9 +72,13 @@ function buildSceneHTML(
   d3Bundle: string,
   width: number,
   height: number,
+  brandingLogo?: string,
 ): string {
   // Pre-process scene data with computed fields
   const processedData = preprocessSceneData(scene);
+
+  // Build animation runtime with overrides
+  const animRuntime = buildAnimationRuntime(scene.animation);
 
   // Render scene-specific HTML
   const sceneTemplate = getSceneTemplate(scene.type);
@@ -88,7 +94,9 @@ function buildSceneHTML(
     themeCSS,
     gsapBundle,
     d3Bundle,
+    animRuntime,
     sceneContent,
+    brandingLogo,
   });
 }
 
@@ -160,6 +168,17 @@ export class Renderer {
     const themeCSS = loadThemeCSS(theme);
     const gsapBundle = getGsapBundle();
     const d3Bundle = getD3Bundle();
+    const resolvedAssets = await resolveAssets(storyboard.assets);
+    // Resolve branding logo to a data URI if present (supports $asset: refs)
+    let brandingLogo: string | undefined;
+    if (storyboard.branding?.logo) {
+      const logoVal = storyboard.branding.logo;
+      if (logoVal.startsWith('$asset:')) {
+        brandingLogo = resolvedAssets.get(logoVal.slice('$asset:'.length));
+      } else {
+        brandingLogo = (await resolveAssets({ _logo: logoVal })).get('_logo');
+      }
+    }
     const renderSessionId = randomUUID();
     const tempBase = join(tmpdir(), `avengine-${renderSessionId}`);
     await mkdir(tempBase, { recursive: true });
@@ -174,7 +193,8 @@ export class Renderer {
 
       for (let i = 0; i < storyboard.scenes.length; i++) {
         const scene = storyboard.scenes[i]!;
-        const sceneHTML = buildSceneHTML(scene, themeCSS, gsapBundle, d3Bundle, width, height);
+        const resolved = { ...scene, data: injectAssetRefs(scene.data, resolvedAssets) };
+        const sceneHTML = buildSceneHTML(resolved, themeCSS, gsapBundle, d3Bundle, width, height, brandingLogo);
         const sceneDir = join(tempBase, `scene-${i}`);
 
         const result = await captureFrames(context, {
@@ -243,6 +263,8 @@ export class Renderer {
       fps?: number;
       quality?: RenderQuality;
       outputPath: string;
+      assets?: Record<string, string>;
+      brandingLogo?: string;
     }
   ): Promise<RenderResult> {
     const fps = options.fps ?? 30;
@@ -253,6 +275,10 @@ export class Renderer {
     const themeCSS = loadThemeCSS(theme);
     const gsapBundle = getGsapBundle();
     const d3Bundle = getD3Bundle();
+    const resolvedAssets = await resolveAssets(options.assets);
+    const brandingLogo = options.brandingLogo
+      ? (await resolveAssets({ _logo: options.brandingLogo })).get('_logo')
+      : undefined;
     const renderSessionId = randomUUID();
     const tempBase = join(tmpdir(), `avengine-scene-${renderSessionId}`);
     await mkdir(tempBase, { recursive: true });
@@ -260,7 +286,8 @@ export class Renderer {
     const context = await this.pool.acquire();
 
     try {
-      const sceneHTML = buildSceneHTML(scene, themeCSS, gsapBundle, d3Bundle, width, height);
+      const resolved = { ...scene, data: injectAssetRefs(scene.data, resolvedAssets) };
+      const sceneHTML = buildSceneHTML(resolved, themeCSS, gsapBundle, d3Bundle, width, height, brandingLogo);
 
       const result = await captureFrames(context, {
         html: sceneHTML,
@@ -317,6 +344,16 @@ export class Renderer {
     const themeCSS = loadThemeCSS(theme);
     const gsapBundle = getGsapBundle();
     const d3Bundle = getD3Bundle();
+    const resolvedAssets = await resolveAssets(storyboard.assets);
+    let brandingLogo: string | undefined;
+    if (storyboard.branding?.logo) {
+      const logoVal = storyboard.branding.logo;
+      if (logoVal.startsWith('$asset:')) {
+        brandingLogo = resolvedAssets.get(logoVal.slice('$asset:'.length));
+      } else {
+        brandingLogo = (await resolveAssets({ _logo: logoVal })).get('_logo');
+      }
+    }
     const renderSessionId = randomUUID();
     const tempBase = join(tmpdir(), `avengine-gif-${renderSessionId}`);
     await mkdir(tempBase, { recursive: true });
@@ -330,7 +367,8 @@ export class Renderer {
 
       for (let i = 0; i < storyboard.scenes.length; i++) {
         const scene = storyboard.scenes[i]!;
-        const sceneHTML = buildSceneHTML(scene, themeCSS, gsapBundle, d3Bundle, width, height);
+        const resolved = { ...scene, data: injectAssetRefs(scene.data, resolvedAssets) };
+        const sceneHTML = buildSceneHTML(resolved, themeCSS, gsapBundle, d3Bundle, width, height, brandingLogo);
         const sceneDir = join(tempBase, `scene-${i}`);
 
         const result = await captureFrames(context, {

@@ -20,7 +20,7 @@ No Remotion. No subscription. No framework lock-in. Just Playwright frames, GSAP
 ## How It Works
 
 ```mermaid
-flowchart TD
+graph TD
     A["AI Agent"] -->|storyboard JSON| B["Showrunner MCP Server"]
 
     B --> C{Zod validate}
@@ -63,38 +63,52 @@ Each scene template builds a paused GSAP timeline. Chart scenes (`chart-bar`, `c
 
 - **Node.js** ≥ 20
 - **ffmpeg** on PATH
-- **Playwright Chromium** (installed via `npx playwright install chromium`)
+- **Playwright Chromium** (auto-installed on first run)
+
+## Install
+
+```bash
+# Global install
+npm install -g showrunner-mcp
+
+# Or run directly via npx (no install needed)
+npx showrunner-mcp --help
+```
 
 ## Quick Start
 
-```bash
-# Install dependencies
-npm install
+### Use via npx (recommended)
 
-# Install Playwright browser
-npx playwright install chromium
+```bash
+# Render a storyboard to MP4
+npx showrunner-mcp render storyboard.json
+
+# Render with options
+npx showrunner-mcp render storyboard.json --quality high --output output/final.mp4
+
+# Render to GIF
+npx showrunner-mcp render storyboard.json --gif
+
+# Validate a storyboard without rendering
+npx showrunner-mcp validate storyboard.json
+
+# List available scene types
+npx showrunner-mcp scenes
+```
+
+### Use from source
+
+```bash
+# Clone and install
+git clone https://github.com/JinLee794/Showrunner.git
+cd Showrunner
+npm install
 
 # Build
 npm run build
 
 # Render the demo storyboard
-node --input-type=module << 'EOF'
-import { Renderer } from './dist/renderer/index.js';
-import { BrowserPool } from './dist/renderer/browser-pool.js';
-import { StoryboardSchema } from './dist/schema/storyboard.js';
-import fs from 'fs';
-
-const storyboard = StoryboardSchema.parse(
-  JSON.parse(fs.readFileSync('fixtures/demo-storyboard.json', 'utf8'))
-);
-
-const pool = new BrowserPool();
-const renderer = new Renderer(pool);
-
-const result = await renderer.renderStoryboard(storyboard, 'output/demo.mp4', 'medium');
-console.log(result);
-await pool.close();
-EOF
+npx showrunner-mcp render fixtures/demo-storyboard.json
 ```
 
 ## Showrunner MCP Server
@@ -102,18 +116,17 @@ EOF
 ### stdio (local dev)
 
 ```bash
-TRANSPORT=stdio node dist/server.js
+npx showrunner-mcp
 ```
 
-Agent config:
+Agent config (VS Code / Claude Desktop / any MCP client):
 
 ```json
 {
   "mcpServers": {
     "showrunner": {
-      "command": "node",
-      "args": ["path/to/showrunner/dist/server.js"],
-      "transport": "stdio"
+      "command": "npx",
+      "args": ["-y", "showrunner-mcp"]
     }
   }
 }
@@ -122,7 +135,7 @@ Agent config:
 ### HTTP (remote / Azure)
 
 ```bash
-TRANSPORT=http PORT=8080 node dist/server.js
+TRANSPORT=http PORT=8080 npx showrunner-mcp
 ```
 
 Agent config:
@@ -131,7 +144,7 @@ Agent config:
 {
   "mcpServers": {
     "showrunner": {
-      "url": "https://<your-function-app>.azurewebsites.net/mcp",
+      "url": "https://<your-host>/mcp",
       "transport": "http"
     }
   }
@@ -403,9 +416,19 @@ npm start        # node dist/server.js
 npm test         # vitest
 ```
 
+## Publishing
+
+```bash
+# Build and publish to npm
+npm publish
+
+# Or publish with a scope
+npm publish --access public
+```
+
 ## License
 
-Internal tool — not published.
+MIT
 
 ---
 

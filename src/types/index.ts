@@ -7,7 +7,20 @@ export type ThemeName =
 
 export type TransitionType = 'cut' | 'fade' | 'slide-left' | 'slide-up' | 'zoom';
 
-export type EasingType = 'linear' | 'easeOut' | 'easeInOut' | 'spring' | 'bouncy';
+export type EasingType =
+  | 'linear'
+  | 'easeOut'
+  | 'easeInOut'
+  | 'spring'
+  | 'bouncy'
+  | 'elastic'
+  | 'slow'
+  | 'snap'
+  | 'power1'
+  | 'power4'
+  | 'circ'
+  | 'expo'
+  | 'steps';
 
 export type SceneType =
   | 'title-card'
@@ -26,13 +39,44 @@ export type SceneType =
   | 'comparison'
   | 'closing'
   | 'code-terminal'
-  | 'scene-showcase';
+  | 'scene-showcase'
+  | 'image-card'
+  | 'bullet-list'
+  | 'stat-counter'
+  | 'text-reveal';
+
+export interface PacingPhases {
+  /** Fraction of duration for entrance animations (0-1, default ~0.3) */
+  entrance?: number;
+  /** Fraction of duration to hold the final state (0-1, default ~0.5) */
+  hold?: number;
+  /** Fraction of duration for exit animation (0-1, default ~0.2, 0 = no exit) */
+  exit?: number;
+}
+
+export type TextEffect =
+  | 'typewriter'
+  | 'word-reveal'
+  | 'char-cascade'
+  | 'fade-lines'
+  | 'highlight-sweep'
+  | 'counter';
 
 export interface AnimationOverrides {
   stagger?: number;
   easing?: EasingType;
   direction?: 'up' | 'down' | 'left' | 'right';
   emphasis?: number[];
+  /** Control entrance/hold/exit timing within the scene duration */
+  pacing?: PacingPhases;
+  /** Text display effect to apply to primary text elements */
+  textEffect?: TextEffect;
+  /** Speed multiplier for overall animation (0.5 = half speed, 2 = double) */
+  speed?: number;
+  /** Delay before entrance begins (seconds, within the scene timeline) */
+  delay?: number;
+  /** Enable exit animation at the end of the scene */
+  exitAnimation?: 'fade' | 'slide-up' | 'slide-down' | 'scale-down' | 'none';
 }
 
 export interface Scene {
@@ -57,6 +101,7 @@ export interface Storyboard {
   resolution?: [number, number];
   scenes: Scene[];
   branding?: Branding;
+  assets?: Record<string, string>;
 }
 
 export type RenderQuality = 'high' | 'medium' | 'fast';

@@ -1,0 +1,175 @@
+<div class="scene bullet-list">
+  {{#if data.title}}
+  <h2 class="bullet-list__title">{{data.title}}</h2>
+  {{/if}}
+  {{#if data.subtitle}}
+  <p class="bullet-list__subtitle">{{data.subtitle}}</p>
+  {{/if}}
+  <ul class="bullet-list__items">
+    {{#each data.items}}
+    <li class="bullet-list__item {{#if this.highlight}}bullet-list__item--highlight{{/if}}">
+      <span class="bullet-list__bullet">
+        {{#if this.icon}}{{{this.icon}}}{{else}}<span class="bullet-list__dot"></span>{{/if}}
+      </span>
+      <div class="bullet-list__content">
+        <span class="bullet-list__text">{{this.text}}</span>
+        {{#if this.sub}}
+        <span class="bullet-list__sub">{{this.sub}}</span>
+        {{/if}}
+      </div>
+    </li>
+    {{/each}}
+  </ul>
+</div>
+
+<style>
+  .bullet-list {
+    padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 12);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(var(--spacing-unit) * 2);
+  }
+
+  .bullet-list__title {
+    font-family: var(--font-heading);
+    font-size: 2.4rem;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: calc(var(--spacing-unit) * 1);
+  }
+
+  .bullet-list__subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: calc(var(--spacing-unit) * 2);
+  }
+
+  .bullet-list__items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 2.5);
+  }
+
+  .bullet-list__item {
+    display: flex;
+    align-items: flex-start;
+    gap: calc(var(--spacing-unit) * 2.5);
+    padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 3);
+    background: var(--glass-bg, var(--bg-secondary));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    border-radius: var(--border-radius);
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
+    box-shadow: var(--shadow-card);
+  }
+
+  .bullet-list__item--highlight {
+    border-left: 3px solid var(--accent);
+  }
+
+  .bullet-list__bullet {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-top: 2px;
+  }
+
+  .bullet-list__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+  }
+
+  .bullet-list__content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .bullet-list__text {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .bullet-list__sub {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+    var anim = window.__anim || {};
+    var stagger = window.__getStagger ? window.__getStagger(0.15) : 0.15;
+    var ease = window.__getEase ? window.__getEase('back.out(1.2)') : 'back.out(1.2)';
+    var dir = window.__getDirectionFrom ? window.__getDirectionFrom(30) : { y: 30 };
+
+    // Title entrance
+    var title = document.querySelector('.bullet-list__title');
+    if (title) {
+      if (anim.textEffect && window.__textEffect) {
+        tl.add(window.__textEffect(title, anim.textEffect));
+      } else {
+        tl.from(title, Object.assign({}, dir, {
+          opacity: 0,
+          duration: 0.5,
+          ease: ease
+        }));
+      }
+    }
+
+    var subtitle = document.querySelector('.bullet-list__subtitle');
+    if (subtitle) {
+      tl.from(subtitle, { opacity: 0, y: 15, duration: 0.3, ease: 'power2.out' }, '-=0.2');
+    }
+
+    // Items stagger in — use generous durations so animation fills the scene
+    var items = document.querySelectorAll('.bullet-list__item');
+    var itemDuration = Math.max(0.6, 0.8 / (anim.speed || 1));
+    var entranceDist = dir.x ? { x: (dir.x > 0 ? 60 : -60) } : { y: (dir.y || 40) > 0 ? 60 : -60 };
+    tl.from(items, Object.assign({}, entranceDist, {
+      opacity: 0,
+      scale: 0.92,
+      duration: itemDuration,
+      stagger: stagger,
+      ease: ease
+    }), '-=0.1');
+
+    // Bullets pop
+    tl.from('.bullet-list__dot', {
+      scale: 0,
+      duration: 0.35,
+      stagger: stagger * 0.8,
+      ease: 'back.out(2.5)'
+    }, '-=0.4');
+
+    // Highlight bars sweep
+    tl.from('.bullet-list__item--highlight', {
+      borderLeftWidth: 0,
+      duration: 0.4,
+      stagger: 0.12,
+      ease: 'power3.out'
+    }, '-=0.3');
+
+    // Hold — proportional to entrance so scrubbing looks balanced
+    var holdDuration = Math.max(0.8, tl.duration() * 0.6);
+    tl.to({}, { duration: holdDuration });
+    if (window.__buildExit) tl.add(window.__buildExit());
+
+    return tl;
+  };
+</script>

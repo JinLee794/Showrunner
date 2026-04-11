@@ -39,6 +39,7 @@ function createServer(): McpServer {
     renderSceneTool.description,
     {
       scene: z.record(z.unknown()),
+      assets: z.record(z.string()).optional(),
       theme: z.string().optional(),
       resolution: z.array(z.number()).optional(),
       fps: z.number().optional(),

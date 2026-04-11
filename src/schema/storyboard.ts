@@ -22,6 +22,14 @@ export const EasingTypeSchema = z.enum([
   'easeInOut',
   'spring',
   'bouncy',
+  'elastic',
+  'slow',
+  'snap',
+  'power1',
+  'power4',
+  'circ',
+  'expo',
+  'steps',
 ]);
 
 export const SceneTypeSchema = z.enum([
@@ -42,6 +50,25 @@ export const SceneTypeSchema = z.enum([
   'closing',
   'code-terminal',
   'scene-showcase',
+  'image-card',
+  'bullet-list',
+  'stat-counter',
+  'text-reveal',
+]);
+
+export const PacingPhasesSchema = z.object({
+  entrance: z.number().min(0).max(1).optional(),
+  hold: z.number().min(0).max(1).optional(),
+  exit: z.number().min(0).max(1).optional(),
+});
+
+export const TextEffectSchema = z.enum([
+  'typewriter',
+  'word-reveal',
+  'char-cascade',
+  'fade-lines',
+  'highlight-sweep',
+  'counter',
 ]);
 
 export const AnimationOverridesSchema = z.object({
@@ -49,6 +76,11 @@ export const AnimationOverridesSchema = z.object({
   easing: EasingTypeSchema.optional(),
   direction: z.enum(['up', 'down', 'left', 'right']).optional(),
   emphasis: z.array(z.number()).optional(),
+  pacing: PacingPhasesSchema.optional(),
+  textEffect: TextEffectSchema.optional(),
+  speed: z.number().min(0.1).max(5).optional(),
+  delay: z.number().min(0).optional(),
+  exitAnimation: z.enum(['fade', 'slide-up', 'slide-down', 'scale-down', 'none']).optional(),
 });
 
 export const SceneSchema = z.object({
@@ -73,6 +105,7 @@ export const StoryboardSchema = z.object({
   resolution: z.tuple([z.number().positive(), z.number().positive()]).optional().default([1920, 1080]),
   scenes: z.array(SceneSchema).min(1),
   branding: BrandingSchema.optional(),
+  assets: z.record(z.string()).optional(),
 });
 
 export const RenderQualitySchema = z.enum(['high', 'medium', 'fast']);
@@ -83,12 +116,14 @@ export const TitleCardDataSchema = z.object({
   subtitle: z.string().optional(),
   date: z.string().optional(),
   presenter: z.string().optional(),
+  image: z.string().optional(),
 });
 
 export const SectionHeaderDataSchema = z.object({
   heading: z.string(),
   subheading: z.string().optional(),
   icon: z.string().optional(),
+  image: z.string().optional(),
 });
 
 export const PipelineFunnelDataSchema = z.object({
@@ -186,6 +221,7 @@ export const ClosingDataSchema = z.object({
   tagline: z.string().optional(),
   timestamp: z.string().optional(),
   cta: z.string().optional(),
+  image: z.string().optional(),
 });
 
 export const CodeTerminalDataSchema = z.object({
@@ -208,6 +244,50 @@ export const SceneShowcaseDataSchema = z.object({
   })),
 });
 
+export const ImageCardDataSchema = z.object({
+  image: z.string(),
+  caption: z.string().optional(),
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  fit: z.enum(['cover', 'contain', 'fill']).optional(),
+  position: z.enum(['center', 'top', 'bottom']).optional(),
+  overlay: z.enum(['none', 'gradient', 'dark']).optional(),
+  effect: z.enum(['ken-burns', 'zoom-in', 'pan-left', 'pan-right', 'static']).optional(),
+});
+
+export const BulletListDataSchema = z.object({
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  items: z.array(z.object({
+    text: z.string(),
+    sub: z.string().optional(),
+    icon: z.string().optional(),
+    highlight: z.boolean().optional(),
+  })),
+});
+
+export const StatCounterDataSchema = z.object({
+  title: z.string().optional(),
+  stats: z.array(z.object({
+    value: z.union([z.string(), z.number()]),
+    label: z.string(),
+    prefix: z.string().optional(),
+    suffix: z.string().optional(),
+    icon: z.string().optional(),
+    description: z.string().optional(),
+    change: z.string().optional(),
+    changeDirection: z.enum(['up', 'down']).optional(),
+    progress: z.number().min(0).max(100).optional(),
+  })),
+});
+
+export const TextRevealDataSchema = z.object({
+  eyebrow: z.string().optional(),
+  headline: z.string(),
+  body: z.string().optional(),
+  footnote: z.string().optional(),
+});
+
 export const sceneDataSchemas: Record<string, z.ZodType> = {
   'title-card': TitleCardDataSchema,
   'section-header': SectionHeaderDataSchema,
@@ -226,6 +306,10 @@ export const sceneDataSchemas: Record<string, z.ZodType> = {
   'closing': ClosingDataSchema,
   'code-terminal': CodeTerminalDataSchema,
   'scene-showcase': SceneShowcaseDataSchema,
+  'image-card': ImageCardDataSchema,
+  'bullet-list': BulletListDataSchema,
+  'stat-counter': StatCounterDataSchema,
+  'text-reveal': TextRevealDataSchema,
 };
 
 /**

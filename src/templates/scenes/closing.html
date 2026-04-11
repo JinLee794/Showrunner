@@ -4,6 +4,9 @@
   {{#if data.tagline}}
   <h1 class="closing__tagline">{{data.tagline}}</h1>
   {{/if}}
+  {{#if data.image}}
+  <img class="closing__image" src="{{{data.image}}}" alt="" />
+  {{/if}}
   <div class="closing__accent accent-line"></div>
   {{#if data.cta}}
   <p class="closing__cta">{{data.cta}}</p>
@@ -66,6 +69,13 @@
     background: var(--accent-gradient);
   }
 
+  .closing__image {
+    max-width: 180px;
+    max-height: 80px;
+    object-fit: contain;
+    margin-bottom: calc(var(--spacing-unit) * 1);
+  }
+
   .closing__cta {
     font-size: 1.25rem;
     color: var(--accent);
@@ -109,6 +119,15 @@
       duration: 0.6,
       ease: 'back.out(1.4)'
     }, 0.15);
+
+    if (document.querySelector('.closing__image')) {
+      tl.from('.closing__image', {
+        scale: 0.8,
+        opacity: 0,
+        duration: 0.5,
+        ease: 'back.out(1.3)'
+      }, '-=0.2');
+    }
 
     tl.from('.closing__accent', {
       scaleX: 0,

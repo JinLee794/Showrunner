@@ -2,7 +2,7 @@ import type { SceneTypeInfo } from '../types/index.js';
 
 export const listSceneTypesTool = {
   name: 'list_scene_types',
-  description: 'Discovery tool. Returns all available scene types with descriptions and data schemas.',
+  description: 'Discovery tool. Returns all available scene types with descriptions and data schemas. Image fields accept $asset:key references (resolved from the storyboard-level assets map), HTTPS URLs, or data URIs.',
   inputSchema: {
     type: 'object' as const,
     properties: {},
@@ -12,7 +12,7 @@ export const listSceneTypesTool = {
 const sceneTypes: SceneTypeInfo[] = [
   {
     type: 'title-card',
-    description: 'Full-screen branded intro. Logo fades in with scale spring, title slides up with easeOut.',
+    description: 'Full-screen branded intro. Logo fades in with scale spring, title slides up with easeOut. Optional image replaces accent bar (logo/icon via $asset:key or data URI).',
     dataSchema: {
       type: 'object',
       required: ['title'],
@@ -21,6 +21,7 @@ const sceneTypes: SceneTypeInfo[] = [
         subtitle: { type: 'string' },
         date: { type: 'string' },
         presenter: { type: 'string' },
+        image: { type: 'string', description: 'Logo/icon — use $asset:key reference or data URI' },
       },
     },
   },
@@ -262,13 +263,97 @@ const sceneTypes: SceneTypeInfo[] = [
   },
   {
     type: 'closing',
-    description: 'Branded outro. Logo scales in with spring. Tagline fades up.',
+    description: 'Branded outro. Logo scales in with spring. Tagline fades up. Optional image (logo/icon via $asset:key or data URI).',
     dataSchema: {
       type: 'object',
       properties: {
         tagline: { type: 'string' },
         timestamp: { type: 'string' },
         cta: { type: 'string' },
+        image: { type: 'string', description: 'Logo/icon — use $asset:key reference or data URI' },
+      },
+    },
+  },
+  {
+    type: 'image-card',
+    description: 'Full-bleed image with optional caption overlay. Image fades in with subtle zoom. Caption slides up from bottom.',
+    dataSchema: {
+      type: 'object',
+      required: ['image'],
+      properties: {
+        image: { type: 'string', description: 'Image source — use $asset:key reference, HTTPS URL, or data URI' },
+        caption: { type: 'string' },
+        fit: { type: 'string', enum: ['cover', 'contain', 'fill'], default: 'cover' },
+        position: { type: 'string', enum: ['center', 'top', 'bottom'], default: 'center' },
+        overlay: { type: 'string', enum: ['none', 'gradient', 'dark'], default: 'none' },
+      },
+    },
+  },
+  {
+    type: 'bullet-list',
+    description: 'Animated bullet list with staggered entrance. Items slide in with spring easing. Supports icons, highlight borders, and sub-text. Respects animation.textEffect, animation.stagger, animation.direction overrides.',
+    dataSchema: {
+      type: 'object',
+      required: ['items'],
+      properties: {
+        title: { type: 'string' },
+        subtitle: { type: 'string' },
+        items: {
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['text'],
+            properties: {
+              text: { type: 'string' },
+              sub: { type: 'string', description: 'Secondary description line' },
+              icon: { type: 'string', description: 'Emoji or HTML icon' },
+              highlight: { type: 'boolean', description: 'Add accent left border' },
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    type: 'stat-counter',
+    description: 'Big animated numbers that count up from 0. Cards with optional progress bars, change indicators, and descriptions. Ideal for metrics, KPIs, and achievements.',
+    dataSchema: {
+      type: 'object',
+      required: ['stats'],
+      properties: {
+        title: { type: 'string' },
+        stats: {
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['value', 'label'],
+            properties: {
+              value: { type: ['string', 'number'], description: 'Numeric value to count up to' },
+              label: { type: 'string' },
+              prefix: { type: 'string', description: 'e.g. "$"' },
+              suffix: { type: 'string', description: 'e.g. "%", "ms"' },
+              icon: { type: 'string' },
+              description: { type: 'string' },
+              change: { type: 'string', description: 'e.g. "+12%"' },
+              changeDirection: { type: 'string', enum: ['up', 'down'] },
+              progress: { type: 'number', description: '0-100, fills a progress bar' },
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    type: 'text-reveal',
+    description: 'Cinematic text reveal scene. Supports word-by-word, typewriter, char-cascade, fade-lines, and highlight-sweep text effects via animation.textEffect. Use <em> or <strong> in headline for gradient-colored emphasis. Great for key messages, quotes, or dramatic reveals.',
+    dataSchema: {
+      type: 'object',
+      required: ['headline'],
+      properties: {
+        eyebrow: { type: 'string', description: 'Small uppercase label above headline' },
+        headline: { type: 'string', description: 'Main text. Supports <em>/<strong> for accent coloring' },
+        body: { type: 'string', description: 'Supporting body text below headline' },
+        footnote: { type: 'string', description: 'Small monospaced note at bottom' },
       },
     },
   },

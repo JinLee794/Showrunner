@@ -1,0 +1,200 @@
+<div class="scene image-card" data-effect="{{#if data.effect}}{{data.effect}}{{else}}ken-burns{{/if}}">
+  <div class="image-card__container">
+    <img
+      class="image-card__img"
+      src="{{{data.image}}}"
+      alt="{{#if data.caption}}{{data.caption}}{{else}}Scene image{{/if}}"
+      style="object-fit: {{#if data.fit}}{{data.fit}}{{else}}cover{{/if}}; object-position: {{#if data.position}}{{data.position}}{{else}}center{{/if}};"
+    />
+    {{#if data.overlay}}
+    {{#if (eq data.overlay 'gradient')}}
+    <div class="image-card__overlay image-card__overlay--gradient"></div>
+    {{/if}}
+    {{#if (eq data.overlay 'dark')}}
+    <div class="image-card__overlay image-card__overlay--dark"></div>
+    {{/if}}
+    {{/if}}
+    {{#if data.title}}
+    <div class="image-card__title-overlay">
+      <h2 class="image-card__title">{{data.title}}</h2>
+      {{#if data.subtitle}}
+      <p class="image-card__subtitle">{{data.subtitle}}</p>
+      {{/if}}
+    </div>
+    {{/if}}
+    {{#if data.caption}}
+    <div class="image-card__caption-bar">
+      <p class="image-card__caption">{{data.caption}}</p>
+    </div>
+    {{/if}}
+  </div>
+</div>
+
+<style>
+  .image-card {
+    padding: 0;
+    background: var(--bg-primary);
+  }
+
+  .image-card__container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .image-card__img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .image-card__overlay--gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .image-card__overlay--dark {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    pointer-events: none;
+  }
+
+  .image-card__title-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+    width: 80%;
+  }
+
+  .image-card__title {
+    font-family: var(--font-heading);
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.1;
+  }
+
+  .image-card__subtitle {
+    font-size: 1.4rem;
+    color: rgba(255,255,255,0.85);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    margin: 0;
+  }
+
+  .image-card__caption-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 5);
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
+  }
+
+  .image-card__caption {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    margin: 0;
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+    var effect = document.querySelector('.image-card').getAttribute('data-effect') || 'ken-burns';
+
+    // Entrance: fade in
+    tl.from('.image-card__img', {
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.out'
+    }, 0);
+
+    // Ken Burns: slow zoom + pan over entire duration
+    if (effect === 'ken-burns') {
+      tl.fromTo('.image-card__img', {
+        scale: 1.0,
+        x: 0,
+        y: 0,
+      }, {
+        scale: 1.15,
+        x: -20,
+        y: -10,
+        duration: 1,
+        ease: 'none'
+      }, 0);
+    } else if (effect === 'zoom-in') {
+      tl.fromTo('.image-card__img', {
+        scale: 1.0
+      }, {
+        scale: 1.25,
+        duration: 1,
+        ease: 'power1.inOut'
+      }, 0);
+    } else if (effect === 'pan-left') {
+      tl.fromTo('.image-card__img', {
+        x: '5%'
+      }, {
+        x: '-5%',
+        duration: 1,
+        ease: 'none'
+      }, 0);
+    } else if (effect === 'pan-right') {
+      tl.fromTo('.image-card__img', {
+        x: '-5%'
+      }, {
+        x: '5%',
+        duration: 1,
+        ease: 'none'
+      }, 0);
+    }
+    // effect === 'static' — no motion
+
+    if (document.querySelector('.image-card__overlay')) {
+      tl.from('.image-card__overlay', {
+        opacity: 0,
+        duration: 0.4,
+        ease: 'power2.out'
+      }, 0.1);
+    }
+
+    if (document.querySelector('.image-card__title-overlay')) {
+      tl.from('.image-card__title', {
+        y: 30,
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.out'
+      }, 0.2);
+      if (document.querySelector('.image-card__subtitle')) {
+        tl.from('.image-card__subtitle', {
+          y: 20,
+          opacity: 0,
+          duration: 0.4,
+          ease: 'power3.out'
+        }, 0.35);
+      }
+    }
+
+    if (document.querySelector('.image-card__caption-bar')) {
+      tl.from('.image-card__caption-bar', {
+        y: 40,
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.out'
+      }, 0.3);
+    }
+
+    return tl;
+  };
+</script>

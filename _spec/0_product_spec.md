@@ -77,7 +77,7 @@ The spec and README have been promising the future tense in the present tense. T
 ### Current Gap Register
 
 | Area | What the docs imply | What the repo actually does today | Priority |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Public contract parity | The public surface reads like a complete product | The repo is a prototype with a narrower supported path than the docs advertise | P0 |
 | Scene catalog parity | All listed scene types are renderable | Multiple scene types are present in the schema but have no matching template implementation (`risk-callout`, `deal-team`, `chart-line`, `chart-donut`) | P0 |
 | Theme parity | Four built-in themes plus custom branding are available | Only `corporate-dark` and `microsoft` ship as real theme files | P0 |
@@ -103,11 +103,13 @@ Problem:
 The current docs market the destination as if it is already the current release.
 
 Required changes:
+
 - Mark target-state sections as planned where needed.
 - Remove or qualify unsupported claims about themes, scene types, transitions, output modes, and formats.
 - Align tool docs with actual handler behavior.
 
 Acceptance criteria:
+
 - A new contributor can read the README and spec without being misled about what works today.
 - No unsupported scene type, theme, output mode, or format is described as currently available.
 - The documented tool contracts match the shipped MCP handlers.
@@ -118,11 +120,13 @@ Problem:
 Validation is currently strongest in the one tool that does not render anything.
 
 Required changes:
+
 - Reuse scene-type validation in `render_video`, `render_scene`, and `preview_storyboard`.
 - Fail early with actionable errors before template loading or frame capture begins.
 - Add fixture coverage for valid and invalid storyboards.
 
 Acceptance criteria:
+
 - Invalid scene data is rejected before rendering starts.
 - Validation error messages identify the scene index, scene type, and failing field.
 - `validate_storyboard` and the render tools accept and reject the same inputs.
@@ -133,11 +137,13 @@ Problem:
 The schema advertises a broader scene and theme catalog than the repo actually implements.
 
 Required changes:
+
 - Either implement the missing scene templates and themes or remove them from the supported enum and docs until they exist.
 - Add a parity check that asserts schema entries map to actual templates and themes.
 - Decide whether `custom` branding is a supported theme mode or still planned work.
 
 Acceptance criteria:
+
 - Every supported scene type has a template, validation schema, and example fixture coverage.
 - Every supported theme resolves to a real file.
 - Unsupported options fail with explicit messages instead of surfacing later as missing files.
@@ -148,11 +154,13 @@ Problem:
 The spec describes a richer tool interface than the handlers actually honor.
 
 Required changes:
+
 - Decide whether `render_scene` genuinely supports `gif` and `png-sequence`; if not, cut those claims for now.
 - Either implement output strategies in the transport layer or document local-path-only behavior until remote output exists.
 - Remove placeholder abstractions from public promises until they are wired into the runtime.
 
 Acceptance criteria:
+
 - Every advertised tool argument changes runtime behavior in a tested way.
 - Remote output is either implemented end-to-end or documented as future work.
 - There are no placeholder classes described as production behavior.
@@ -163,11 +171,13 @@ Problem:
 Transition behavior is documented in detail, but the render pipeline still behaves like sequential scene concatenation.
 
 Required changes:
+
 - Implement overlap rendering and compositing, or narrow the current transition contract to `cut` only.
 - Add visual smoke tests or snapshot checks for the supported transitions.
 - Keep the transition docs tied to what is actually executable.
 
 Acceptance criteria:
+
 - Supported transitions produce visibly distinct output in a fixture render.
 - Unsupported transitions are rejected or omitted from the public contract.
 - Transition helpers are either integrated or removed.
@@ -178,11 +188,13 @@ Problem:
 Preview is useful, but it currently mirrors runtime behavior through duplicated logic and dynamic script evaluation.
 
 Required changes:
+
 - Extract shared scene preprocessing so preview and render use the same code path.
 - Remove or isolate `eval`-driven execution where possible.
 - Add smoke coverage ensuring preview loads every supported scene type.
 
 Acceptance criteria:
+
 - Preview and render share scene preprocessing logic.
 - Preview can load all supported fixtures without custom per-scene hacks.
 - The preview runtime is easier to inspect and debug than it is today.
@@ -193,11 +205,13 @@ Problem:
 Right now the test command is mostly decorative.
 
 Required changes:
+
 - Add schema validation tests, template render smoke tests, and at least one end-to-end renderer smoke test.
 - Add parity tests for schema-to-template and theme-to-file mapping.
 - Gate future feature claims behind tests.
 
 Acceptance criteria:
+
 - `npm test` executes real automated coverage.
 - Core paths fail loudly when a scene template, theme file, or tool contract drifts.
 - The repo has a minimum confidence floor before adding new surface area.

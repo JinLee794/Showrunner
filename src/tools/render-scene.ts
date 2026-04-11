@@ -15,6 +15,10 @@ export const renderSceneTool = {
         type: 'object',
         description: 'A single scene definition with type, duration, and data.',
       },
+      assets: {
+        type: 'object',
+        description: 'Optional asset map. Keys are names, values are HTTPS URLs or data URIs. Reference in scene data as $asset:key.',
+      },
       theme: {
         type: 'string',
         default: 'corporate-dark',
@@ -44,6 +48,9 @@ export async function handleRenderScene(
   renderer: Renderer
 ) {
   const scene = SceneSchema.parse(args.scene);
+  const assets = (typeof args.assets === 'object' && args.assets !== null)
+    ? args.assets as Record<string, string>
+    : undefined;
   const theme = (typeof args.theme === 'string' ? args.theme : 'corporate-dark');
   const resolution = (Array.isArray(args.resolution) ? args.resolution : [1920, 1080]) as [number, number];
   const fps = (typeof args.fps === 'number' ? args.fps : 30) as 24 | 30 | 60;
@@ -56,6 +63,7 @@ export async function handleRenderScene(
     resolution,
     fps,
     outputPath,
+    assets,
   });
 
   return {

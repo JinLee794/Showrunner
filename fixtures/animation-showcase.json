@@ -1,0 +1,289 @@
+{
+  "title": "Showrunner Animation Expansion — Showcase",
+  "theme": "microsoft",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 5,
+      "data": {
+        "title": "Animation System v2",
+        "subtitle": "Text Effects · Pacing Control · New Scene Types",
+        "date": "April 2026",
+        "presenter": "Showrunner Engine"
+      },
+      "animation": {
+        "textEffect": "char-cascade",
+        "easing": "expo",
+        "exitAnimation": "fade"
+      }
+    },
+    {
+      "type": "section-header",
+      "duration": 4,
+      "data": {
+        "heading": "Text Effects",
+        "subheading": "Six new ways to reveal text on screen"
+      },
+      "animation": {
+        "textEffect": "word-reveal",
+        "easing": "spring"
+      }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 5,
+      "data": {
+        "eyebrow": "WORD REVEAL",
+        "headline": "Every word fades up <em>individually</em> for dramatic impact",
+        "body": "Perfect for key messages, mission statements, and cinematic moments."
+      },
+      "animation": {
+        "textEffect": "word-reveal",
+        "easing": "expo",
+        "stagger": 0.1,
+        "exitAnimation": "fade"
+      }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 5,
+      "data": {
+        "eyebrow": "CHARACTER CASCADE",
+        "headline": "Characters cascade in with 3D rotation",
+        "body": "A dramatic entrance for titles and hero text.",
+        "footnote": "animation.textEffect = \"char-cascade\""
+      },
+      "animation": {
+        "textEffect": "char-cascade",
+        "easing": "spring",
+        "exitAnimation": "slide-up"
+      }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 5,
+      "data": {
+        "eyebrow": "TYPEWRITER",
+        "headline": "Characters appear one by one like a terminal",
+        "body": "Great for technical content and developer-focused presentations.",
+        "footnote": "animation.textEffect = \"typewriter\""
+      },
+      "animation": {
+        "textEffect": "typewriter",
+        "easing": "linear",
+        "exitAnimation": "fade"
+      }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 5,
+      "data": {
+        "eyebrow": "HIGHLIGHT SWEEP",
+        "headline": "A color sweep highlights the key phrase",
+        "footnote": "animation.textEffect = \"highlight-sweep\""
+      },
+      "animation": {
+        "textEffect": "highlight-sweep",
+        "easing": "easeInOut",
+        "exitAnimation": "fade"
+      }
+    },
+    {
+      "type": "section-header",
+      "duration": 4,
+      "data": {
+        "heading": "New Scene Types",
+        "subheading": "bullet-list · stat-counter · text-reveal"
+      },
+      "animation": {
+        "textEffect": "word-reveal",
+        "easing": "expo"
+      }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 6,
+      "data": {
+        "title": "What's New in the Engine",
+        "subtitle": "The animation system just got a major upgrade",
+        "items": [
+          { "text": "6 text display effects", "sub": "typewriter, word-reveal, char-cascade, fade-lines, highlight-sweep, counter", "highlight": true },
+          { "text": "8 new easing curves", "sub": "elastic, slow, snap, power1, power4, circ, expo, steps", "icon": "🎯" },
+          { "text": "Pacing phase control", "sub": "entrance / hold / exit ratios per scene", "icon": "⏱" },
+          { "text": "Exit animations", "sub": "fade, slide-up, slide-down, scale-down", "icon": "🎬" },
+          { "text": "Speed multiplier", "sub": "Slow-mo to fast-forward: 0.1× to 5×", "icon": "⚡" }
+        ]
+      },
+      "animation": {
+        "stagger": 0.18,
+        "easing": "spring",
+        "direction": "left",
+        "exitAnimation": "slide-up"
+      }
+    },
+    {
+      "type": "stat-counter",
+      "duration": 7,
+      "data": {
+        "title": "Animation System by the Numbers",
+        "stats": [
+          { "value": 21, "label": "Scene Types", "suffix": "", "change": "+3 new", "changeDirection": "up", "progress": 88 },
+          { "value": 13, "label": "Easing Curves", "suffix": "", "change": "+8 new", "changeDirection": "up", "progress": 100 },
+          { "value": 6, "label": "Text Effects", "suffix": "", "description": "typewriter · word-reveal · char-cascade · fade-lines · highlight-sweep · counter", "progress": 75 },
+          { "value": 4, "label": "Exit Animations", "suffix": "", "description": "fade · slide-up · slide-down · scale-down", "progress": 60 }
+        ]
+      },
+      "animation": {
+        "easing": "power4",
+        "stagger": 0.2,
+        "pacing": { "entrance": 0.25, "hold": 0.6, "exit": 0.15 },
+        "exitAnimation": "fade"
+      }
+    },
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Pacing Control",
+        "subheading": "Entrance · Hold · Exit — fine-tuned per scene"
+      },
+      "animation": {
+        "easing": "expo"
+      }
+    },
+    {
+      "type": "bullet-list",
+      "duration": 6,
+      "data": {
+        "title": "Pacing Strategies",
+        "items": [
+          { "text": "Short scenes (3–4s)", "sub": "entrance: 0.5 · hold: 0.5 · exit: 0 — All motion up front", "highlight": true },
+          { "text": "Standard scenes (5–7s)", "sub": "entrance: 0.3 · hold: 0.5 · exit: 0.2 — Balanced default", "icon": "⚖️" },
+          { "text": "Long scenes (8–15s)", "sub": "entrance: 0.2 · hold: 0.6 · exit: 0.2 — Deliberate pace", "icon": "🐢" },
+          { "text": "Cinematic reveals", "sub": "speed: 0.7 · delay: 0.5 · textEffect: word-reveal", "icon": "🎥" }
+        ]
+      },
+      "animation": {
+        "stagger": 0.2,
+        "easing": "spring",
+        "direction": "up",
+        "pacing": { "entrance": 0.35, "hold": 0.5, "exit": 0.15 }
+      }
+    },
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Easing Showcase",
+        "subheading": "13 curves for every mood"
+      },
+      "animation": {
+        "textEffect": "word-reveal",
+        "easing": "spring"
+      }
+    },
+    {
+      "type": "comparison",
+      "duration": 6,
+      "data": {
+        "title": "Easing Personality Guide",
+        "left": {
+          "label": "Corporate / Professional",
+          "items": [
+            "easeOut — Reliable default",
+            "easeInOut — Smooth transitions",
+            "power1 — Gentle, subtle",
+            "snap — Sharp, decisive",
+            "circ — Clean geometric"
+          ]
+        },
+        "right": {
+          "label": "Dynamic / Playful",
+          "items": [
+            "spring — Overshoot bounce",
+            "bouncy — Elastic wobble",
+            "elastic — Tight snap",
+            "expo — Dramatic punch",
+            "slow — Cinematic reveal"
+          ]
+        }
+      },
+      "animation": {
+        "stagger": 0.1,
+        "easing": "spring"
+      }
+    },
+    {
+      "type": "kpi-scorecard",
+      "duration": 6,
+      "data": {
+        "kpis": [
+          { "label": "Render Speed", "value": 15, "unit": "sec/13s video", "trend": "down" },
+          { "label": "Scene Templates", "value": 21, "unit": "types", "trend": "up" },
+          { "label": "Schema Fields", "value": 9, "unit": "animation overrides", "trend": "up" },
+          { "label": "Backward Compat", "value": "100", "unit": "%", "trend": "flat" }
+        ]
+      },
+      "animation": {
+        "stagger": 0.15,
+        "easing": "spring",
+        "pacing": { "entrance": 0.3, "hold": 0.55, "exit": 0.15 }
+      }
+    },
+    {
+      "type": "code-terminal",
+      "duration": 7,
+      "data": {
+        "title": "Using Animation Overrides",
+        "shell": "storyboard.json",
+        "lines": [
+          { "kind": "comment", "text": "Add animation overrides to any scene:" },
+          { "kind": "prompt", "text": "<span class=\"string\">\"animation\"</span>: {" },
+          { "kind": "output", "text": "  <span class=\"string\">\"textEffect\"</span>: <span class=\"string\">\"word-reveal\"</span>," },
+          { "kind": "output", "text": "  <span class=\"string\">\"easing\"</span>: <span class=\"string\">\"expo\"</span>," },
+          { "kind": "output", "text": "  <span class=\"string\">\"stagger\"</span>: <span class=\"number\">0.15</span>," },
+          { "kind": "output", "text": "  <span class=\"string\">\"speed\"</span>: <span class=\"number\">0.8</span>," },
+          { "kind": "output", "text": "  <span class=\"string\">\"exitAnimation\"</span>: <span class=\"string\">\"fade\"</span>," },
+          { "kind": "output", "text": "  <span class=\"string\">\"pacing\"</span>: { <span class=\"string\">\"entrance\"</span>: <span class=\"number\">0.3</span>, <span class=\"string\">\"hold\"</span>: <span class=\"number\">0.5</span> }" },
+          { "kind": "prompt", "text": "}" },
+          { "kind": "blank" },
+          { "kind": "success", "text": "✅ Templates now read these values at render time" }
+        ]
+      },
+      "animation": {
+        "stagger": 0.06,
+        "easing": "easeOut"
+      }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 5,
+      "data": {
+        "eyebrow": "WHAT THIS MEANS",
+        "headline": "Agents can now <em>precisely control</em> how every scene feels",
+        "body": "Pacing, easing, text effects, and exit animations — all from the storyboard JSON."
+      },
+      "animation": {
+        "textEffect": "word-reveal",
+        "easing": "slow",
+        "delay": 0.3,
+        "exitAnimation": "fade"
+      }
+    },
+    {
+      "type": "closing",
+      "duration": 5,
+      "data": {
+        "tagline": "Showrunner Animation System v2",
+        "cta": "See docs/animation-prompt-guide.md",
+        "timestamp": "April 2026"
+      },
+      "animation": {
+        "easing": "expo",
+        "exitAnimation": "fade"
+      }
+    }
+  ]
+}
