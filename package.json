@@ -1,6 +1,6 @@
 {
   "name": "@jinlee794/showrunner-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for programmatic video generation — storyboard JSON in, MP4 out.",
   "type": "module",
   "main": "dist/server.js",
