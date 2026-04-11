@@ -64,10 +64,10 @@
     fill: var(--text-secondary);
   }
 
-  .chart-bar__svg-wrap .axis-x line,
   .chart-bar__svg-wrap .axis-x path,
-  .chart-bar__svg-wrap .axis-y line,
-  .chart-bar__svg-wrap .axis-y path {
+  .chart-bar__svg-wrap .axis-y path,
+  .chart-bar__svg-wrap .axis-x line,
+  .chart-bar__svg-wrap .axis-y line {
     stroke: var(--bg-tertiary);
   }
 
@@ -77,7 +77,7 @@
     stroke-dasharray: 4 4;
   }
 
-  .chart-bar__svg-wrap .bar-value {
+  .chart-bar__svg-wrap .bar-value-label {
     font-family: var(--font-mono);
     font-size: 12px;
     font-weight: 700;
@@ -103,7 +103,7 @@
   .chart-bar__legend-swatch {
     width: 14px;
     height: 14px;
-    border-radius: 4px;
+    border-radius: 3px;
   }
 
   .chart-bar__annotation {
@@ -121,46 +121,55 @@
     var chartData = dataEl ? JSON.parse(dataEl.textContent || '{}') : {};
     var labels = chartData.labels || [];
     var datasets = chartData.datasets || [];
+    var anim = window.__anim || {};
+    var stagger = anim.stagger || 0.08;
 
     var container = document.getElementById('chart-bar-svg');
     var margin = { top: 30, right: 30, bottom: 50, left: 60 };
-    var width = (container.offsetWidth || 900) - margin.left - margin.right;
-    var height = (container.offsetHeight || 400) - margin.top - margin.bottom;
+    var outerW = (container.offsetWidth || 1026);
+    var outerH = (container.offsetHeight || 400);
+    var width = outerW - margin.left - margin.right;
+    var height = outerH - margin.top - margin.bottom;
 
     var svg = d3.select('#chart-bar-svg')
       .append('svg')
-      .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+      .attr('viewBox', '0 0 ' + outerW + ' ' + outerH)
       .attr('preserveAspectRatio', 'xMidYMid meet')
       .append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     var defs = svg.append('defs');
 
-    // Glow filter
-    var filter = defs.append('filter').attr('id', 'bar-glow').attr('x', '-30%').attr('y', '-30%').attr('width', '160%').attr('height', '160%');
-    filter.append('feGaussianBlur').attr('stdDeviation', '4').attr('result', 'coloredBlur');
-    var merge = filter.append('feMerge');
-    merge.append('feMergeNode').attr('in', 'coloredBlur');
-    merge.append('feMergeNode').attr('in', 'SourceGraphic');
-
-    // Gradient per dataset
-    datasets.forEach(function(ds, di) {
+    // Per-dataset bar gradients
+    var palette = ['#4fc3f7', '#a78bfa', '#f39c12', '#2ecc71', '#e74c3c', '#1abc9c', '#e91e63', '#00bcd4'];
+    datasets.forEach(function(ds, i) {
+      if (!ds.color) ds.color = palette[i % palette.length];
       var grad = defs.append('linearGradient')
-        .attr('id', 'bar-grad-' + di)
+        .attr('id', 'bar-grad-' + i)
         .attr('x1', '0').attr('y1', '0')
         .attr('x2', '0').attr('y2', '1');
       grad.append('stop').attr('offset', '0%').attr('stop-color', ds.color).attr('stop-opacity', 1);
-      grad.append('stop').attr('offset', '100%').attr('stop-color', ds.color).attr('stop-opacity', 0.45);
+      grad.append('stop').attr('offset', '100%').attr('stop-color', ds.color).attr('stop-opacity', 0.6);
     });
 
-    // Scales
-    var x0 = d3.scaleBand().domain(labels).range([0, width]).paddingInner(0.25).paddingOuter(0.15);
-    var x1 = d3.scaleBand().domain(datasets.map(function(_, i) { return String(i); }))
-      .range([0, x0.bandwidth()]).padding(0.1);
-    var maxVal = d3.max(datasets, function(ds) { return d3.max(ds.values); }) || 1;
-    var y = d3.scaleLinear().domain([0, maxVal * 1.15]).range([height, 0]).nice();
+    // Drop shadow for bars
+    var filter = defs.append('filter').attr('id', 'bar-shadow')
+      .attr('x', '-10%').attr('y', '-10%').attr('width', '120%').attr('height', '130%');
+    filter.append('feGaussianBlur').attr('stdDeviation', '3').attr('in', 'SourceAlpha').attr('result', 'blur');
+    filter.append('feOffset').attr('dx', '0').attr('dy', '2').attr('result', 'offsetBlur');
+    var merge = filter.append('feMerge');
+    merge.append('feMergeNode').attr('in', 'offsetBlur');
+    merge.append('feMergeNode').attr('in', 'SourceGraphic');
 
-    // Grid
+    // Scales
+    var x0 = d3.scaleBand().domain(labels).range([0, width]).padding(0.3);
+    var x1 = d3.scaleBand().domain(datasets.map(function(_, i) { return i; })).range([0, x0.bandwidth()]).padding(0.08);
+
+    var allVals = datasets.flatMap(function(ds) { return ds.values; });
+    var yMax = d3.max(allVals) || 1;
+    var y = d3.scaleLinear().domain([0, yMax * 1.12]).range([height, 0]).nice();
+
+    // Grid lines
     svg.selectAll('.grid-line')
       .data(y.ticks(5))
       .enter().append('line')
@@ -183,68 +192,74 @@
         .tickFormat(function(d) { return d >= 1000 ? (d / 1000) + 'k' : String(d); }))
       .select('.domain').remove();
 
-    // Bar groups
-    var groups = svg.selectAll('.bar-group')
-      .data(labels)
-      .enter().append('g')
-      .attr('class', 'bar-group')
-      .attr('transform', function(d) { return 'translate(' + x0(d) + ',0)'; });
-
-    var barRadius = 5;
-    datasets.forEach(function(ds, di) {
-      groups.each(function(label, li) {
+    // Create bars — start at baseline (height = 0) for animation
+    var barRects = [];
+    var barValues = [];
+    labels.forEach(function(label, li) {
+      datasets.forEach(function(ds, di) {
         var val = ds.values[li] || 0;
-        var barH = height - y(val);
-        var bx = x1(String(di));
-        var bw = x1.bandwidth();
-        var by = y(val);
-        var r = Math.min(barRadius, bw / 2, barH > 0 ? barH : 0);
+        var targetY = y(val);
+        var targetH = height - targetY;
+        var barX = x0(label) + x1(di);
 
-        // Rounded top bar path
-        var path = barH > 0
-          ? ('M' + bx + ',' + height
-            + 'V' + (by + r)
-            + 'Q' + bx + ',' + by + ' ' + (bx + r) + ',' + by
-            + 'H' + (bx + bw - r)
-            + 'Q' + (bx + bw) + ',' + by + ' ' + (bx + bw) + ',' + (by + r)
-            + 'V' + height + 'Z')
-          : ('M' + bx + ',' + height + 'H' + (bx + bw) + 'V' + height + 'Z');
-
-        d3.select(this).append('path')
-          .attr('class', 'chart-bar__d3-bar')
-          .attr('d', path)
+        // Bar rect — starts at baseline
+        var rect = svg.append('rect')
+          .attr('class', 'bar-rect bar-rect-' + li + '-' + di)
+          .attr('x', barX)
+          .attr('y', height)
+          .attr('width', x1.bandwidth())
+          .attr('height', 0)
+          .attr('rx', 3)
+          .attr('ry', 3)
           .attr('fill', 'url(#bar-grad-' + di + ')')
-          .attr('filter', 'url(#bar-glow)')
-          .attr('data-value', val)
-          .attr('data-dataset', di);
+          .attr('filter', 'url(#bar-shadow)');
 
-        // Value label above bar
-        d3.select(this).append('text')
-          .attr('class', 'bar-value')
-          .attr('x', bx + bw / 2)
-          .attr('y', by - 10)
-          .text(val)
-          .attr('opacity', 0);
+        barRects.push({
+          node: rect.node(),
+          targetY: targetY,
+          targetH: targetH,
+          groupIdx: li,
+          datasetIdx: di
+        });
+
+        // Value label above bar — starts hidden
+        var text = svg.append('text')
+          .attr('class', 'bar-value-label bar-value-label-' + li + '-' + di)
+          .attr('x', barX + x1.bandwidth() / 2)
+          .attr('y', targetY - 8)
+          .attr('opacity', 0)
+          .text(val);
+
+        barValues.push({
+          node: text.node(),
+          val: val,
+          groupIdx: li,
+          datasetIdx: di
+        });
       });
     });
 
     window.__buildTimeline = function() {
       var tl = gsap.timeline({ paused: true });
 
+      // Container slides up
       tl.from('.chart-bar__container', {
         y: 20, opacity: 0, scale: 0.98,
         duration: 0.4, ease: 'power2.out'
       });
 
+      // Title entrance
       tl.from('.chart-bar__title', {
         y: 30, opacity: 0,
         duration: 0.4, ease: 'back.out(1.7)'
       }, 0);
 
+      // Grid lines fade in
       tl.from('.grid-line', {
         opacity: 0, duration: 0.3, stagger: 0.04, ease: 'power2.out'
       }, '-=0.2');
 
+      // Axis labels
       tl.from('.axis-x text', {
         opacity: 0, y: 10, duration: 0.3, stagger: 0.05, ease: 'power2.out'
       }, '-=0.2');
@@ -253,260 +268,52 @@
         opacity: 0, x: -10, duration: 0.3, stagger: 0.04, ease: 'power2.out'
       }, '<');
 
-      var allBars = document.querySelectorAll('.chart-bar__d3-bar');
-      allBars.forEach(function(bar) {
-        bar.style.transformOrigin = '50% 100%';
-        bar.style.transformBox = 'fill-box';
+      // === HERO ANIMATION: bars grow from baseline ===
+      tl.addLabel('barGrow');
+      barRects.forEach(function(bar, i) {
+        // Animate SVG y and height attrs: y goes from baseline to target,
+        // height goes from 0 to target. GSAP can animate SVG attributes via attr plugin.
+        tl.to(bar.node, {
+          attr: { y: bar.targetY, height: bar.targetH },
+          duration: 0.8,
+          ease: anim.ease || 'power2.out'
+        }, 'barGrow+=' + (stagger * i).toFixed(3));
       });
-      tl.from(allBars, {
-        scaleY: 0, duration: 0.7, stagger: 0.06, ease: 'back.out(1.1)'
-      }, '-=0.15');
 
-      var valueTxts = document.querySelectorAll('.bar-value');
-      valueTxts.forEach(function(el) {
-        var target = parseFloat(el.textContent || '0');
+      // Value labels fade in and count up in sync with their bars
+      barValues.forEach(function(bv, i) {
         var obj = { val: 0 };
-        var isInt = Number.isInteger(target);
-        tl.to(el, { opacity: 1, duration: 0.15 }, '-=0.6');
+        var isInt = Number.isInteger(bv.val);
+        tl.to(bv.node, { opacity: 1, duration: 0.1 },
+          'barGrow+=' + (stagger * i + 0.3).toFixed(3));
         tl.to(obj, {
-          val: target, duration: 0.5, ease: 'power2.out',
+          val: bv.val,
+          duration: 0.5,
+          ease: 'power2.out',
           onUpdate: function() {
-            el.textContent = isInt ? Math.round(obj.val).toString() : obj.val.toFixed(1);
+            bv.node.textContent = isInt ? Math.round(obj.val) : obj.val.toFixed(1);
           }
-        }, '-=0.5');
+        }, 'barGrow+=' + (stagger * i + 0.3).toFixed(3));
       });
 
+      // Legend
       tl.from('.chart-bar__legend-item', {
         opacity: 0, x: -10, duration: 0.3, stagger: 0.1, ease: 'power2.out'
       }, '-=0.2');
 
       var annotation = document.querySelector('.chart-bar__annotation');
       if (annotation) {
-        tl.from(annotation, { opacity: 0, duration: 0.3, ease: 'power2.out' }, '-=0.1');
+        tl.from(annotation, {
+          opacity: 0, duration: 0.3, ease: 'power2.out'
+        }, '-=0.1');
       }
 
+      // Hold
       tl.to({}, { duration: 0.3 });
+
+      if (window.__buildExit) tl.add(window.__buildExit());
+
       return tl;
     };
   })();
-</script>
-
-<style>
-  .chart-bar {
-    align-items: flex-start;
-    padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 10);
-  }
-
-  .chart-bar__title {
-    margin-bottom: calc(var(--spacing-unit) * 3);
-  }
-
-  .chart-bar__container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--spacing-unit) * 3);
-    background: var(--glass-bg, var(--bg-secondary));
-    backdrop-filter: blur(var(--glass-blur, 16px));
-    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
-    border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
-    border-radius: var(--border-radius);
-    padding: calc(var(--spacing-unit) * 4);
-    box-shadow: var(--shadow-card);
-  }
-
-  .chart-bar__chart {
-    display: flex;
-    align-items: stretch;
-    justify-content: space-around;
-    height: 350px;
-    width: 100%;
-    padding-bottom: calc(var(--spacing-unit) * 4);
-    border-bottom: 1px solid var(--bg-tertiary);
-    border-left: 1px solid var(--bg-tertiary);
-    position: relative;
-  }
-
-  /* Subtle horizontal grid lines */
-  .chart-bar__chart::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: repeating-linear-gradient(
-      to top,
-      transparent,
-      transparent 69px,
-      var(--bg-tertiary) 69px,
-      var(--bg-tertiary) 70px
-    );
-    opacity: 0.4;
-    pointer-events: none;
-  }
-
-  .chart-bar__group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: calc(var(--spacing-unit) * 1);
-    flex: 1;
-    justify-content: flex-end;
-    position: relative;
-    z-index: 1;
-  }
-
-  .chart-bar__bars {
-    display: flex;
-    gap: 6px;
-    align-items: flex-end;
-    flex: 1;
-    min-height: 0;
-  }
-
-  .chart-bar__bar {
-    width: 44px;
-    border-radius: 6px 6px 0 0;
-    transform-origin: bottom center;
-    background: linear-gradient(180deg, var(--bar-color), color-mix(in srgb, var(--bar-color) 70%, transparent));
-    box-shadow: 0 -2px 12px color-mix(in srgb, var(--bar-color) 20%, transparent);
-    position: relative;
-  }
-
-  .chart-bar__values {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-  }
-
-  .chart-bar__value {
-    font-size: 0.9rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    font-family: var(--font-mono);
-    min-width: 44px;
-    text-align: center;
-    opacity: 0;
-  }
-
-  .chart-bar__label {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-    text-align: center;
-  }
-
-  .chart-bar__legend {
-    display: flex;
-    justify-content: center;
-    gap: calc(var(--spacing-unit) * 4);
-  }
-
-  .chart-bar__legend-item {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--spacing-unit) * 1);
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-  }
-
-  .chart-bar__legend-swatch {
-    width: 14px;
-    height: 14px;
-    border-radius: 4px;
-    box-shadow: 0 0 6px color-mix(in srgb, currentColor 20%, transparent);
-  }
-
-  .chart-bar__annotation {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    font-style: italic;
-    text-align: center;
-    margin-top: calc(var(--spacing-unit) * 1);
-  }
-</style>
-
-<script>
-  window.__buildTimeline = function() {
-    var tl = gsap.timeline({ paused: true });
-
-    // Container card entrance
-    tl.from('.chart-bar__container', {
-      y: 20,
-      opacity: 0,
-      scale: 0.98,
-      duration: 0.4,
-      ease: 'power2.out'
-    });
-
-    // Compute max value, set bar heights
-    var bars = document.querySelectorAll('.chart-bar__bar');
-    var maxVal = 0;
-    bars.forEach(function(bar) {
-      var v = parseFloat(bar.getAttribute('data-value') || '0');
-      if (v > maxVal) maxVal = v;
-    });
-    bars.forEach(function(bar) {
-      var v = parseFloat(bar.getAttribute('data-value') || '0');
-      var pct = maxVal > 0 ? (v / maxVal) * 100 : 0;
-      bar.style.height = pct + '%';
-    });
-
-    tl.from('.chart-bar__title', {
-      y: 30,
-      opacity: 0,
-      duration: 0.4,
-      ease: 'back.out(1.7)'
-    }, 0);
-
-    tl.from('.chart-bar__bar', {
-      scaleY: 0,
-      duration: 0.6,
-      stagger: 0.07,
-      ease: 'back.out(1.2)'
-    }, '-=0.1');
-
-    // Animate value labels counting up
-    var valueLbls = document.querySelectorAll('.chart-bar__value');
-    valueLbls.forEach(function(el) {
-      var target = parseFloat(el.getAttribute('data-target') || '0');
-      var obj = { val: 0 };
-      var isInt = Number.isInteger(target);
-      tl.to(el, { opacity: 1, duration: 0.15 }, '-=0.55');
-      tl.to(obj, {
-        val: target,
-        duration: 0.5,
-        ease: 'power2.out',
-        onUpdate: function() {
-          el.textContent = isInt ? Math.round(obj.val).toString() : obj.val.toFixed(1);
-        }
-      }, '-=0.5');
-    });
-
-    tl.from('.chart-bar__label', {
-      opacity: 0,
-      y: 10,
-      duration: 0.3,
-      stagger: 0.06,
-      ease: 'power2.out'
-    }, '-=0.3');
-
-    tl.from('.chart-bar__legend-item', {
-      opacity: 0,
-      x: -10,
-      duration: 0.3,
-      stagger: 0.1,
-      ease: 'power2.out'
-    }, '-=0.2');
-
-    var annotation = document.querySelector('.chart-bar__annotation');
-    if (annotation) {
-      tl.from(annotation, {
-        opacity: 0,
-        duration: 0.3,
-        ease: 'power2.out'
-      }, '-=0.1');
-    }
-
-    tl.to({}, { duration: 0.3 });
-    return tl;
-  };
 </script>

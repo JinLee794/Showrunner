@@ -22,34 +22,8 @@
         "presenter": "Onboarding & Capabilities Showcase",
         "image": "$asset:logo"
       },
+      "animation": { "easing": "spring" },
       "notes": "Opening — logo replaces the accent bar"
-    },
-
-    {
-      "type": "image-card",
-      "duration": 4,
-      "transition": "fade",
-      "data": {
-        "image": "$asset:logo",
-        "title": "Showrunner",
-        "subtitle": "Your AI crew's cinematographer",
-        "fit": "contain",
-        "position": "center",
-        "overlay": "dark",
-        "effect": "zoom-in"
-      },
-      "notes": "Hero — logo with centered title overlay and slow zoom"
-    },
-
-    {
-      "type": "section-header",
-      "duration": 3,
-      "transition": "slide-left",
-      "data": {
-        "heading": "Why Showrunner?",
-        "subheading": "Your AI agents produce data. Your stakeholders consume video.",
-        "image": "$asset:logo"
-      }
     },
 
     {
@@ -77,18 +51,8 @@
           ]
         }
       },
+      "animation": { "stagger": 0.08, "direction": "left", "exitAnimation": "fade" },
       "notes": "Establish the problem-solution framing"
-    },
-
-    {
-      "type": "quote-highlight",
-      "duration": 5,
-      "transition": "fade",
-      "data": {
-        "quote": "The best way to communicate data is to turn it into a story — with motion, pacing, and visual hierarchy.",
-        "attribution": "Showrunner Design Philosophy",
-        "sentiment": "positive"
-      }
     },
 
     {
@@ -198,7 +162,7 @@
       "transition": "slide-up",
       "data": {
         "heading": "📊 Charts That Build Themselves",
-        "subheading": "Watch bars, values, and labels animate in with spring easing"
+        "subheading": "Watch bars, lines, and donut segments animate in with spring easing"
       }
     },
 
@@ -215,8 +179,43 @@
         ],
         "annotation": "Multi-dataset bar charts with per-bar spring animations"
       },
-      "animation": { "stagger": 0.06, "easing": "spring" },
+      "animation": { "stagger": 0.1, "easing": "spring", "exitAnimation": "fade" },
       "notes": "Live demo of animated bar chart"
+    },
+
+    {
+      "type": "chart-line",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "title": "Monthly Active Users — Growth Trajectory",
+        "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        "series": [
+          { "label": "Free Tier", "values": [1200, 1800, 2400, 3100, 4200, 5800], "color": "#50E6FF" },
+          { "label": "Enterprise", "values": [200, 350, 520, 780, 1100, 1650], "color": "#0078D4" }
+        ],
+        "annotation": "Lines draw themselves with glow effects and data dots"
+      },
+      "animation": { "easing": "spring" },
+      "notes": "Line chart with animated drawing + area fills"
+    },
+
+    {
+      "type": "chart-donut",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "title": "Revenue Distribution by Segment",
+        "segments": [
+          { "label": "Enterprise", "value": 42, "color": "#0078D4" },
+          { "label": "Mid-Market", "value": 28, "color": "#50E6FF" },
+          { "label": "SMB", "value": 18, "color": "#a78bfa" },
+          { "label": "Self-Serve", "value": 12, "color": "#2ecc71" }
+        ],
+        "annotation": "Donut segments sweep in with animated percentage labels"
+      },
+      "animation": { "easing": "spring" },
+      "notes": "Donut chart with sweep animation + center label"
     },
 
     {
@@ -231,6 +230,7 @@
           { "label": "Incident Rate", "value": 0.4, "unit": "%", "trend": "down", "animateCount": true }
         ]
       },
+      "animation": { "stagger": 0.12, "easing": "elastic" },
       "notes": "KPI cards with count-up animation and trend arrows"
     },
 
@@ -367,7 +367,7 @@
           { "name": "Closed Won", "count": 126, "value": "$2.4M ARR" }
         ]
       },
-      "animation": { "stagger": 0.1, "easing": "spring" },
+      "animation": { "stagger": 0.12, "easing": "bouncy", "direction": "right" },
       "notes": "Pipeline funnel with spring-animated bars"
     },
 
@@ -395,6 +395,7 @@
           { "name": "GA Release", "due": "May 1", "status": "at-risk", "owner": "PM" }
         ]
       },
+      "animation": { "stagger": 0.1, "easing": "spring", "direction": "up" },
       "notes": "Timeline — updated with image support milestone"
     },
 
@@ -429,6 +430,7 @@
         ],
         "highlightRows": [5]
       },
+      "animation": { "stagger": 0.08, "easing": "spring" },
       "notes": "Six MCP tools — now includes render_gif"
     },
 
@@ -493,6 +495,7 @@
         ],
         "annotation": "Every team that produces recurring updates can benefit"
       },
+      "animation": { "stagger": 0.08, "easing": "bouncy" },
       "notes": "Chart showing broad applicability"
     },
 
@@ -527,6 +530,7 @@
           { "text": "Automate recurring videos with scheduled agent runs", "owner": "Platform Team", "priority": "high" }
         ]
       },
+      "animation": { "stagger": 0.1, "easing": "spring", "direction": "left" },
       "notes": "Clear next steps for the viewer"
     },
 

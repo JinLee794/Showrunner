@@ -84,8 +84,14 @@ window.__textEffect = function(el, effect, opts) {
       break;
     }
     case 'word-reveal': {
+      // Inherit gradient text styles if present on parent
+      var cs = window.getComputedStyle(el);
+      var extraStyle = '';
+      if (cs.webkitTextFillColor === 'transparent' || cs.backgroundClip === 'text') {
+        extraStyle = 'background:' + cs.backgroundImage + ';-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;';
+      }
       el.innerHTML = text.split(/\\s+/).map(function(w) {
-        return '<span class="__sr-word" style="display:inline-block;margin-right:0.3em">' + w + '</span>';
+        return '<span class="__sr-word" style="display:inline-block;margin-right:0.3em;' + extraStyle + '">' + w + '</span>';
       }).join('');
       tl.from(el.querySelectorAll('.__sr-word'), {
         y: opts.y || 20,
@@ -97,9 +103,15 @@ window.__textEffect = function(el, effect, opts) {
       break;
     }
     case 'char-cascade': {
+      // Inherit gradient text styles if present on parent
+      var csc = window.getComputedStyle(el);
+      var charExtra = '';
+      if (csc.webkitTextFillColor === 'transparent' || csc.backgroundClip === 'text') {
+        charExtra = 'background:' + csc.backgroundImage + ';-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;';
+      }
       el.innerHTML = text.split('').map(function(ch) {
-        if (ch === ' ') return '<span class="__sr-char" style="display:inline-block">&nbsp;</span>';
-        return '<span class="__sr-char" style="display:inline-block">' + ch + '</span>';
+        if (ch === ' ') return '<span class="__sr-char" style="display:inline-block;' + charExtra + '">&nbsp;</span>';
+        return '<span class="__sr-char" style="display:inline-block;' + charExtra + '">' + ch + '</span>';
       }).join('');
       tl.from(el.querySelectorAll('.__sr-char'), {
         y: opts.y || 30,

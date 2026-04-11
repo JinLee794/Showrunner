@@ -227,7 +227,8 @@
         tl.from(annotation, { opacity: 0, duration: 0.3, ease: 'power2.out' }, '-=0.1');
       }
 
-      tl.to({}, { duration: 0.3 });
+      tl.to({}, { duration: 1.5 });
+      if (window.__buildExit) tl.add(window.__buildExit());
       return tl;
     };
   })();

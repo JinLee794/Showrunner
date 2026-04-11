@@ -418,13 +418,19 @@ npm test         # vitest
 
 ## Publishing
 
-```bash
-# Build and publish to npm
-npm publish
+Packages are published automatically via GitHub Actions when you create a release.
 
-# Or publish with a scope
-npm publish --access public
+```bash
+# 1. Bump version
+npm version patch   # or minor / major
+
+# 2. Push the tag
+git push --follow-tags
+
+# 3. Create a GitHub Release from the tag — CI publishes to npm
 ```
+
+**Setup:** Add an `NPM_TOKEN` secret to the repo (Settings → Secrets → Actions).
 
 ## License
 
