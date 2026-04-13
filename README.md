@@ -1,16 +1,16 @@
 <div align="center">
-  <img src="docs/assets/avatar.png" width="160" />
+  <img src="https://raw.githubusercontent.com/JinLee794/Showrunner/main/docs/assets/avatar.png" width="160" />
   <h1>Showrunner</h1>
   <p><strong>Your AI crew's cinematographer.</strong> Send a storyboard JSON, get back an MP4 with spring-based motion, animated charts, and professional pacing.</p>
   <p>
     <code>MCP stdio</code> for local dev &nbsp;·&nbsp; <code>MCP HTTP</code> for Azure &nbsp;·&nbsp; same tools, same storyboard
   </p>
   <p>
-    <a href="docs/scene-catalog.md"><strong>📖 Browse the Scene Catalog</strong></a> — animated GIF previews, data schemas, and sample JSON for every scene type
+    <a href="https://github.com/JinLee794/Showrunner/blob/main/docs/scene-catalog.md"><strong>📖 Browse the Scene Catalog</strong></a> — animated GIF previews, data schemas, and sample JSON for every scene type
   </p>
   <br/>
-  <a href="docs/assets/showrunner-showcase.mp4">
-    <img src="docs/assets/showrunner-showcase.gif" alt="Showrunner showcase video" width="640" />
+  <a href="https://github.com/JinLee794/Showrunner/blob/main/docs/assets/showrunner-showcase.mp4">
+    <img src="https://raw.githubusercontent.com/JinLee794/Showrunner/main/docs/assets/showrunner-showcase.gif" alt="Showrunner showcase video" width="640" />
   </a>
   <br/>
   <sub>▶ Click for full video</sub>
@@ -22,42 +22,35 @@ No Remotion. No subscription. No framework lock-in. Just Playwright frames, GSAP
 
 ## How It Works
 
-```mermaid
-graph TD
-    A["AI Agent"] -->|storyboard JSON| B["Showrunner MCP Server"]
-
-    B --> C{Zod validate}
-    C -->|invalid| ERR["errors array"]
-    C -->|valid| D["Assemble page per scene"]
-
-    D --> DA["Theme CSS"]
-    D --> DB["Scene HTML via Handlebars"]
-    D --> DC["GSAP bundle"]
-    D --> DD["D3 bundle"]
-
-    DA --> E["Playwright - headless Chromium"]
-    DB --> E
-    DC --> E
-    DD --> E
-
-    E --> F{Scene type}
-    F -->|chart scenes| G["D3 builds SVG"]
-    F -->|other scenes| H["Static HTML layout"]
-    G --> I["GSAP timeline - paused"]
-    H --> I
-
-    I -->|"seek 0..1"| J["Frame capture loop"]
-    J --> K["ffmpeg encode"]
-
-    K --> L{Output target}
-    L -->|local| M["File path"]
-    L -->|Azure| N["Blob URL"]
-
-    style A fill:#0078D4,color:#fff
-    style B fill:#1a1a2e,color:#fff
-    style E fill:#2d4a22,color:#fff
-    style K fill:#5c2d91,color:#fff
-    style ERR fill:#d32f2f,color:#fff
+```
+AI Agent ──▶ storyboard JSON ──▶ Showrunner MCP Server
+                                        │
+                                   Zod validate
+                                   ├── invalid → errors array
+                                   └── valid ──▶ Assemble page per scene
+                                                  ├── Theme CSS
+                                                  ├── Scene HTML (Handlebars)
+                                                  ├── GSAP bundle
+                                                  └── D3 bundle
+                                                         │
+                                               Playwright (headless Chromium)
+                                                         │
+                                                    Scene type?
+                                               ┌─────────┴─────────┐
+                                          chart scenes        other scenes
+                                          D3 builds SVG     Static HTML layout
+                                               └─────────┬─────────┘
+                                                  GSAP timeline (paused)
+                                                         │
+                                                  seek(0..1) per frame
+                                                  Frame capture loop
+                                                         │
+                                                    ffmpeg encode
+                                                         │
+                                                   Output target
+                                               ┌─────────┴─────────┐
+                                             local              Azure
+                                           File path          Blob URL
 ```
 
 Each scene template builds a paused GSAP timeline. Chart scenes (`chart-bar`, `chart-line`, `chart-donut`) use D3 to construct SVG elements (scales, axes, paths, arcs) then hand off to GSAP for animation. The renderer scrubs `.progress(0..1)` for every frame, screenshots, and encodes. Deterministic — same input always produces the same frames.
@@ -137,7 +130,10 @@ Agent config (VS Code / Claude Desktop / any MCP client):
   "mcpServers": {
     "showrunner": {
       "command": "npx",
-      "args": ["-y", "@jinlee794/showrunner-mcp"]
+      "args": ["-y", "@jinlee794/showrunner-mcp"],
+      "env": {
+        "npm_config_@jinlee794:registry": "https://npm.pkg.github.com"
+      }
     }
   }
 }
@@ -175,7 +171,7 @@ Agent config:
 
 ## Scene Types
 
-> **[See the full Scene Catalog →](docs/scene-catalog.md)** for animated GIF previews, detailed data schemas, and copy-paste sample JSON for every scene type.
+> **[See the full Scene Catalog →](https://github.com/JinLee794/Showrunner/blob/main/docs/scene-catalog.md)** for animated GIF previews, detailed data schemas, and copy-paste sample JSON for every scene type.
 
 | Type | Description |
 |---|---|
@@ -240,7 +236,7 @@ Agent config:
 }
 ```
 
-See [`fixtures/sample-storyboard.json`](fixtures/sample-storyboard.json) and [`fixtures/demo-storyboard.json`](fixtures/demo-storyboard.json) for full examples.
+See [`fixtures/sample-storyboard.json`](https://github.com/JinLee794/Showrunner/blob/main/fixtures/sample-storyboard.json) and [`fixtures/demo-storyboard.json`](https://github.com/JinLee794/Showrunner/blob/main/fixtures/demo-storyboard.json) for full examples.
 
 ## Themes
 
@@ -294,34 +290,27 @@ Key GSAP features used: `stagger`, `back.out` / `elastic.out` / `power3.out` eas
 
 Chart scenes use a **two-library pattern** — D3 for construction, GSAP for animation:
 
-```mermaid
-sequenceDiagram
-    participant R as Renderer
-    participant P as Playwright Page
-    participant D3 as D3.js
-    participant G as GSAP
-
-    R->>P: setContent(base.html + scene.html)
-    Note over P: Page loads GSAP + D3 bundles
-
-    P->>D3: Parse embedded JSON data block
-    D3->>D3: Build scales (scaleLinear, scaleBand, scaleOrdinal)
-    D3->>D3: Generate geometry (rects, arcs, line paths)
-    D3->>P: Append SVG elements to DOM
-    Note over D3,P: D3 is done - no further re-renders
-
-    P->>G: __buildTimeline() returns paused gsap.timeline()
-    G->>G: Target D3-generated SVG elements
-    Note over G: scaleY, strokeDashoffset, opacity, textContent snap
-
-    loop Every frame (30 fps x duration)
-        R->>P: window.__seek(progress)
-        P->>G: timeline.progress(n)
-        G->>P: Update SVG attributes
-        R->>R: Screenshot to frame buffer
-    end
-
-    R->>R: Pipe frames to ffmpeg
+```
+Renderer ──▶ Playwright Page: setContent(base.html + scene.html)
+                 │                  (Page loads GSAP + D3 bundles)
+                 │
+                 ├──▶ D3: Parse embedded JSON data block
+                 │    D3: Build scales (scaleLinear, scaleBand, scaleOrdinal)
+                 │    D3: Generate geometry (rects, arcs, line paths)
+                 │    D3: Append SVG elements to DOM
+                 │         (D3 is done — no further re-renders)
+                 │
+                 ├──▶ GSAP: __buildTimeline() returns paused gsap.timeline()
+                 │    GSAP: Target D3-generated SVG elements
+                 │          (scaleY, strokeDashoffset, opacity, textContent snap)
+                 │
+                 └──▶ Loop: every frame (30 fps × duration)
+                        Renderer → Page: window.__seek(progress)
+                        Page → GSAP: timeline.progress(n)
+                        GSAP → Page: Update SVG attributes
+                        Renderer: Screenshot to frame buffer
+                                    │
+                              Pipe frames to ffmpeg
 ```
 
 This separation keeps D3 doing what it's best at (data → geometry mapping) and GSAP doing what it's best at (timeline-scrubbed animation), with no runtime conflicts.
@@ -334,62 +323,23 @@ This separation keeps D3 doing what it's best at (data → geometry mapping) and
 
 ## Project Structure
 
-```mermaid
-graph LR
-    subgraph src
-        SRV["server.ts"]
-
-        subgraph tools
-            T1[render-video]
-            T2[render-gif]
-            T3[render-scene]
-            T4[preview]
-            T5[validate]
-            T6[list-types]
-        end
-
-        subgraph renderer
-            RI["index.ts"]
-            FC["frame-capture.ts"]
-            EN["encoder.ts"]
-            TR["transitions.ts"]
-            BP["browser-pool.ts"]
-            PV["preview.ts"]
-        end
-
-        subgraph motion
-            GB["gsap-bundle.ts"]
-            DB["d3-bundle.ts"]
-            PR["presets.ts"]
-        end
-
-        subgraph templates
-            BH["base.html"]
-            SC["scenes - 21 templates"]
-        end
-
-        TH["themes"]
-        ZS["schema/storyboard.ts"]
-    end
-
-    SRV --> T1
-    T1 --> RI
-    RI --> FC
-    RI --> EN
-    RI --> TR
-    FC --> BP
-    RI --> GB
-    RI --> DB
-    RI --> BH
-    BH --> SC
-    BH --> TH
-    SRV --> ZS
-
-    style SRV fill:#0078D4,color:#fff
-    style DB fill:#f28e1c,color:#fff
-    style GB fill:#88ce02,color:#000
-    style FC fill:#2d4a22,color:#fff
-    style EN fill:#5c2d91,color:#fff
+```
+src/
+├── server.ts ──▶ tools/ ──▶ renderer/
+│                               ├── index.ts
+│                               ├── frame-capture.ts ──▶ browser-pool.ts
+│                               ├── encoder.ts
+│                               ├── transitions.ts
+│                               └── preview.ts
+├── motion/
+│   ├── gsap-bundle.ts
+│   ├── d3-bundle.ts
+│   └── presets.ts
+├── templates/
+│   ├── base.html ──▶ scenes/ (21 templates)
+│   └── themes/
+└── schema/
+    └── storyboard.ts (Zod)
 ```
 
 <details>
