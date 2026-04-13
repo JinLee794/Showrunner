@@ -1,0 +1,175 @@
+<div class="scene risk-callout">
+  <h2 class="scene-title risk-callout__title">Risk Signals</h2>
+  <div class="risk-callout__list">
+    {{#each data.risks}}
+    <div class="risk-callout__card risk-callout__card--{{this.severity}}">
+      <div class="risk-callout__severity-stripe"></div>
+      <div class="risk-callout__body">
+        <div class="risk-callout__header">
+          <span class="risk-callout__badge risk-callout__badge--{{this.severity}}">{{this.severity}}</span>
+        </div>
+        <div class="risk-callout__signal">{{this.signal}}</div>
+        {{#if this.context}}
+        <div class="risk-callout__context">{{this.context}}</div>
+        {{/if}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<style>
+  .risk-callout {
+    align-items: flex-start;
+    padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 12);
+  }
+
+  .risk-callout__title {
+    margin-bottom: calc(var(--spacing-unit) * 4);
+  }
+
+  .risk-callout__list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 2.5);
+  }
+
+  .risk-callout__card {
+    display: flex;
+    align-items: stretch;
+    background: var(--glass-bg, var(--bg-secondary));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+
+  .risk-callout__severity-stripe {
+    width: 5px;
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+
+  .risk-callout__card--critical .risk-callout__severity-stripe {
+    background: var(--status-overdue, #e74c3c);
+    box-shadow: inset 0 0 8px color-mix(in srgb, var(--status-overdue, #e74c3c) 50%, transparent);
+  }
+  .risk-callout__card--high .risk-callout__severity-stripe {
+    background: var(--risk-high, #ff6b35);
+    box-shadow: inset 0 0 8px color-mix(in srgb, var(--risk-high, #ff6b35) 50%, transparent);
+  }
+  .risk-callout__card--medium .risk-callout__severity-stripe {
+    background: var(--status-at-risk, #f39c12);
+    box-shadow: inset 0 0 8px color-mix(in srgb, var(--status-at-risk, #f39c12) 50%, transparent);
+  }
+  .risk-callout__card--low .risk-callout__severity-stripe {
+    background: var(--status-on-track, #2ecc71);
+    box-shadow: inset 0 0 8px color-mix(in srgb, var(--status-on-track, #2ecc71) 50%, transparent);
+  }
+
+  .risk-callout__body {
+    flex: 1;
+    padding: calc(var(--spacing-unit) * 2.5) calc(var(--spacing-unit) * 3);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 1);
+  }
+
+  .risk-callout__header {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 1.5);
+  }
+
+  .risk-callout__badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  .risk-callout__badge--critical {
+    color: var(--status-overdue, #e74c3c);
+    background: color-mix(in srgb, var(--status-overdue, #e74c3c) 14%, transparent);
+  }
+  .risk-callout__badge--high {
+    color: var(--risk-high, #ff6b35);
+    background: color-mix(in srgb, var(--risk-high, #ff6b35) 14%, transparent);
+  }
+  .risk-callout__badge--medium {
+    color: var(--status-at-risk, #f39c12);
+    background: color-mix(in srgb, var(--status-at-risk, #f39c12) 14%, transparent);
+  }
+  .risk-callout__badge--low {
+    color: var(--status-on-track, #2ecc71);
+    background: color-mix(in srgb, var(--status-on-track, #2ecc71) 14%, transparent);
+  }
+
+  .risk-callout__signal {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  .risk-callout__context {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+    var anim = window.__anim || {};
+    var stagger = window.__getStagger ? window.__getStagger(0.15) : 0.15;
+    var ease = window.__getEase ? window.__getEase('back.out(1.2)') : 'back.out(1.2)';
+
+    // Title entrance
+    tl.from('.risk-callout__title', {
+      y: 30,
+      opacity: 0,
+      duration: 0.4,
+      ease: ease
+    });
+
+    // Cards slide in from the right with spring stagger
+    tl.from('.risk-callout__card', {
+      x: 80,
+      opacity: 0,
+      duration: 0.5,
+      stagger: stagger,
+      ease: ease
+    }, '-=0.1');
+
+    // Severity stripes animate width
+    tl.from('.risk-callout__severity-stripe', {
+      width: 0,
+      duration: 0.35,
+      stagger: stagger * 0.8,
+      ease: 'power3.out'
+    }, '-=0.4');
+
+    // Badges pop in
+    tl.from('.risk-callout__badge', {
+      scale: 0,
+      opacity: 0,
+      duration: 0.25,
+      stagger: stagger * 0.6,
+      ease: 'back.out(2.5)'
+    }, '-=0.3');
+
+    // Hold
+    var holdDuration = Math.max(0.8, tl.duration() * 0.6);
+    tl.to({}, { duration: holdDuration });
+    if (window.__buildExit) tl.add(window.__buildExit());
+
+    return tl;
+  };
+</script>

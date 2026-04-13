@@ -1,0 +1,173 @@
+<div class="scene deal-team">
+  <h2 class="scene-title deal-team__title">Deal Team</h2>
+  <div class="deal-team__grid">
+    {{#each data.members}}
+    <div class="deal-team__member {{#if this.highlight}}deal-team__member--highlight{{/if}}">
+      <div class="deal-team__avatar-wrap">
+        {{#if this.avatar}}
+        <img class="deal-team__avatar-img" src="{{this.avatar}}" alt="{{this.name}}" />
+        {{else}}
+        <div class="deal-team__avatar">
+          <span class="deal-team__initials">{{this.initials}}</span>
+        </div>
+        {{/if}}
+        {{#if this.highlight}}
+        <div class="deal-team__highlight-ring"></div>
+        {{/if}}
+      </div>
+      <div class="deal-team__name">{{this.name}}</div>
+      <div class="deal-team__role">{{this.role}}</div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<style>
+  .deal-team {
+    padding: calc(var(--spacing-unit) * 8) calc(var(--spacing-unit) * 10);
+  }
+
+  .deal-team__title {
+    margin-bottom: calc(var(--spacing-unit) * 5);
+  }
+
+  .deal-team__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: calc(var(--spacing-unit) * 4);
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .deal-team__member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 1.5);
+    padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 2);
+    background: var(--glass-bg, var(--bg-secondary));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-card);
+  }
+
+  .deal-team__member--highlight {
+    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+    background: color-mix(in srgb, var(--accent) 4%, var(--glass-bg, var(--bg-secondary)));
+  }
+
+  .deal-team__avatar-wrap {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+
+  .deal-team__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .deal-team__avatar-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .deal-team__initials {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--bg-primary, #0f0f14);
+    letter-spacing: 0.04em;
+  }
+
+  .deal-team__highlight-ring {
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    opacity: 0.5;
+  }
+
+  .deal-team__name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+  }
+
+  .deal-team__role {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+    var anim = window.__anim || {};
+    var stagger = window.__getStagger ? window.__getStagger(0.12) : 0.12;
+    var ease = window.__getEase ? window.__getEase('back.out(1.7)') : 'back.out(1.7)';
+
+    // Title entrance
+    tl.from('.deal-team__title', {
+      y: 30,
+      opacity: 0,
+      duration: 0.4,
+      ease: ease
+    });
+
+    // Avatar circles scale in with bouncy spring
+    tl.from('.deal-team__avatar, .deal-team__avatar-img', {
+      scale: 0,
+      opacity: 0,
+      duration: 0.5,
+      stagger: stagger,
+      ease: 'back.out(2.5)'
+    }, '-=0.1');
+
+    // Highlight rings pulse in
+    var rings = document.querySelectorAll('.deal-team__highlight-ring');
+    if (rings.length > 0) {
+      tl.from(rings, {
+        scale: 0,
+        opacity: 0,
+        duration: 0.35,
+        stagger: 0.08,
+        ease: 'back.out(2)'
+      }, '-=0.3');
+    }
+
+    // Names and roles fade up
+    tl.from('.deal-team__name', {
+      y: 15,
+      opacity: 0,
+      duration: 0.3,
+      stagger: stagger * 0.8,
+      ease: 'power2.out'
+    }, '-=0.3');
+
+    tl.from('.deal-team__role', {
+      y: 10,
+      opacity: 0,
+      duration: 0.25,
+      stagger: stagger * 0.8,
+      ease: 'power2.out'
+    }, '-=0.2');
+
+    // Hold
+    var holdDuration = Math.max(0.8, tl.duration() * 0.6);
+    tl.to({}, { duration: holdDuration });
+    if (window.__buildExit) tl.add(window.__buildExit());
+
+    return tl;
+  };
+</script>

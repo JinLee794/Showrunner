@@ -1,0 +1,61 @@
+name: Update Scene Catalog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/templates/scenes/**'
+      - 'src/tools/list-scene-types.ts'
+      - 'src/schema/storyboard.ts'
+      - 'scripts/scene-catalog-data.json'
+      - 'scripts/generate-scene-catalog.ts'
+  workflow_dispatch: # allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  generate-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Build project
+        run: npm run build
+
+      - name: Generate scene GIFs and catalog
+        run: npx tsx scripts/generate-scene-catalog.ts
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git add docs/
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: auto-update scene catalog [skip ci]"
+          git push

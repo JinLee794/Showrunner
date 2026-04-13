@@ -5,6 +5,9 @@
   <p>
     <code>MCP stdio</code> for local dev &nbsp;·&nbsp; <code>MCP HTTP</code> for Azure &nbsp;·&nbsp; same tools, same storyboard
   </p>
+  <p>
+    <a href="docs/scene-catalog.md"><strong>📖 Browse the Scene Catalog</strong></a> — animated GIF previews, data schemas, and sample JSON for every scene type
+  </p>
   <br/>
   <a href="docs/assets/showrunner-showcase.mp4">
     <img src="docs/assets/showrunner-showcase.gif" alt="Showrunner showcase video" width="640" />
@@ -164,6 +167,8 @@ Agent config:
 
 ## Scene Types
 
+> **[See the full Scene Catalog →](docs/scene-catalog.md)** for animated GIF previews, detailed data schemas, and copy-paste sample JSON for every scene type.
+
 | Type | Description |
 |---|---|
 | `title-card` | Full-screen branded intro with logo, title, subtitle |
@@ -181,6 +186,11 @@ Agent config:
 | `quote-highlight` | Quote with word-by-word reveal and sentiment accent |
 | `comparison` | Side-by-side comparison with alternating slide-in |
 | `closing` | Branded outro with tagline and CTA |
+| `code-terminal` | Typing terminal with prompt/output/success lines |
+| `image-card` | Full-bleed image with caption overlay and Ken Burns effects |
+| `bullet-list` | Animated bullet list with icons, sub-text, and highlights |
+| `stat-counter` | Big count-up numbers with progress bars and change indicators |
+| `text-reveal` | Cinematic text with typewriter, word-reveal, and highlight effects |
 
 ## Storyboard Schema
 
@@ -347,7 +357,7 @@ graph LR
 
         subgraph templates
             BH["base.html"]
-            SC["scenes - 15 templates"]
+            SC["scenes - 21 templates"]
         end
 
         TH["themes"]

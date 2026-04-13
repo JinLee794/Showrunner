@@ -129,7 +129,24 @@ function preprocessSceneData(scene: Scene): Record<string, unknown> {
   }
 
   // Inject serialized JSON for D3-powered chart scenes
+  // Templates expect different shapes: chart-line uses `series`, chart-donut
+  // uses `segments`, but the schema provides `labels` + `datasets`.  Derive
+  // the template-native fields from datasets when missing.
   if (['chart-bar', 'chart-donut', 'chart-line'].includes(scene.type)) {
+    // chart-line: series = datasets (same shape: {label, values, color?})
+    if (!data.series && Array.isArray(data.datasets)) {
+      data.series = data.datasets;
+    }
+
+    // chart-donut: segments = zip(labels, datasets[0].values) → [{label, value}]
+    if (!data.segments && Array.isArray(data.labels) && Array.isArray(data.datasets)) {
+      const vals: number[] = data.datasets[0]?.values ?? [];
+      data.segments = data.labels.map((label: string, i: number) => ({
+        label,
+        value: vals[i] ?? 0,
+      }));
+    }
+
     data.chartDataJSON = JSON.stringify({
       labels: data.labels,
       datasets: data.datasets,

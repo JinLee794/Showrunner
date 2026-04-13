@@ -1,0 +1,240 @@
+{
+  "title-card": {
+    "duration": 4,
+    "data": {
+      "title": "Quarterly Business Review",
+      "subtitle": "Enterprise Cloud Division",
+      "date": "April 2026",
+      "presenter": "Strategy Team"
+    }
+  },
+  "section-header": {
+    "duration": 3,
+    "data": {
+      "heading": "Pipeline Overview",
+      "subheading": "Current quarter deal progression",
+      "icon": "📊"
+    }
+  },
+  "pipeline-funnel": {
+    "duration": 5,
+    "data": {
+      "stages": [
+        { "name": "Qualified", "count": 142, "value": "$28.4M" },
+        { "name": "Technical Win", "count": 87, "value": "$19.1M" },
+        { "name": "Proposal", "count": 34, "value": "$11.2M", "highlight": true },
+        { "name": "Negotiate", "count": 18, "value": "$7.8M" },
+        { "name": "Closed Won", "count": 9, "value": "$4.2M" }
+      ]
+    }
+  },
+  "milestone-timeline": {
+    "duration": 5,
+    "data": {
+      "milestones": [
+        { "name": "Discovery Complete", "due": "2026-03-15", "status": "completed", "owner": "Sarah Chen" },
+        { "name": "Technical Validation", "due": "2026-04-01", "status": "on-track", "owner": "Priya Patel" },
+        { "name": "Executive Briefing", "due": "2026-04-15", "status": "at-risk", "owner": "Marcus Johnson", "note": "CTO availability pending" },
+        { "name": "Contract Negotiation", "due": "2026-05-01", "status": "overdue", "owner": "James Wilson" }
+      ]
+    }
+  },
+  "risk-callout": {
+    "duration": 4,
+    "data": {
+      "risks": [
+        { "signal": "Champion left the organization", "severity": "critical", "context": "Need to re-establish executive sponsorship" },
+        { "signal": "Budget cycle pushed to Q3", "severity": "high", "context": "Proposal timeline at risk" },
+        { "signal": "Competitor POC underway", "severity": "medium", "context": "Differentiation deck needed" }
+      ]
+    }
+  },
+  "action-items": {
+    "duration": 5,
+    "data": {
+      "items": [
+        { "text": "Schedule executive sponsor meeting with CTO", "owner": "Sarah Chen", "due": "April 14", "priority": "high" },
+        { "text": "Update pricing model for 3-year proposal", "owner": "James Wilson", "due": "April 12", "priority": "high" },
+        { "text": "Complete technical validation for deployment", "owner": "Priya Patel", "due": "April 16", "priority": "normal" },
+        { "text": "Prepare competitive displacement deck", "owner": "Marcus Johnson", "due": "April 18", "priority": "normal" }
+      ]
+    }
+  },
+  "deal-team": {
+    "duration": 4,
+    "data": {
+      "members": [
+        { "name": "Sarah Chen", "role": "Account Executive", "initials": "SC", "highlight": true },
+        { "name": "Priya Patel", "role": "Solutions Architect", "initials": "PP" },
+        { "name": "Marcus Johnson", "role": "Technical Lead", "initials": "MJ" },
+        { "name": "James Wilson", "role": "Deal Strategy", "initials": "JW" }
+      ]
+    }
+  },
+  "kpi-scorecard": {
+    "duration": 5,
+    "data": {
+      "kpis": [
+        { "label": "Pipeline Value", "value": "$42.8M", "trend": "up", "target": "$40M" },
+        { "label": "Win Rate", "value": "34%", "trend": "down", "target": "38%" },
+        { "label": "Avg Deal Size", "value": "$1.2M", "trend": "up", "target": "$1M" },
+        { "label": "Sales Cycle", "value": "67 days", "trend": "flat", "target": "60 days" }
+      ]
+    }
+  },
+  "chart-bar": {
+    "duration": 5,
+    "data": {
+      "title": "Revenue by Region",
+      "labels": ["Americas", "EMEA", "APAC", "LATAM"],
+      "datasets": [
+        { "label": "Q1 Actual", "values": [12.4, 8.7, 6.2, 3.1] },
+        { "label": "Q2 Forecast", "values": [14.1, 9.3, 7.8, 4.2] }
+      ]
+    }
+  },
+  "chart-line": {
+    "duration": 5,
+    "data": {
+      "title": "Monthly Pipeline Trend",
+      "labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+      "datasets": [
+        { "label": "Pipeline", "values": [28, 32, 35, 38, 42, 45] },
+        { "label": "Target", "values": [30, 33, 36, 39, 42, 45] }
+      ]
+    }
+  },
+  "chart-donut": {
+    "duration": 5,
+    "data": {
+      "title": "Deal Stage Distribution",
+      "labels": ["Qualified", "Technical Win", "Proposal", "Negotiate", "Closed"],
+      "datasets": [
+        { "label": "Deals", "values": [142, 87, 34, 18, 9] }
+      ]
+    }
+  },
+  "table": {
+    "duration": 5,
+    "data": {
+      "title": "Top Opportunities",
+      "columns": [
+        { "key": "account", "label": "Account" },
+        { "key": "value", "label": "Value" },
+        { "key": "stage", "label": "Stage" },
+        { "key": "close", "label": "Close Date" }
+      ],
+      "rows": [
+        { "account": "Contoso Ltd", "value": "$4.2M", "stage": "Negotiate", "close": "May 15" },
+        { "account": "Fabrikam Inc", "value": "$3.8M", "stage": "Proposal", "close": "Jun 01" },
+        { "account": "Northwind", "value": "$2.1M", "stage": "Technical Win", "close": "May 30" },
+        { "account": "Woodgrove", "value": "$1.9M", "stage": "Qualified", "close": "Jul 15" }
+      ],
+      "highlightRows": [0, 1]
+    }
+  },
+  "quote-highlight": {
+    "duration": 4,
+    "data": {
+      "quote": "This solution reduced our deployment time from weeks to hours. The ROI was clear within the first quarter.",
+      "attribution": "VP of Engineering, Contoso Ltd",
+      "sentiment": "positive"
+    }
+  },
+  "comparison": {
+    "duration": 5,
+    "data": {
+      "title": "Before vs After",
+      "left": {
+        "label": "Before",
+        "items": ["Manual deployments", "3-week release cycles", "No automated testing", "Siloed teams"]
+      },
+      "right": {
+        "label": "After",
+        "items": ["CI/CD pipeline", "Daily releases", "95% test coverage", "Cross-functional squads"]
+      }
+    }
+  },
+  "closing": {
+    "duration": 4,
+    "data": {
+      "tagline": "Transforming enterprise workflows with intelligent automation",
+      "cta": "Next review: April 20, 2026",
+      "timestamp": "Generated April 13, 2026"
+    }
+  },
+  "code-terminal": {
+    "duration": 5,
+    "data": {
+      "title": "Deployment Pipeline",
+      "shell": "bash",
+      "lines": [
+        { "kind": "prompt", "text": "npx showrunner render storyboard.json --gif" },
+        { "kind": "output", "text": "Rendering 5 scenes (150 frames) → output/demo.gif" },
+        { "kind": "output", "text": "Scene 1/5: title-card .............. ✓" },
+        { "kind": "output", "text": "Scene 2/5: pipeline-funnel ......... ✓" },
+        { "kind": "output", "text": "Scene 3/5: chart-bar ............... ✓" },
+        { "kind": "success", "text": "✅ GIF saved: output/demo.gif (150 frames)" }
+      ]
+    }
+  },
+  "scene-showcase": {
+    "duration": 5,
+    "data": {
+      "title": "Available Scene Types",
+      "subtitle": "Building blocks for your storyboard",
+      "cards": [
+        { "name": "Title Card", "description": "Branded intro slide", "icon": "🎬" },
+        { "name": "Chart Bar", "description": "Animated bar charts", "icon": "📊" },
+        { "name": "KPI Scorecard", "description": "Metrics dashboard", "icon": "📈" },
+        { "name": "Timeline", "description": "Milestone tracking", "icon": "📅" },
+        { "name": "Code Terminal", "description": "Terminal output", "icon": "💻" },
+        { "name": "Comparison", "description": "Side-by-side", "icon": "⚖️" }
+      ]
+    }
+  },
+  "image-card": {
+    "duration": 4,
+    "data": {
+      "image": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230078D4'/%3E%3Cstop offset='100%25' stop-color='%2300BCF2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='url(%23g)'/%3E%3Ctext x='400' y='300' text-anchor='middle' fill='white' font-size='48' font-family='Segoe UI,sans-serif'%3ESample Image%3C/text%3E%3C/svg%3E",
+      "caption": "Platform architecture overview",
+      "title": "Cloud Architecture",
+      "subtitle": "Hybrid deployment model",
+      "overlay": "gradient"
+    }
+  },
+  "bullet-list": {
+    "duration": 5,
+    "data": {
+      "title": "Key Takeaways",
+      "subtitle": "From this quarter's review",
+      "items": [
+        { "text": "Pipeline grew 18% quarter-over-quarter", "icon": "📈", "highlight": true },
+        { "text": "Three new enterprise logos added", "icon": "🏢" },
+        { "text": "Average deal size increased to $1.2M", "icon": "💰" },
+        { "text": "Technical win rate improved by 5 points", "sub": "Up from 62% to 67%", "icon": "🎯" },
+        { "text": "Two deals moved to negotiation stage", "sub": "Contoso and Fabrikam", "icon": "🤝" }
+      ]
+    }
+  },
+  "stat-counter": {
+    "duration": 5,
+    "data": {
+      "title": "Performance Metrics",
+      "stats": [
+        { "value": 42.8, "label": "Pipeline Value", "prefix": "$", "suffix": "M", "icon": "💰", "change": "+18%", "changeDirection": "up", "progress": 85 },
+        { "value": 94, "label": "Customer Satisfaction", "suffix": "%", "icon": "⭐", "change": "+3%", "changeDirection": "up", "progress": 94 },
+        { "value": 67, "label": "Avg Sales Cycle", "suffix": " days", "icon": "⏱️", "description": "Down from 82 days", "change": "-18%", "changeDirection": "down", "progress": 45 }
+      ]
+    }
+  },
+  "text-reveal": {
+    "duration": 4,
+    "data": {
+      "eyebrow": "THE BOTTOM LINE",
+      "headline": "We're <em>accelerating</em> growth with <strong>intelligent automation</strong>",
+      "body": "Our platform enables teams to move faster, reduce errors, and deliver more value to customers every single day.",
+      "footnote": "Source: Q2 2026 Internal Metrics"
+    }
+  }
+}
