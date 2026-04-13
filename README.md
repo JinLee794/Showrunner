@@ -70,12 +70,20 @@ Each scene template builds a paused GSAP timeline. Chart scenes (`chart-bar`, `c
 
 ## Install
 
-```bash
-# Global install
-npm install -g showrunner-mcp
+This package is published to [GitHub Packages](https://github.com/JinLee794/Showrunner/packages). Configure npm to use it:
 
-# Or run directly via npx (no install needed)
-npx showrunner-mcp --help
+```bash
+# One-time setup: tell npm where to find @jinlee794 packages
+echo "@jinlee794:registry=https://npm.pkg.github.com" >> ~/.npmrc
+
+# Authenticate (use a GitHub PAT with read:packages scope)
+npm login --registry=https://npm.pkg.github.com
+
+# Install globally
+npm install -g @jinlee794/showrunner-mcp
+
+# Or run directly via npx
+npx @jinlee794/showrunner-mcp --help
 ```
 
 ## Quick Start
@@ -84,19 +92,19 @@ npx showrunner-mcp --help
 
 ```bash
 # Render a storyboard to MP4
-npx showrunner-mcp render storyboard.json
+npx @jinlee794/showrunner-mcp render storyboard.json
 
 # Render with options
-npx showrunner-mcp render storyboard.json --quality high --output output/final.mp4
+npx @jinlee794/showrunner-mcp render storyboard.json --quality high --output output/final.mp4
 
 # Render to GIF
-npx showrunner-mcp render storyboard.json --gif
+npx @jinlee794/showrunner-mcp render storyboard.json --gif
 
 # Validate a storyboard without rendering
-npx showrunner-mcp validate storyboard.json
+npx @jinlee794/showrunner-mcp validate storyboard.json
 
 # List available scene types
-npx showrunner-mcp scenes
+npx @jinlee794/showrunner-mcp scenes
 ```
 
 ### Use from source
@@ -111,7 +119,7 @@ npm install
 npm run build
 
 # Render the demo storyboard
-npx showrunner-mcp render fixtures/demo-storyboard.json
+npx showrunner render fixtures/demo-storyboard.json
 ```
 
 ## Showrunner MCP Server
@@ -119,7 +127,7 @@ npx showrunner-mcp render fixtures/demo-storyboard.json
 ### stdio (local dev)
 
 ```bash
-npx showrunner-mcp
+npx @jinlee794/showrunner-mcp
 ```
 
 Agent config (VS Code / Claude Desktop / any MCP client):
@@ -129,7 +137,7 @@ Agent config (VS Code / Claude Desktop / any MCP client):
   "mcpServers": {
     "showrunner": {
       "command": "npx",
-      "args": ["-y", "showrunner-mcp"]
+      "args": ["-y", "@jinlee794/showrunner-mcp"]
     }
   }
 }
@@ -138,7 +146,7 @@ Agent config (VS Code / Claude Desktop / any MCP client):
 ### HTTP (remote / Azure)
 
 ```bash
-TRANSPORT=http PORT=8080 npx showrunner-mcp
+TRANSPORT=http PORT=8080 npx @jinlee794/showrunner-mcp
 ```
 
 Agent config:
@@ -428,19 +436,17 @@ npm test         # vitest
 
 ## Publishing
 
-Packages are published automatically via GitHub Actions when you create a release.
+Packages are published automatically to **GitHub Packages** via GitHub Actions when you push a version tag.
 
 ```bash
-# 1. Bump version
+# 1. Bump version (updates package.json and creates a git tag)
 npm version patch   # or minor / major
 
-# 2. Push the tag
+# 2. Push the commit and tag — CI publishes to GitHub Packages and creates a GitHub Release
 git push --follow-tags
-
-# 3. Create a GitHub Release from the tag — CI publishes to npm
 ```
 
-**Setup:** Add an `NPM_TOKEN` secret to the repo (Settings → Secrets → Actions).
+No extra secrets needed — the workflow uses the built-in `GITHUB_TOKEN`.
 
 ## License
 
