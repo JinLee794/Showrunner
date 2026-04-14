@@ -1,0 +1,189 @@
+{
+  "title": "Vault MCP Tools Showcase",
+  "theme": "corporate-dark",
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 4,
+      "data": {
+        "title": "Obsidian Vault MCP Tools",
+        "subtitle": "Animated API call walkthroughs",
+        "date": "April 2026"
+      }
+    },
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Search & Discovery",
+        "subheading": "Find notes using lexical, fuzzy, and semantic search",
+        "icon": "🔎"
+      },
+      "transition": "slide-left"
+    },
+    {
+      "type": "tool-call",
+      "duration": 6,
+      "data": {
+        "tool": "search_vault",
+        "description": "Unified search across lexical and fuzzy tiers",
+        "icon": "🔍",
+        "params": [
+          { "key": "query", "value": "\"Q1 pipeline update\"" },
+          { "key": "folder", "value": "/CRM/Deals" },
+          { "key": "tags", "value": "[\"pipeline\", \"quarterly\"]" }
+        ],
+        "response": [
+          { "key": "results", "value": "8 notes ranked by relevance", "highlight": true },
+          { "key": "#1", "value": "/CRM/Deals/Pipeline-Q1.md  (0.94)" },
+          { "key": "#2", "value": "/CRM/Deals/Contoso-Renewal.md  (0.87)" },
+          { "key": "#3", "value": "/CRM/Quarterly/Review-Notes.md  (0.81)" }
+        ],
+        "status": "success",
+        "latency": "42ms"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "tool-call",
+      "duration": 6,
+      "data": {
+        "tool": "semantic_search",
+        "description": "Natural-language fuzzy title + content search",
+        "icon": "🧠",
+        "params": [
+          { "key": "query", "value": "\"who owns the Contoso renewal?\"" },
+          { "key": "limit", "value": "5" }
+        ],
+        "response": [
+          { "key": "matches", "value": "5 ranked results with snippets", "highlight": true },
+          { "key": "#1", "value": "Contoso-Renewal.md — \"Owner: Sarah Chen, AE\"" },
+          { "key": "#2", "value": "Deal-Team.md — \"Contoso: Chen (AE), Patel (SE)\"" }
+        ],
+        "status": "success",
+        "latency": "118ms"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Metadata & Frontmatter",
+        "subheading": "Peek at notes and query structured fields",
+        "icon": "📋"
+      },
+      "transition": "slide-left"
+    },
+    {
+      "type": "tool-call",
+      "duration": 6,
+      "data": {
+        "tool": "query_frontmatter",
+        "description": "Lookup notes by frontmatter key/value fragment",
+        "icon": "🏷️",
+        "params": [
+          { "key": "key", "value": "tpid" },
+          { "key": "value", "value": "\"12345\"" }
+        ],
+        "response": [
+          { "key": "matched", "value": "3 notes (from in-memory graph)", "highlight": true },
+          { "key": "→", "value": "/CRM/Deals/Contoso-Renewal.md" },
+          { "key": "→", "value": "/CRM/Deals/Contoso-Expansion.md" },
+          { "key": "→", "value": "/Archive/Contoso-FY25.md" }
+        ],
+        "status": "success",
+        "latency": "8ms",
+        "processingLabel": "Resolving from graph…"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "tool-call",
+      "duration": 6,
+      "data": {
+        "tool": "get_note_metadata",
+        "description": "Peek at a note — frontmatter, stats, headings",
+        "icon": "📄",
+        "params": [
+          { "key": "path", "value": "/CRM/Deals/Contoso-Renewal.md" }
+        ],
+        "response": [
+          { "key": "words", "value": "1,842" },
+          { "key": "headings", "value": "## Summary, ## Team, ## Timeline, ## Risks" },
+          { "key": "tpid", "value": "12345", "highlight": true },
+          { "key": "status", "value": "active" },
+          { "key": "mtime_ms", "value": "1712956800000" }
+        ],
+        "status": "success",
+        "latency": "3ms"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "Targeted Reading & Graph",
+        "subheading": "Load exactly what you need — sections and links",
+        "icon": "🕸️"
+      },
+      "transition": "slide-left"
+    },
+    {
+      "type": "tool-call",
+      "duration": 6,
+      "data": {
+        "tool": "read_note_section",
+        "description": "Read only a specific heading section",
+        "icon": "📖",
+        "params": [
+          { "key": "path", "value": "/CRM/Deals/Contoso-Renewal.md" },
+          { "key": "heading", "value": "## Team" }
+        ],
+        "response": [
+          { "key": "section", "value": "## Team (247 words)", "highlight": true },
+          { "key": "content", "value": "Sarah Chen (AE) — executive sponsor…" },
+          { "key": "content", "value": "Priya Patel (SE) — technical validation…" },
+          { "key": "content", "value": "Marcus Johnson — procurement contact…" }
+        ],
+        "status": "success",
+        "latency": "5ms",
+        "processingLabel": "Extracting section…"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "tool-call",
+      "duration": 7,
+      "data": {
+        "tool": "get_related_entities",
+        "description": "Graph traversal — linked notes up to N hops",
+        "icon": "🔗",
+        "params": [
+          { "key": "path", "value": "/CRM/Deals/Contoso-Renewal.md" },
+          { "key": "hops", "value": "2" }
+        ],
+        "response": [
+          { "key": "graph", "value": "12 related notes (2 hops, capped at 50)", "highlight": true },
+          { "key": "hop 1", "value": "Deal-Team.md, Timeline.md, Risk-Log.md" },
+          { "key": "hop 1", "value": "Contoso-Account.md, Meeting-Notes-Apr.md" },
+          { "key": "hop 2", "value": "Sarah-Chen.md, Priya-Patel.md" },
+          { "key": "hop 2", "value": "Contoso-Expansion.md, Q1-Review.md" }
+        ],
+        "status": "success",
+        "latency": "28ms"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "closing",
+      "duration": 4,
+      "data": {
+        "tagline": "Six tools. Zero full-note loads. Maximum context.",
+        "cta": "npm install obsidian-vault-mcp"
+      },
+      "transition": "fade"
+    }
+  ]
+}

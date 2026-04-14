@@ -44,7 +44,8 @@ export type SceneType =
   | 'bullet-list'
   | 'stat-counter'
   | 'text-reveal'
-  | 'logic-flow';
+  | 'logic-flow'
+  | 'tool-call';
 
 export interface PacingPhases {
   /** Fraction of duration for entrance animations (0-1, default ~0.3) */

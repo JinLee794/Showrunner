@@ -142,7 +142,7 @@ function buildPreviewHTML(
           timelines[i] = window.__buildTimeline();
           window.__buildTimeline = null;
         }
-        sceneEl.style.display = 'none';
+        sceneEl.style.display = '';
       });
 
       function getSceneAtTime(t) {

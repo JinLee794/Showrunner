@@ -96,6 +96,8 @@ Use this table to select scene types. For full data schemas, read [scene-types](
 | | `code-terminal` | Code walkthroughs |
 | | `image-card` | Full-bleed images |
 | | `scene-showcase` | Card grids |
+| **Technical** | `tool-call` | API/tool call request→response |
+| | `logic-flow` | Flowcharts and decision trees |
 
 ## Critical Rules
 

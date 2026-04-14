@@ -400,6 +400,48 @@ const sceneTypes: SceneTypeInfo[] = [
       },
     },
   },
+  {
+    type: 'tool-call',
+    description: 'Animated tool/API call visualization. Badge with tool name animates in, parameters stagger from left, a processing bar fills, then response rows slide up. Perfect for illustrating MCP tools, REST APIs, function calls, or any request→response pattern. Supports success/error status styling and optional latency badge.',
+    dataSchema: {
+      type: 'object',
+      required: ['tool', 'params', 'response'],
+      properties: {
+        title: { type: 'string', description: 'Optional heading above the call visualization' },
+        tool: { type: 'string', description: 'Tool or function name displayed in the badge' },
+        description: { type: 'string', description: 'Short description shown next to tool name' },
+        icon: { type: 'string', description: 'Emoji or symbol for the tool badge' },
+        params: {
+          type: 'array',
+          description: 'Key-value pairs representing the call parameters',
+          items: {
+            type: 'object',
+            required: ['key', 'value'],
+            properties: {
+              key: { type: 'string', description: 'Parameter name' },
+              value: { type: 'string', description: 'Parameter value' },
+            },
+          },
+        },
+        response: {
+          type: 'array',
+          description: 'Rows of the response — can be key:value pairs or single-key labels',
+          items: {
+            type: 'object',
+            required: ['key'],
+            properties: {
+              key: { type: 'string', description: 'Response field or label' },
+              value: { type: 'string', description: 'Response value (omit for label-only rows)' },
+              highlight: { type: 'boolean', description: 'Accent-color this row' },
+            },
+          },
+        },
+        status: { type: 'string', description: 'success (default) or error — controls icon and color' },
+        latency: { type: 'string', description: 'Latency label shown in response header, e.g. "42ms"' },
+        processingLabel: { type: 'string', description: 'Custom processing text (default: "Processing…")' },
+      },
+    },
+  },
 ];
 
 export async function handleListSceneTypes() {

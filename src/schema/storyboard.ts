@@ -55,6 +55,7 @@ export const SceneTypeSchema = z.enum([
   'stat-counter',
   'text-reveal',
   'logic-flow',
+  'tool-call',
 ]);
 
 export const PacingPhasesSchema = z.object({
@@ -316,6 +317,29 @@ export const LogicFlowDataSchema = z.object({
   annotation: z.string().optional(),
 });
 
+export const ToolCallParamSchema = z.object({
+  key: z.string(),
+  value: z.string(),
+});
+
+export const ToolCallResponseRowSchema = z.object({
+  key: z.string(),
+  value: z.string().optional(),
+  highlight: z.boolean().optional(),
+});
+
+export const ToolCallDataSchema = z.object({
+  title: z.string().optional(),
+  tool: z.string(),
+  description: z.string().optional(),
+  icon: z.string().optional(),
+  params: z.array(ToolCallParamSchema).min(1),
+  response: z.array(ToolCallResponseRowSchema).min(1),
+  status: z.enum(['success', 'error']).optional(),
+  latency: z.string().optional(),
+  processingLabel: z.string().optional(),
+});
+
 export const sceneDataSchemas: Record<string, z.ZodType> = {
   'title-card': TitleCardDataSchema,
   'section-header': SectionHeaderDataSchema,
@@ -339,6 +363,7 @@ export const sceneDataSchemas: Record<string, z.ZodType> = {
   'stat-counter': StatCounterDataSchema,
   'text-reveal': TextRevealDataSchema,
   'logic-flow': LogicFlowDataSchema,
+  'tool-call': ToolCallDataSchema,
 };
 
 /**

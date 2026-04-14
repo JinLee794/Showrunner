@@ -433,6 +433,47 @@ Animated flowchart / decision-tree. Nodes appear in topological order with scale
 }
 ```
 
+### `tool-call`
+Animated tool/API call visualization. Badge with tool name scales in, parameters stagger from left, a processing bar fills, then response rows slide up. Perfect for illustrating MCP tools, REST APIs, function calls, or any request→response pattern.
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `tool` | string | **Yes** | Tool/function name shown in badge |
+| `params` | array | **Yes** | Array of `{key, value}` parameter pairs |
+| `response` | array | **Yes** | Array of response rows: `{key, value?, highlight?}` |
+| `title` | string | No | Optional heading above the visualization |
+| `description` | string | No | Short description shown next to tool name |
+| `icon` | string | No | Emoji for the tool badge |
+| `status` | enum | No | `success` (default) or `error` — controls icon and accent color |
+| `latency` | string | No | Latency label in response header (e.g., "42ms") |
+| `processingLabel` | string | No | Custom processing text (default: "Processing…") |
+
+```json
+{
+  "type": "tool-call", "duration": 6,
+  "data": {
+    "tool": "search_vault",
+    "description": "Unified lexical + fuzzy search",
+    "icon": "🔍",
+    "params": [
+      { "key": "query", "value": "\"Q1 pipeline update\"" },
+      { "key": "folder", "value": "/CRM/Deals" }
+    ],
+    "response": [
+      { "key": "results", "value": "8 notes ranked by relevance", "highlight": true },
+      { "key": "#1", "value": "/CRM/Deals/Pipeline-Q1.md  (0.94)" },
+      { "key": "#2", "value": "/CRM/Deals/Contoso-Renewal.md  (0.87)" }
+    ],
+    "status": "success",
+    "latency": "42ms"
+  }
+}
+```
+
+**Chaining tool calls:** Use multiple `tool-call` scenes in sequence with `section-header` dividers between steps. Add a `logic-flow` scene at the end to show the complete reasoning chain. See the `tool-chain-workflow.json` fixture for a full example.
+
+---
+
 ### `code-terminal`
 Code walkthrough with terminal-style typing animation. Built-in typing effect — does not need `animation.textEffect`.
 

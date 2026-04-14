@@ -263,5 +263,27 @@
       ],
       "annotation": "Happy path highlighted — 5-8 nodes per segment is ideal"
     }
+  },
+  "tool-call": {
+    "duration": 6,
+    "data": {
+      "title": "Vault Lookup",
+      "tool": "search_vault",
+      "description": "Unified search across lexical and fuzzy tiers",
+      "icon": "🔍",
+      "params": [
+        { "key": "query", "value": "\"Q1 pipeline update\"" },
+        { "key": "folder", "value": "/CRM/Deals" },
+        { "key": "tags", "value": "[\"pipeline\", \"quarterly\"]" }
+      ],
+      "response": [
+        { "key": "results", "value": "8 notes ranked by relevance", "highlight": true },
+        { "key": "#1", "value": "/CRM/Deals/Pipeline-Q1.md  (score: 0.94)" },
+        { "key": "#2", "value": "/CRM/Deals/Contoso-Renewal.md  (score: 0.87)" },
+        { "key": "#3", "value": "/CRM/Quarterly/Review-Notes.md  (score: 0.81)" }
+      ],
+      "status": "success",
+      "latency": "42ms"
+    }
   }
 }

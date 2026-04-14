@@ -1,0 +1,243 @@
+{
+  "title": "Vault MCP — Agent Workflow Walkthrough",
+  "theme": "corporate-dark",
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 4,
+      "data": {
+        "title": "Vault MCP Tools in Action",
+        "subtitle": "How an AI agent chains tool calls to answer a question",
+        "date": "April 2026"
+      }
+    },
+    {
+      "type": "text-reveal",
+      "duration": 5,
+      "data": {
+        "eyebrow": "USER QUESTION",
+        "headline": "Who owns the <em>Contoso renewal</em> and what are the <strong>open risks</strong>?",
+        "body": "The agent doesn't load entire notes. It searches, peeks, reads targeted sections, and traverses the graph — all without exceeding the context window.",
+        "footnote": "4 tool calls → ~500 tokens (vs. ~8,000 for full note loads)"
+      },
+      "transition": "fade",
+      "animation": { "textEffect": "word-reveal" }
+    },
+    {
+      "type": "section-header",
+      "duration": 2.5,
+      "data": {
+        "heading": "Step 1 — Search",
+        "subheading": "Find candidate notes by keyword, folder, and tags",
+        "icon": "🔍"
+      },
+      "transition": "slide-left"
+    },
+    {
+      "type": "tool-call",
+      "duration": 6,
+      "data": {
+        "tool": "search_vault",
+        "description": "Unified lexical + fuzzy search with filters",
+        "icon": "🔍",
+        "params": [
+          { "key": "query", "value": "\"Contoso renewal risks\"" },
+          { "key": "folder", "value": "/CRM/Deals" }
+        ],
+        "response": [
+          { "key": "results", "value": "3 notes ranked by relevance", "highlight": true },
+          { "key": "#1", "value": "/CRM/Deals/Contoso-Renewal.md  (0.94)" },
+          { "key": "#2", "value": "/CRM/Deals/Contoso-Expansion.md  (0.71)" },
+          { "key": "#3", "value": "/CRM/Quarterly/Risk-Log.md  (0.68)" }
+        ],
+        "status": "success",
+        "latency": "42ms"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "section-header",
+      "duration": 2.5,
+      "data": {
+        "heading": "Step 2 — Peek",
+        "subheading": "Inspect the top result before loading the full note",
+        "icon": "📋"
+      },
+      "transition": "slide-left"
+    },
+    {
+      "type": "tool-call",
+      "duration": 6,
+      "data": {
+        "title": "Peek at the top search hit",
+        "tool": "get_note_metadata",
+        "description": "Frontmatter, headings, word count — no full read",
+        "icon": "📄",
+        "params": [
+          { "key": "path", "value": "/CRM/Deals/Contoso-Renewal.md" }
+        ],
+        "response": [
+          { "key": "words", "value": "1,842" },
+          { "key": "headings", "value": "## Summary · ## Team · ## Timeline · ## Risks" },
+          { "key": "tpid", "value": "12345", "highlight": true },
+          { "key": "status", "value": "active" },
+          { "key": "owner", "value": "Sarah Chen" }
+        ],
+        "status": "success",
+        "latency": "3ms",
+        "processingLabel": "Reading in-memory graph…"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "section-header",
+      "duration": 2.5,
+      "data": {
+        "heading": "Step 3 — Targeted Read",
+        "subheading": "Load only the sections we need — not the entire 1,842-word note",
+        "icon": "📖"
+      },
+      "transition": "slide-left"
+    },
+    {
+      "type": "tool-call",
+      "duration": 5.5,
+      "data": {
+        "tool": "read_note_section",
+        "description": "Extract a single heading section",
+        "icon": "📖",
+        "params": [
+          { "key": "path", "value": "/CRM/Deals/Contoso-Renewal.md" },
+          { "key": "heading", "value": "## Team" }
+        ],
+        "response": [
+          { "key": "section", "value": "## Team  (247 words)", "highlight": true },
+          { "key": "→", "value": "Sarah Chen (AE) — executive sponsor" },
+          { "key": "→", "value": "Priya Patel (SE) — technical validation" },
+          { "key": "→", "value": "Marcus Johnson — procurement contact" }
+        ],
+        "status": "success",
+        "latency": "5ms",
+        "processingLabel": "Extracting section…"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "tool-call",
+      "duration": 5.5,
+      "data": {
+        "tool": "read_note_section",
+        "description": "Extract a single heading section",
+        "icon": "📖",
+        "params": [
+          { "key": "path", "value": "/CRM/Deals/Contoso-Renewal.md" },
+          { "key": "heading", "value": "## Risks" }
+        ],
+        "response": [
+          { "key": "section", "value": "## Risks  (189 words)", "highlight": true },
+          { "key": "→", "value": "Champion left org — need new sponsor" },
+          { "key": "→", "value": "Budget cycle pushed to Q3" },
+          { "key": "→", "value": "Competitor POC underway at subsidiary" }
+        ],
+        "status": "success",
+        "latency": "4ms"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "section-header",
+      "duration": 2.5,
+      "data": {
+        "heading": "Step 4 — Explore the Graph",
+        "subheading": "Find related context without guessing file paths",
+        "icon": "🕸️"
+      },
+      "transition": "slide-left"
+    },
+    {
+      "type": "tool-call",
+      "duration": 6,
+      "data": {
+        "tool": "get_related_entities",
+        "description": "Graph traversal — linked notes up to N hops",
+        "icon": "🔗",
+        "params": [
+          { "key": "path", "value": "/CRM/Deals/Contoso-Renewal.md" },
+          { "key": "hops", "value": "2" }
+        ],
+        "response": [
+          { "key": "found", "value": "9 related notes across 2 hops", "highlight": true },
+          { "key": "hop 1", "value": "Deal-Team.md, Timeline.md, Risk-Log.md" },
+          { "key": "hop 1", "value": "Contoso-Account.md, Meeting-Apr-10.md" },
+          { "key": "hop 2", "value": "Sarah-Chen.md, Competitor-Intel.md" }
+        ],
+        "status": "success",
+        "latency": "28ms"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "section-header",
+      "duration": 2.5,
+      "data": {
+        "heading": "The Complete Flow",
+        "subheading": "Four tool calls, ~500 tokens consumed",
+        "icon": "🗺️"
+      },
+      "transition": "slide-left"
+    },
+    {
+      "type": "logic-flow",
+      "duration": 8,
+      "data": {
+        "title": "Agent Reasoning Chain",
+        "nodes": [
+          { "id": "q", "label": "User Question", "shape": "start", "icon": "💬" },
+          { "id": "search", "label": "search_vault", "shape": "process", "icon": "🔍" },
+          { "id": "pick", "label": "Pick Top Hit?", "shape": "decision", "icon": "🎯" },
+          { "id": "meta", "label": "get_note_metadata", "shape": "process", "icon": "📄" },
+          { "id": "team", "label": "read_note_section\n## Team", "shape": "io", "icon": "📖" },
+          { "id": "risks", "label": "read_note_section\n## Risks", "shape": "io", "icon": "📖" },
+          { "id": "graph", "label": "get_related_entities", "shape": "subprocess", "icon": "🔗" },
+          { "id": "answer", "label": "Synthesize Answer", "shape": "end", "icon": "✅" }
+        ],
+        "edges": [
+          { "from": "q", "to": "search", "highlight": true },
+          { "from": "search", "to": "pick", "label": "3 results", "highlight": true },
+          { "from": "pick", "to": "meta", "label": "Yes", "highlight": true },
+          { "from": "meta", "to": "team", "label": "has ## Team", "highlight": true },
+          { "from": "meta", "to": "risks", "label": "has ## Risks", "highlight": true },
+          { "from": "team", "to": "graph", "highlight": true },
+          { "from": "risks", "to": "graph" },
+          { "from": "graph", "to": "answer", "label": "9 related", "highlight": true }
+        ],
+        "direction": "TB",
+        "annotation": "Happy path: 4 tool calls → ~500 tokens consumed (vs. ~8,000 for full note loads)"
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "stat-counter",
+      "duration": 5,
+      "data": {
+        "title": "Efficiency Gains",
+        "stats": [
+          { "value": 4, "label": "Tool Calls", "icon": "🔧", "description": "search → peek → read → graph" },
+          { "value": 500, "label": "Tokens Used", "suffix": "~", "icon": "📊", "description": "Targeted section reads" },
+          { "value": 94, "label": "Token Savings", "suffix": "%", "icon": "⚡", "description": "vs. loading full notes" },
+          { "value": 82, "label": "Response Time", "suffix": "ms", "icon": "⏱️", "description": "Total tool latency" }
+        ]
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "closing",
+      "duration": 4,
+      "data": {
+        "tagline": "Search. Peek. Read. Explore. — Never load what you don't need.",
+        "cta": "npm install obsidian-vault-mcp"
+      },
+      "transition": "fade"
+    }
+  ]
+}
