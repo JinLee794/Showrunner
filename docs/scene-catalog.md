@@ -26,6 +26,7 @@ This catalog showcases every scene type available in Showrunner with animated pr
 - [Stat Counter](#stat-counter)
 - [Text Reveal](#text-reveal)
 - [Logic Flow](#logic-flow)
+- [Tool Call](#tool-call)
 
 ## Quick Reference
 
@@ -51,6 +52,7 @@ This catalog showcases every scene type available in Showrunner with animated pr
 | [`stat-counter`](#stat-counter) | Big animated numbers that count up from 0. |
 | [`text-reveal`](#text-reveal) | Cinematic text reveal scene. |
 | [`logic-flow`](#logic-flow) | Animated flowchart / decision-tree diagram. |
+| [`tool-call`](#tool-call) | Animated tool/API call visualization. |
 
 ---
 
@@ -1041,7 +1043,7 @@ Cinematic text reveal scene. Supports word-by-word, typewriter, char-cascade, fa
 
 Animated flowchart / decision-tree diagram. Nodes appear in topological order with scale-in, edges draw on with stroke animation, arrowheads fade in at completion. Supports decision diamonds, process boxes, I/O parallelograms, start/end pills, and subprocess double-border rects. Back-edges (cycles) are auto-detected and rendered as dashed curves. Use highlight:true on edges to mark the happy path. Best with 5–8 nodes per scene — decompose complex flows into multiple scenes for clarity.
 
-*Preview not available — scene template pending.*
+![Logic Flow preview](assets/scenes/logic-flow.gif)
 
 ### Data Schema
 
@@ -1147,6 +1149,83 @@ Animated flowchart / decision-tree diagram. Nodes appear in topological order wi
       }
     ],
     "annotation": "Happy path highlighted — 5-8 nodes per segment is ideal"
+  }
+}
+```
+
+</details>
+
+---
+
+## Tool Call
+
+**Type:** `tool-call`
+
+Animated tool/API call visualization. Badge with tool name animates in, parameters stagger from left, a processing bar fills, then response rows slide up. Perfect for illustrating MCP tools, REST APIs, function calls, or any request→response pattern. Supports success/error status styling and optional latency badge.
+
+![Tool Call preview](assets/scenes/tool-call.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string |  | Optional heading above the call visualization |
+| `tool` | string | ✅ | Tool or function name displayed in the badge |
+| `description` | string |  | Short description shown next to tool name |
+| `icon` | string |  | Emoji or symbol for the tool badge |
+| `params` | array | ✅ | Key-value pairs representing the call parameters |
+| `response` | array | ✅ | Rows of the response — can be key:value pairs or single-key labels |
+| `status` | string |  | success (default) or error — controls icon and color |
+| `latency` | string |  | Latency label shown in response header, e.g. "42ms" |
+| `processingLabel` | string |  | Custom processing text (default: "Processing…") |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "tool-call",
+  "duration": 6,
+  "data": {
+    "title": "Vault Lookup",
+    "tool": "search_vault",
+    "description": "Unified search across lexical and fuzzy tiers",
+    "icon": "🔍",
+    "params": [
+      {
+        "key": "query",
+        "value": "\"Q1 pipeline update\""
+      },
+      {
+        "key": "folder",
+        "value": "/CRM/Deals"
+      },
+      {
+        "key": "tags",
+        "value": "[\"pipeline\", \"quarterly\"]"
+      }
+    ],
+    "response": [
+      {
+        "key": "results",
+        "value": "8 notes ranked by relevance",
+        "highlight": true
+      },
+      {
+        "key": "#1",
+        "value": "/CRM/Deals/Pipeline-Q1.md  (score: 0.94)"
+      },
+      {
+        "key": "#2",
+        "value": "/CRM/Deals/Contoso-Renewal.md  (score: 0.87)"
+      },
+      {
+        "key": "#3",
+        "value": "/CRM/Quarterly/Review-Notes.md  (score: 0.81)"
+      }
+    ],
+    "status": "success",
+    "latency": "42ms"
   }
 }
 ```
