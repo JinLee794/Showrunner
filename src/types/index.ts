@@ -43,7 +43,8 @@ export type SceneType =
   | 'image-card'
   | 'bullet-list'
   | 'stat-counter'
-  | 'text-reveal';
+  | 'text-reveal'
+  | 'logic-flow';
 
 export interface PacingPhases {
   /** Fraction of duration for entrance animations (0-1, default ~0.3) */
@@ -117,6 +118,7 @@ export interface RenderResult {
 export interface ValidationResult {
   valid: boolean;
   errors?: string[];
+  warnings?: string[];
   summary?: {
     scenes: number;
     duration: number;

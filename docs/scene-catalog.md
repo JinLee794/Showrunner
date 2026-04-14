@@ -2,7 +2,7 @@
 
 > **Auto-generated** — do not edit manually. Run `npm run generate:catalog` to regenerate.
 
-This catalog showcases every scene type available in Showrunner with animated previews, descriptions, and data schemas. Last updated: 2026-04-13.
+This catalog showcases every scene type available in Showrunner with animated previews, descriptions, and data schemas. Last updated: 2026-04-14.
 
 ## Table of Contents
 
@@ -25,6 +25,7 @@ This catalog showcases every scene type available in Showrunner with animated pr
 - [Bullet List](#bullet-list)
 - [Stat Counter](#stat-counter)
 - [Text Reveal](#text-reveal)
+- [Logic Flow](#logic-flow)
 
 ## Quick Reference
 
@@ -49,6 +50,7 @@ This catalog showcases every scene type available in Showrunner with animated pr
 | [`bullet-list`](#bullet-list) | Animated bullet list with staggered entrance. |
 | [`stat-counter`](#stat-counter) | Big animated numbers that count up from 0. |
 | [`text-reveal`](#text-reveal) | Cinematic text reveal scene. |
+| [`logic-flow`](#logic-flow) | Animated flowchart / decision-tree diagram. |
 
 ---
 
@@ -1025,6 +1027,126 @@ Cinematic text reveal scene. Supports word-by-word, typewriter, char-cascade, fa
     "headline": "We're <em>accelerating</em> growth with <strong>intelligent automation</strong>",
     "body": "Our platform enables teams to move faster, reduce errors, and deliver more value to customers every single day.",
     "footnote": "Source: Q2 2026 Internal Metrics"
+  }
+}
+```
+
+</details>
+
+---
+
+## Logic Flow
+
+**Type:** `logic-flow`
+
+Animated flowchart / decision-tree diagram. Nodes appear in topological order with scale-in, edges draw on with stroke animation, arrowheads fade in at completion. Supports decision diamonds, process boxes, I/O parallelograms, start/end pills, and subprocess double-border rects. Back-edges (cycles) are auto-detected and rendered as dashed curves. Use highlight:true on edges to mark the happy path. Best with 5–8 nodes per scene — decompose complex flows into multiple scenes for clarity.
+
+*Preview not available — scene template pending.*
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string |  |  |
+| `nodes` | array | ✅ | Max 12 nodes. 5–8 recommended per scene. |
+| `edges` | array | ✅ |  |
+| `direction` | string |  | LR (left-to-right, default) or TB (top-to-bottom) |
+| `maxNodes` | number |  | Advisory limit (default 8). Validation warns above this. |
+| `annotation` | string |  | Italic footnote below the diagram |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "logic-flow",
+  "duration": 8,
+  "data": {
+    "title": "Order Processing Workflow",
+    "nodes": [
+      {
+        "id": "start",
+        "label": "New Order",
+        "shape": "start",
+        "icon": "📦"
+      },
+      {
+        "id": "validate",
+        "label": "Validate",
+        "shape": "process"
+      },
+      {
+        "id": "check-stock",
+        "label": "In Stock?",
+        "shape": "decision"
+      },
+      {
+        "id": "reserve",
+        "label": "Reserve",
+        "shape": "process"
+      },
+      {
+        "id": "backorder",
+        "label": "Backorder",
+        "shape": "io"
+      },
+      {
+        "id": "payment",
+        "label": "Payment",
+        "shape": "subprocess"
+      },
+      {
+        "id": "ship",
+        "label": "Ship",
+        "shape": "process"
+      },
+      {
+        "id": "end",
+        "label": "Done",
+        "shape": "end"
+      }
+    ],
+    "edges": [
+      {
+        "from": "start",
+        "to": "validate"
+      },
+      {
+        "from": "validate",
+        "to": "check-stock"
+      },
+      {
+        "from": "check-stock",
+        "to": "reserve",
+        "label": "Yes",
+        "highlight": true
+      },
+      {
+        "from": "check-stock",
+        "to": "backorder",
+        "label": "No"
+      },
+      {
+        "from": "reserve",
+        "to": "payment",
+        "highlight": true
+      },
+      {
+        "from": "backorder",
+        "to": "payment"
+      },
+      {
+        "from": "payment",
+        "to": "ship",
+        "highlight": true
+      },
+      {
+        "from": "ship",
+        "to": "end",
+        "highlight": true
+      }
+    ],
+    "annotation": "Happy path highlighted — 5-8 nodes per segment is ideal"
   }
 }
 ```

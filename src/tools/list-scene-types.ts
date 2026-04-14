@@ -357,6 +357,49 @@ const sceneTypes: SceneTypeInfo[] = [
       },
     },
   },
+  {
+    type: 'logic-flow',
+    description: 'Animated flowchart / decision-tree diagram. Nodes appear in topological order with scale-in, edges draw on with stroke animation, arrowheads fade in at completion. Supports decision diamonds, process boxes, I/O parallelograms, start/end pills, and subprocess double-border rects. Back-edges (cycles) are auto-detected and rendered as dashed curves. Use highlight:true on edges to mark the happy path. Best with 5–8 nodes per scene — decompose complex flows into multiple scenes for clarity.',
+    dataSchema: {
+      type: 'object',
+      required: ['nodes', 'edges'],
+      properties: {
+        title: { type: 'string' },
+        nodes: {
+          type: 'array',
+          description: 'Max 12 nodes. 5–8 recommended per scene.',
+          items: {
+            type: 'object',
+            required: ['id', 'label'],
+            properties: {
+              id: { type: 'string', description: 'Unique node identifier' },
+              label: { type: 'string', description: 'Display text inside the node' },
+              shape: { type: 'string', description: 'start | end | process | decision | io | subprocess' },
+              sublabel: { type: 'string', description: 'Secondary line of text' },
+              icon: { type: 'string', description: 'Emoji or symbol shown in node' },
+              color: { type: 'string', description: 'Override fill color' },
+            },
+          },
+        },
+        edges: {
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['from', 'to'],
+            properties: {
+              from: { type: 'string', description: 'Source node id' },
+              to: { type: 'string', description: 'Target node id' },
+              label: { type: 'string', description: 'Edge label (e.g. "Yes", "No", "Pass")' },
+              highlight: { type: 'boolean', description: 'True to highlight this edge as the primary path' },
+            },
+          },
+        },
+        direction: { type: 'string', description: 'LR (left-to-right, default) or TB (top-to-bottom)' },
+        maxNodes: { type: 'number', description: 'Advisory limit (default 8). Validation warns above this.' },
+        annotation: { type: 'string', description: 'Italic footnote below the diagram' },
+      },
+    },
+  },
 ];
 
 export async function handleListSceneTypes() {

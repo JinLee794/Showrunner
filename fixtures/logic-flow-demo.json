@@ -1,0 +1,90 @@
+{
+  "title": "CI/CD Pipeline — Decomposed Decision Flow",
+  "theme": "corporate-dark",
+  "fps": 24,
+  "resolution": [1920, 1080],
+  "scenes": [
+    {
+      "type": "section-header",
+      "duration": 3,
+      "data": {
+        "heading": "CI/CD Pipeline",
+        "subheading": "A three-stage deployment decision flow",
+        "icon": "🚀"
+      }
+    },
+    {
+      "type": "logic-flow",
+      "duration": 8,
+      "data": {
+        "title": "Stage 1 — Code Quality Gate",
+        "nodes": [
+          { "id": "push", "label": "Git Push", "shape": "start", "icon": "🚀" },
+          { "id": "lint", "label": "Lint & Format", "shape": "process" },
+          { "id": "test", "label": "Run Tests", "shape": "process" },
+          { "id": "pass", "label": "Tests Pass?", "shape": "decision" },
+          { "id": "build", "label": "Build Artifact", "shape": "process" },
+          { "id": "fix", "label": "Fix Issues", "shape": "io" }
+        ],
+        "edges": [
+          { "from": "push", "to": "lint" },
+          { "from": "lint", "to": "test" },
+          { "from": "test", "to": "pass" },
+          { "from": "pass", "to": "build", "label": "Pass", "highlight": true },
+          { "from": "pass", "to": "fix", "label": "Fail" },
+          { "from": "fix", "to": "push" }
+        ],
+        "annotation": "Feedback loop: failures return to the developer for fixes"
+      },
+      "animation": { "stagger": 0.14, "easing": "power1" }
+    },
+    {
+      "type": "logic-flow",
+      "duration": 8,
+      "data": {
+        "title": "Stage 2 — Security & Compliance",
+        "nodes": [
+          { "id": "artifact", "label": "Build Artifact", "shape": "start" },
+          { "id": "scan", "label": "Security Scan", "shape": "subprocess" },
+          { "id": "vuln", "label": "Vulnerabilities?", "shape": "decision" },
+          { "id": "patch", "label": "Apply Patches", "shape": "io" },
+          { "id": "approve", "label": "Compliance OK", "shape": "process" }
+        ],
+        "edges": [
+          { "from": "artifact", "to": "scan" },
+          { "from": "scan", "to": "vuln" },
+          { "from": "vuln", "to": "approve", "label": "Clean", "highlight": true },
+          { "from": "vuln", "to": "patch", "label": "Found" },
+          { "from": "patch", "to": "scan" }
+        ],
+        "annotation": "Iterative scanning until all vulnerabilities are resolved"
+      },
+      "animation": { "stagger": 0.16, "easing": "power1" }
+    },
+    {
+      "type": "logic-flow",
+      "duration": 8,
+      "data": {
+        "title": "Stage 3 — Deployment & Release",
+        "nodes": [
+          { "id": "cleared", "label": "Cleared Build", "shape": "start" },
+          { "id": "staging", "label": "Deploy Staging", "shape": "process" },
+          { "id": "smoke", "label": "Smoke Tests", "shape": "process" },
+          { "id": "gate", "label": "Approval Gate", "shape": "decision" },
+          { "id": "prod", "label": "Deploy Prod", "shape": "process" },
+          { "id": "live", "label": "Live ✓", "shape": "end" }
+        ],
+        "edges": [
+          { "from": "cleared", "to": "staging" },
+          { "from": "staging", "to": "smoke" },
+          { "from": "smoke", "to": "gate" },
+          { "from": "gate", "to": "prod", "label": "Approved", "highlight": true },
+          { "from": "gate", "to": "staging", "label": "Rejected" },
+          { "from": "prod", "to": "live", "highlight": true }
+        ],
+        "annotation": "Manual approval gate before production deployment"
+      },
+      "animation": { "stagger": 0.14, "easing": "power1" }
+    }
+  ]
+}

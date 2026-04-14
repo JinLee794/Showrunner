@@ -236,5 +236,32 @@
       "body": "Our platform enables teams to move faster, reduce errors, and deliver more value to customers every single day.",
       "footnote": "Source: Q2 2026 Internal Metrics"
     }
+  },
+  "logic-flow": {
+    "duration": 8,
+    "data": {
+      "title": "Order Processing Workflow",
+      "nodes": [
+        { "id": "start", "label": "New Order", "shape": "start", "icon": "📦" },
+        { "id": "validate", "label": "Validate", "shape": "process" },
+        { "id": "check-stock", "label": "In Stock?", "shape": "decision" },
+        { "id": "reserve", "label": "Reserve", "shape": "process" },
+        { "id": "backorder", "label": "Backorder", "shape": "io" },
+        { "id": "payment", "label": "Payment", "shape": "subprocess" },
+        { "id": "ship", "label": "Ship", "shape": "process" },
+        { "id": "end", "label": "Done", "shape": "end" }
+      ],
+      "edges": [
+        { "from": "start", "to": "validate" },
+        { "from": "validate", "to": "check-stock" },
+        { "from": "check-stock", "to": "reserve", "label": "Yes", "highlight": true },
+        { "from": "check-stock", "to": "backorder", "label": "No" },
+        { "from": "reserve", "to": "payment", "highlight": true },
+        { "from": "backorder", "to": "payment" },
+        { "from": "payment", "to": "ship", "highlight": true },
+        { "from": "ship", "to": "end", "highlight": true }
+      ],
+      "annotation": "Happy path highlighted — 5-8 nodes per segment is ideal"
+    }
   }
 }

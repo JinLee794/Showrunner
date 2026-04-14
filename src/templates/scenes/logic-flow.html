@@ -1,0 +1,739 @@
+<div class="scene logic-flow">
+  {{#if data.title}}
+  <h2 class="scene-title logic-flow__title">{{data.title}}</h2>
+  {{/if}}
+  <div class="logic-flow__canvas" id="logic-flow-svg"></div>
+  {{#if data.annotation}}
+  <p class="logic-flow__annotation">{{data.annotation}}</p>
+  {{/if}}
+</div>
+
+<script id="flow-data" type="application/json">{{{data.flowDataJSON}}}</script>
+
+<style>
+  .logic-flow {
+    align-items: flex-start;
+    padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 6);
+  }
+
+  .logic-flow__title {
+    margin-bottom: calc(var(--spacing-unit) * 2);
+  }
+
+  .logic-flow__canvas {
+    width: 100%;
+    height: 780px;
+    background: var(--glass-bg, var(--bg-secondary));
+    backdrop-filter: blur(var(--glass-blur, 16px));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.06));
+    border-radius: var(--border-radius);
+    padding: calc(var(--spacing-unit) * 3);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+  }
+
+  .logic-flow__canvas svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .logic-flow__annotation {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    margin-top: calc(var(--spacing-unit) * 1.5);
+  }
+</style>
+
+<script>
+(function() {
+  /* ── Data ── */
+  var dataEl = document.getElementById('flow-data');
+  var flowData = dataEl ? JSON.parse(dataEl.textContent || '{}') : {};
+  var nodes = flowData.nodes || [];
+  var edges = flowData.edges || [];
+  var direction = flowData.direction || 'LR'; // LR = left-to-right (default), TB = top-to-bottom
+  var anim = window.__anim || {};
+
+  /* ── Node metadata ── */
+  var nodeMap = {};
+  var palette = {
+    start:      { fill: '#2ecc71', fillEnd: '#1fa85a', stroke: '#27ae60', text: '#ffffff', glow: 'rgba(46,204,113,0.35)' },
+    end:        { fill: '#e74c3c', fillEnd: '#c0392b', stroke: '#c0392b', text: '#ffffff', glow: 'rgba(231,76,60,0.35)' },
+    process:    { fill: '#4fc3f7', fillEnd: '#0097d4', stroke: '#0288d1', text: '#ffffff', glow: 'rgba(79,195,247,0.25)' },
+    decision:   { fill: '#fbbf24', fillEnd: '#e67e22', stroke: '#d97706', text: '#1a1a2e', glow: 'rgba(251,191,36,0.3)' },
+    io:         { fill: '#a78bfa', fillEnd: '#7c3aed', stroke: '#7c3aed', text: '#ffffff', glow: 'rgba(167,139,250,0.3)' },
+    subprocess: { fill: '#22d3ee', fillEnd: '#0891b2', stroke: '#0e7490', text: '#ffffff', glow: 'rgba(34,211,238,0.3)' },
+  };
+
+  nodes.forEach(function(n) {
+    n.shape = n.shape || 'process';
+    var p = palette[n.shape] || palette.process;
+    n._fill    = n.color || p.fill;
+    n._fillEnd = p.fillEnd;
+    n._stroke  = p.stroke;
+    n._text    = p.text;
+    n._glow    = p.glow;
+    n._w = n.width  || (n.shape === 'decision' ? 150 : 170);
+    n._h = n.height || (n.shape === 'decision' ? 76 : 54);
+    nodeMap[n.id] = n;
+  });
+
+  /* ── Layered layout (Sugiyama-style, handles cycles) ── */
+  // Build adjacency
+  var children = {}, parents = {};
+  nodes.forEach(function(n) { children[n.id] = []; parents[n.id] = []; });
+  edges.forEach(function(e) {
+    children[e.from] = children[e.from] || [];
+    children[e.from].push(e.to);
+    parents[e.to] = parents[e.to] || [];
+    parents[e.to].push(e.from);
+  });
+
+  // Detect back-edges via DFS so cycles don't break layer assignment
+  var WHITE = 0, GRAY = 1, BLACK = 2;
+  var colorDFS = {};
+  var backEdges = {};
+  nodes.forEach(function(n) { colorDFS[n.id] = WHITE; });
+
+  function dfs(uid) {
+    colorDFS[uid] = GRAY;
+    (children[uid] || []).forEach(function(vid) {
+      if (colorDFS[vid] === GRAY) {
+        // back-edge found — mark it
+        backEdges[uid + '->' + vid] = true;
+      } else if (colorDFS[vid] === WHITE) {
+        dfs(vid);
+      }
+    });
+    colorDFS[uid] = BLACK;
+  }
+  nodes.forEach(function(n) { if (colorDFS[n.id] === WHITE) dfs(n.id); });
+
+  // Build forward-only parent map (excluding back-edges)
+  var fwdParents = {};
+  nodes.forEach(function(n) { fwdParents[n.id] = []; });
+  edges.forEach(function(e) {
+    if (!backEdges[e.from + '->' + e.to]) {
+      fwdParents[e.to].push(e.from);
+    }
+  });
+
+  // Assign layers via longest-path on the DAG (back-edges removed)
+  var layer = {};
+  var visited = {};
+  function assignLayer(id) {
+    if (visited[id]) return layer[id];
+    visited[id] = true;
+    var ps = fwdParents[id] || [];
+    if (ps.length === 0) {
+      layer[id] = 0;
+    } else {
+      var maxParent = 0;
+      ps.forEach(function(pid) {
+        maxParent = Math.max(maxParent, assignLayer(pid) + 1);
+      });
+      layer[id] = maxParent;
+    }
+    return layer[id];
+  }
+  nodes.forEach(function(n) { assignLayer(n.id); });
+
+  // Group by layer
+  var layers = {};
+  var maxLayer = 0;
+  nodes.forEach(function(n) {
+    var l = layer[n.id];
+    if (!layers[l]) layers[l] = [];
+    layers[l].push(n);
+    if (l > maxLayer) maxLayer = l;
+  });
+
+  // Barycenter ordering to reduce crossings (single pass)
+  for (var l = 1; l <= maxLayer; l++) {
+    if (!layers[l]) continue;
+    layers[l].forEach(function(n) {
+      var ps = fwdParents[n.id] || [];
+      if (ps.length === 0) { n._bary = 0; return; }
+      var sum = 0;
+      ps.forEach(function(pid) {
+        var pLayer = layers[layer[pid]] || [];
+        sum += pLayer.indexOf(nodeMap[pid]);
+      });
+      n._bary = sum / ps.length;
+    });
+    layers[l].sort(function(a, b) { return a._bary - b._bary; });
+  }
+
+  // Coordinate assignment
+  var isHorizontal = direction === 'LR';
+  var layerGap = isHorizontal ? 240 : 120;
+  var nodeGap  = isHorizontal ? 110 : 200;
+  var container = document.getElementById('logic-flow-svg');
+  var outerW = container.offsetWidth || 1800;
+  var outerH = container.offsetHeight || 540;
+
+  // Compute raw positions
+  var maxNodesInLayer = 0;
+  for (var l2 = 0; l2 <= maxLayer; l2++) {
+    if (layers[l2] && layers[l2].length > maxNodesInLayer) maxNodesInLayer = layers[l2].length;
+  }
+
+  for (var l3 = 0; l3 <= maxLayer; l3++) {
+    if (!layers[l3]) continue;
+    var count = layers[l3].length;
+    layers[l3].forEach(function(n, i) {
+      if (isHorizontal) {
+        n._x = l3 * layerGap;
+        var totalHeight = count * n._h + (count - 1) * (nodeGap - n._h);
+        n._y = -totalHeight / 2 + i * nodeGap;
+      } else {
+        n._y = l3 * layerGap;
+        var totalWidth = count * n._w + (count - 1) * (nodeGap - n._w);
+        n._x = -totalWidth / 2 + i * nodeGap;
+      }
+    });
+  }
+
+  // Auto-fit: compute bounds, then translate to center
+  var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  nodes.forEach(function(n) {
+    minX = Math.min(minX, n._x - n._w / 2);
+    maxX = Math.max(maxX, n._x + n._w / 2);
+    minY = Math.min(minY, n._y - n._h / 2);
+    maxY = Math.max(maxY, n._y + n._h / 2);
+  });
+  var graphW = maxX - minX;
+  var graphH = maxY - minY;
+  var padX = 60, padY = 60;
+  var scaleX = (outerW - 2 * padX) / (graphW || 1);
+  var scaleY = (outerH - 2 * padY) / (graphH || 1);
+  var scale = Math.min(scaleX, scaleY, 1.4); // cap max zoom
+  var offsetX = (outerW - graphW * scale) / 2 - minX * scale;
+  var offsetY = (outerH - graphH * scale) / 2 - minY * scale;
+
+  /* ── SVG Render ── */
+  var svg = d3.select('#logic-flow-svg')
+    .append('svg')
+    .attr('viewBox', '0 0 ' + outerW + ' ' + outerH)
+    .attr('preserveAspectRatio', 'xMidYMid meet');
+
+  var defs = svg.append('defs');
+
+  // Per-node gradients (like chart-bar gradient fills)
+  nodes.forEach(function(n, i) {
+    var grad = defs.append('linearGradient')
+      .attr('id', 'node-grad-' + i)
+      .attr('x1', '0').attr('y1', '0')
+      .attr('x2', '0').attr('y2', '1');
+    grad.append('stop').attr('offset', '0%').attr('stop-color', n._fill).attr('stop-opacity', 1);
+    grad.append('stop').attr('offset', '100%').attr('stop-color', n._fillEnd).attr('stop-opacity', 1);
+  });
+
+  // Arrowhead markers removed — we draw per-edge arrowheads as separate elements for animation control
+
+  // Glow filter for highlighted paths
+  var glow = defs.append('filter')
+    .attr('id', 'glow')
+    .attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
+  glow.append('feGaussianBlur').attr('stdDeviation', '5').attr('result', 'blur');
+  var glowMerge = glow.append('feMerge');
+  glowMerge.append('feMergeNode').attr('in', 'blur');
+  glowMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+  // Drop shadow for nodes — softer, larger
+  var shadow = defs.append('filter')
+    .attr('id', 'node-shadow')
+    .attr('x', '-20%').attr('y', '-20%').attr('width', '140%').attr('height', '160%');
+  shadow.append('feGaussianBlur').attr('stdDeviation', '4').attr('in', 'SourceAlpha').attr('result', 'blur');
+  shadow.append('feOffset').attr('dx', 0).attr('dy', 3).attr('result', 'offsetBlur');
+  shadow.append('feFlood').attr('flood-color', 'rgba(0,0,0,0.25)').attr('result', 'color');
+  shadow.append('feComposite').attr('in', 'color').attr('in2', 'offsetBlur').attr('operator', 'in').attr('result', 'shadow');
+  var shadowMerge = shadow.append('feMerge');
+  shadowMerge.append('feMergeNode').attr('in', 'shadow');
+  shadowMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+  // Inner highlight for glass effect
+  var innerGlow = defs.append('filter')
+    .attr('id', 'inner-glow')
+    .attr('x', '-10%').attr('y', '-10%').attr('width', '120%').attr('height', '120%');
+  innerGlow.append('feGaussianBlur').attr('stdDeviation', '2').attr('in', 'SourceAlpha').attr('result', 'blur');
+  innerGlow.append('feOffset').attr('dx', 0).attr('dy', -1).attr('result', 'topGlow');
+
+  // Edge label pill background
+  var pillFilter = defs.append('filter')
+    .attr('id', 'label-bg')
+    .attr('x', '-0.15').attr('y', '-0.3').attr('width', '1.3').attr('height', '1.6');
+  pillFilter.append('feFlood').attr('flood-color', 'var(--bg-primary, #0f0f23)').attr('flood-opacity', '0.85');
+  pillFilter.append('feComposite').attr('in2', 'SourceGraphic').attr('operator', 'over');
+
+  var mainG = svg.append('g')
+    .attr('transform', 'translate(' + offsetX + ',' + offsetY + ') scale(' + scale + ')');
+
+  /* ── Edges ── */
+  function edgePath(e) {
+    var src = nodeMap[e.from];
+    var tgt = nodeMap[e.to];
+    var isBack = !!backEdges[e.from + '->' + e.to];
+
+    // For back-edges (cycles), route below/above the graph
+    if (isBack) {
+      var startX, startY, endX, endY;
+      if (isHorizontal) {
+        startX = src._x - src._w / 2;
+        startY = src._y + src._h / 2 + 8;
+        endX = tgt._x + tgt._w / 2;
+        endY = tgt._y + tgt._h / 2 + 8;
+        var loopY = Math.max(startY, endY) + 50;
+        return 'M ' + startX + ' ' + startY +
+               ' C ' + startX + ' ' + loopY +
+               ', ' + endX + ' ' + loopY +
+               ', ' + endX + ' ' + endY;
+      } else {
+        startX = src._x + src._w / 2 + 8;
+        startY = src._y;
+        endX = tgt._x + tgt._w / 2 + 8;
+        endY = tgt._y;
+        var loopX = Math.max(startX, endX) + 50;
+        return 'M ' + startX + ' ' + startY +
+               ' C ' + loopX + ' ' + startY +
+               ', ' + loopX + ' ' + endY +
+               ', ' + endX + ' ' + endY;
+      }
+    }
+
+    var sx = src._x, sy = src._y, tx = tgt._x, ty = tgt._y;
+
+    // Adjust start/end to node boundary
+    if (isHorizontal) {
+      // Decision nodes: branch port from top/bottom for non-primary edges
+      if (src.shape === 'decision' && Math.abs(tgt._y - src._y) > 10) {
+        sx = src._x;
+        sy = src._y + (tgt._y > src._y ? src._h / 2 : -src._h / 2);
+        tx = tgt._x - tgt._w / 2;
+        // Route with an L-bend via orthogonal segments
+        var midX = sx + (tx - sx) * 0.5;
+        return 'M ' + sx + ' ' + sy +
+               ' C ' + sx + ' ' + (sy + (ty - sy) * 0.6) +
+               ', ' + midX + ' ' + ty +
+               ', ' + tx + ' ' + ty;
+      }
+      sx += src._w / 2;
+      tx -= tgt._w / 2;
+    } else {
+      if (src.shape === 'decision' && Math.abs(tgt._x - src._x) > 10) {
+        sx = src._x + (tgt._x > src._x ? src._w * 0.5 : -src._w * 0.5);
+        sy = src._y;
+        tx = tgt._x;
+        ty = tgt._y - tgt._h / 2;
+        var midY = sy + (ty - sy) * 0.5;
+        return 'M ' + sx + ' ' + sy +
+               ' C ' + (sx + (tx - sx) * 0.3) + ' ' + sy +
+               ', ' + tx + ' ' + midY +
+               ', ' + tx + ' ' + ty;
+      }
+      sy += src._h / 2;
+      ty -= tgt._h / 2;
+    }
+
+    // Default: smooth cubic bezier
+    if (isHorizontal) {
+      var mx = (sx + tx) / 2;
+      return 'M ' + sx + ' ' + sy + ' C ' + mx + ' ' + sy + ', ' + mx + ' ' + ty + ', ' + tx + ' ' + ty;
+    } else {
+      var my = (sy + ty) / 2;
+      return 'M ' + sx + ' ' + sy + ' C ' + sx + ' ' + my + ', ' + tx + ' ' + my + ', ' + tx + ' ' + ty;
+    }
+  }
+
+  var edgePaths = [];
+  var edgeLabels = [];
+  edges.forEach(function(e, i) {
+    var isHighlight = e.highlight || false;
+    var isBack = !!backEdges[e.from + '->' + e.to];
+
+    var path = mainG.append('path')
+      .attr('class', 'flow-edge' + (isHighlight ? ' flow-edge--highlight' : '') + (isBack ? ' flow-edge--back' : ''))
+      .attr('d', edgePath(e))
+      .attr('fill', 'none')
+      .attr('stroke', isHighlight ? 'var(--accent, #4fc3f7)' : isBack ? 'rgba(148,163,184,0.35)' : 'rgba(148,163,184,0.5)')
+      .attr('stroke-width', isHighlight ? 2.5 : 1.5)
+      .attr('stroke-linecap', 'round')
+      .attr('stroke-linejoin', 'round')
+      .attr('opacity', 0);
+
+    if (isHighlight) {
+      path.attr('filter', 'url(#glow)');
+    }
+
+    // Arrowhead as a separate SVG polygon at path endpoint, oriented along path direction
+    var arrowColor = isHighlight ? 'var(--accent, #4fc3f7)' : isBack ? 'rgba(148,163,184,0.35)' : 'rgba(148,163,184,0.6)';
+    var arrowEl = mainG.append('polygon')
+      .attr('class', 'flow-arrowhead')
+      .attr('points', '-6,-4 6,0 -6,4')
+      .attr('fill', arrowColor)
+      .attr('opacity', 0);
+
+    // Position arrowhead at end of path with proper rotation
+    try {
+      var pathLen = path.node().getTotalLength();
+      var tipPt = path.node().getPointAtLength(pathLen);
+      var preTipPt = path.node().getPointAtLength(Math.max(0, pathLen - 2));
+      var angle = Math.atan2(tipPt.y - preTipPt.y, tipPt.x - preTipPt.x) * 180 / Math.PI;
+      arrowEl.attr('transform', 'translate(' + tipPt.x + ',' + tipPt.y + ') rotate(' + angle + ')');
+    } catch(ex) {}
+
+    edgePaths.push({ node: path.node(), edge: e, index: i, isBack: isBack, arrowNode: arrowEl.node() });
+
+    // Edge label with pill background
+    if (e.label) {
+      var src = nodeMap[e.from];
+      var tgt = nodeMap[e.to];
+      var pathD = edgePath(e);
+      // Sample midpoint from path string (approximate)
+      var lx = (src._x + tgt._x) / 2;
+      var ly = (src._y + tgt._y) / 2;
+      // Offset label perpendicular to the edge direction
+      var dx = tgt._x - src._x;
+      var dy = tgt._y - src._y;
+      var len = Math.sqrt(dx * dx + dy * dy) || 1;
+      var offsetDist = 16;
+      lx += (-dy / len) * offsetDist;
+      ly += (dx / len) * offsetDist;
+
+      // Pill background rect (will be sized after text renders)
+      var labelG = mainG.append('g').attr('class', 'flow-edge-label-group').attr('opacity', 0);
+
+      var pillRect = labelG.append('rect')
+        .attr('rx', 10).attr('ry', 10)
+        .attr('fill', 'var(--bg-primary, #0f0f23)')
+        .attr('fill-opacity', 0.85)
+        .attr('stroke', isHighlight ? 'var(--accent, #4fc3f7)' : 'rgba(148,163,184,0.2)')
+        .attr('stroke-width', 1);
+
+      var labelText = labelG.append('text')
+        .attr('x', lx).attr('y', ly)
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', isHighlight ? 'var(--accent, #4fc3f7)' : 'var(--text-secondary, #94a3b8)')
+        .attr('font-size', '11px')
+        .attr('font-family', 'var(--font-mono, monospace)')
+        .attr('font-weight', '600')
+        .attr('letter-spacing', '0.04em')
+        .text(e.label);
+
+      // Size the pill to fit the text
+      try {
+        var bbox = labelText.node().getBBox();
+        pillRect
+          .attr('x', bbox.x - 8)
+          .attr('y', bbox.y - 3)
+          .attr('width', bbox.width + 16)
+          .attr('height', bbox.height + 6);
+      } catch(ex) {
+        pillRect.attr('x', lx - 20).attr('y', ly - 10).attr('width', 40).attr('height', 20);
+      }
+
+      edgeLabels.push({ node: labelG.node(), index: i });
+    }
+  });
+
+  /* ── Nodes ── */
+  var nodeGroups = [];
+  var topoOrder = []; // topological order for animation
+  for (var tl = 0; tl <= maxLayer; tl++) {
+    if (!layers[tl]) continue;
+    layers[tl].forEach(function(n) { topoOrder.push(n.id); });
+  }
+
+  topoOrder.forEach(function(nid, nIdx) {
+    var n = nodeMap[nid];
+    var g = mainG.append('g')
+      .attr('class', 'flow-node')
+      .attr('transform', 'translate(' + n._x + ',' + n._y + ')')
+      .attr('opacity', 0);
+
+    var gradId = 'node-grad-' + nodes.indexOf(n);
+
+    // Ambient glow behind node
+    if (n.shape === 'decision') {
+      g.append('polygon')
+        .attr('points', '0,' + (-n._h / 2 - 4) + ' ' + (n._w / 2 + 4) + ',0 0,' + (n._h / 2 + 4) + ' ' + (-n._w / 2 - 4) + ',0')
+        .attr('fill', n._glow)
+        .attr('filter', 'url(#glow)')
+        .attr('opacity', 0.5);
+    } else {
+      g.append('rect')
+        .attr('x', -n._w / 2 - 3).attr('y', -n._h / 2 - 3)
+        .attr('width', n._w + 6).attr('height', n._h + 6)
+        .attr('rx', n.shape === 'start' || n.shape === 'end' ? n._h / 2 + 3 : 10)
+        .attr('fill', n._glow)
+        .attr('filter', 'url(#glow)')
+        .attr('opacity', 0.4);
+    }
+
+    // Shape
+    if (n.shape === 'decision') {
+      var hw = n._w / 2, hh = n._h / 2;
+      g.append('polygon')
+        .attr('points', '0,' + (-hh) + ' ' + hw + ',0 0,' + hh + ' ' + (-hw) + ',0')
+        .attr('fill', 'url(#' + gradId + ')')
+        .attr('stroke', n._stroke)
+        .attr('stroke-width', 1.5)
+        .attr('filter', 'url(#node-shadow)');
+      // Inner highlight line (top edge shimmer)
+      g.append('line')
+        .attr('x1', -hw * 0.6).attr('y1', -hh * 0.45)
+        .attr('x2', hw * 0.6).attr('y2', -hh * 0.45)
+        .attr('stroke', 'rgba(255,255,255,0.15)')
+        .attr('stroke-width', 1)
+        .attr('stroke-linecap', 'round');
+    } else if (n.shape === 'start' || n.shape === 'end') {
+      g.append('rect')
+        .attr('x', -n._w / 2).attr('y', -n._h / 2)
+        .attr('width', n._w).attr('height', n._h)
+        .attr('rx', n._h / 2).attr('ry', n._h / 2)
+        .attr('fill', 'url(#' + gradId + ')')
+        .attr('stroke', n._stroke)
+        .attr('stroke-width', 1.5)
+        .attr('filter', 'url(#node-shadow)');
+      // Glass top highlight
+      g.append('rect')
+        .attr('x', -n._w / 2 + 6).attr('y', -n._h / 2 + 2)
+        .attr('width', n._w - 12).attr('height', n._h * 0.35)
+        .attr('rx', n._h * 0.35 / 2)
+        .attr('fill', 'rgba(255,255,255,0.1)');
+    } else if (n.shape === 'io') {
+      var sk = 14;
+      g.append('polygon')
+        .attr('points',
+          (-n._w / 2 + sk) + ',' + (-n._h / 2) + ' ' +
+          (n._w / 2 + sk) + ',' + (-n._h / 2) + ' ' +
+          (n._w / 2 - sk) + ',' + (n._h / 2) + ' ' +
+          (-n._w / 2 - sk) + ',' + (n._h / 2))
+        .attr('fill', 'url(#' + gradId + ')')
+        .attr('stroke', n._stroke)
+        .attr('stroke-width', 1.5)
+        .attr('filter', 'url(#node-shadow)');
+      // Glass highlight
+      g.append('line')
+        .attr('x1', -n._w / 2 + sk + 8).attr('y1', -n._h / 2 + 5)
+        .attr('x2', n._w / 2 + sk - 8).attr('y2', -n._h / 2 + 5)
+        .attr('stroke', 'rgba(255,255,255,0.12)')
+        .attr('stroke-width', 1)
+        .attr('stroke-linecap', 'round');
+    } else if (n.shape === 'subprocess') {
+      g.append('rect')
+        .attr('x', -n._w / 2).attr('y', -n._h / 2)
+        .attr('width', n._w).attr('height', n._h)
+        .attr('rx', 8).attr('ry', 8)
+        .attr('fill', 'url(#' + gradId + ')')
+        .attr('stroke', n._stroke)
+        .attr('stroke-width', 1.5)
+        .attr('filter', 'url(#node-shadow)');
+      // Inner double-border
+      g.append('rect')
+        .attr('x', -n._w / 2 + 5).attr('y', -n._h / 2 + 5)
+        .attr('width', n._w - 10).attr('height', n._h - 10)
+        .attr('rx', 5).attr('ry', 5)
+        .attr('fill', 'none')
+        .attr('stroke', 'rgba(255,255,255,0.12)')
+        .attr('stroke-width', 1);
+      // Glass highlight
+      g.append('rect')
+        .attr('x', -n._w / 2 + 6).attr('y', -n._h / 2 + 2)
+        .attr('width', n._w - 12).attr('height', n._h * 0.3)
+        .attr('rx', 4)
+        .attr('fill', 'rgba(255,255,255,0.07)');
+    } else {
+      // Default: rounded rect (process)
+      g.append('rect')
+        .attr('x', -n._w / 2).attr('y', -n._h / 2)
+        .attr('width', n._w).attr('height', n._h)
+        .attr('rx', 10).attr('ry', 10)
+        .attr('fill', 'url(#' + gradId + ')')
+        .attr('stroke', n._stroke)
+        .attr('stroke-width', 1.5)
+        .attr('filter', 'url(#node-shadow)');
+      // Glass top highlight
+      g.append('rect')
+        .attr('x', -n._w / 2 + 6).attr('y', -n._h / 2 + 2)
+        .attr('width', n._w - 12).attr('height', n._h * 0.35)
+        .attr('rx', 5)
+        .attr('fill', 'rgba(255,255,255,0.08)');
+    }
+
+    // Icon (optional emoji/symbol)
+    if (n.icon) {
+      g.append('text')
+        .attr('class', 'flow-node-icon')
+        .attr('x', -n._w / 2 + 16)
+        .attr('y', 5)
+        .attr('font-size', '16px')
+        .text(n.icon);
+    }
+
+    // Label — centered, white on gradient
+    var labelX = n.icon ? 6 : 0;
+    g.append('text')
+      .attr('class', 'flow-node-label')
+      .attr('x', labelX).attr('y', n.sublabel ? -5 : 1)
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle')
+      .attr('fill', n._text)
+      .attr('font-size', n.shape === 'decision' ? '12px' : '13px')
+      .attr('font-weight', '600')
+      .attr('font-family', 'var(--font-body)')
+      .attr('letter-spacing', '0.01em')
+      .text(n.label);
+
+    // Sub-label
+    if (n.sublabel) {
+      g.append('text')
+        .attr('class', 'flow-node-sublabel')
+        .attr('x', labelX).attr('y', 14)
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', n._text)
+        .attr('font-size', '10px')
+        .attr('font-weight', '400')
+        .attr('font-family', 'var(--font-body)')
+        .attr('opacity', 0.75)
+        .text(n.sublabel);
+    }
+
+    nodeGroups.push({ node: g.node(), id: n.id, layer: layer[n.id] });
+  });
+
+  /* ── Animation Timeline ── */
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+    var stagger = anim.stagger || 0.15;
+
+    // Phase 1: Nodes appear in topological order with scale + fade
+    nodeGroups.forEach(function(ng, i) {
+      tl.to(ng.node, {
+        opacity: 1,
+        duration: 0.25,
+        ease: 'power2.out'
+      }, 0.3 + i * stagger);
+
+      tl.from(ng.node, {
+        scale: 0.6,
+        duration: 0.35,
+        ease: 'back.out(2)',
+        transformOrigin: 'center center'
+      }, 0.3 + i * stagger);
+    });
+
+    // Phase 2: Edges draw on after their source node appears
+    var nodeAppearTime = {};
+    nodeGroups.forEach(function(ng, i) {
+      nodeAppearTime[ng.id] = 0.3 + i * stagger + 0.2;
+    });
+
+    edgePaths.forEach(function(ep) {
+      var pathNode = ep.node;
+      var totalLen = pathNode.getTotalLength ? pathNode.getTotalLength() : 200;
+      var srcTime = nodeAppearTime[ep.edge.from] || 0.5;
+      var arrowNode = ep.arrowNode;
+      var isBackEdge = ep.isBack;
+
+      if (isBackEdge) {
+        // Back-edges: fade in with dashed stroke, no draw animation
+        gsap.set(pathNode, { opacity: 0, strokeDasharray: '6,4' });
+        tl.to(pathNode, {
+          opacity: 1,
+          duration: 0.4,
+          ease: 'power2.out'
+        }, srcTime + 0.15);
+        // Arrowhead fades in at end of edge fade
+        tl.to(arrowNode, {
+          opacity: 1,
+          duration: 0.2,
+          ease: 'power2.out'
+        }, srcTime + 0.5);
+      } else {
+        // Forward edges: keep fully hidden until draw starts
+        gsap.set(pathNode, { opacity: 0 });
+
+        // At draw start: make path visible and set up dash for draw animation
+        tl.set(pathNode, {
+          opacity: 1,
+          strokeDasharray: totalLen,
+          strokeDashoffset: totalLen
+        }, srcTime + 0.1);
+
+        // Animate the dash draw-on
+        tl.to(pathNode, {
+          strokeDashoffset: 0,
+          duration: 0.5,
+          ease: 'power2.inOut'
+        }, srcTime + 0.1);
+
+        // Arrowhead fades in right as the draw completes
+        tl.to(arrowNode, {
+          opacity: 1,
+          duration: 0.15,
+          ease: 'power2.out'
+        }, srcTime + 0.55);
+      }
+    });
+
+    // Phase 3: Edge labels fade in
+    edgeLabels.forEach(function(el) {
+      var ep = edgePaths[el.index];
+      var srcTime = nodeAppearTime[ep.edge.from] || 0.5;
+      tl.to(el.node, {
+        opacity: 1,
+        duration: 0.25,
+        ease: 'power2.out'
+      }, srcTime + 0.4);
+    });
+
+    // Phase 4: Highlight path pulse (if any edges are highlighted)
+    var hasHighlight = edges.some(function(e) { return e.highlight; });
+    if (hasHighlight) {
+      var highlightTime = tl.duration() + 0.2;
+
+      // Pulse highlighted edges
+      edgePaths.forEach(function(ep) {
+        if (!ep.edge.highlight) return;
+        tl.to(ep.node, {
+          strokeWidth: 4,
+          duration: 0.3,
+          ease: 'power2.inOut',
+          yoyo: true,
+          repeat: 1
+        }, highlightTime);
+      });
+
+      // Pulse highlighted nodes
+      var highlightNodeIds = {};
+      edges.forEach(function(e) {
+        if (e.highlight) {
+          highlightNodeIds[e.from] = true;
+          highlightNodeIds[e.to] = true;
+        }
+      });
+
+      nodeGroups.forEach(function(ng) {
+        if (!highlightNodeIds[ng.id]) return;
+        tl.to(ng.node, {
+          filter: 'url(#glow)',
+          scale: 1.05,
+          duration: 0.3,
+          ease: 'power2.inOut',
+          yoyo: true,
+          repeat: 1,
+          transformOrigin: 'center center'
+        }, highlightTime);
+      });
+    }
+
+    return tl;
+  };
+})();
+</script>

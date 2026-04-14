@@ -36,11 +36,26 @@ export async function handleValidateStoryboard(
   const storyboard = parseResult.data;
 
   // Validate each scene's data against its type-specific schema
+  const warnings: string[] = [];
   for (let i = 0; i < storyboard.scenes.length; i++) {
     const scene = storyboard.scenes[i]!;
     const sceneErrors = validateSceneData(scene.type, scene.data);
     for (const err of sceneErrors) {
       errors.push(`scenes[${i}]: ${err}`);
+    }
+
+    // Advisory: logic-flow node count
+    if (scene.type === 'logic-flow') {
+      const data = scene.data as Record<string, unknown>;
+      const nodes = Array.isArray(data.nodes) ? data.nodes : [];
+      const limit = (typeof data.maxNodes === 'number' ? data.maxNodes : 8);
+      if (nodes.length > limit) {
+        warnings.push(
+          `scenes[${i}]: logic-flow has ${nodes.length} nodes (recommended max: ${limit}). ` +
+          `Consider decomposing into multiple scenes — each covering one decision path or stage — ` +
+          `so the audience can focus on one concept at a time.`
+        );
+      }
     }
   }
 
@@ -65,6 +80,7 @@ export async function handleValidateStoryboard(
       duration: totalDuration,
       frames: totalFrames,
     },
+    ...(warnings.length > 0 ? { warnings } : {}),
   };
 
   return {

@@ -63,6 +63,13 @@ function preprocessForPreview(scene: { type: string; data: Record<string, unknow
   if (scene.type === 'action-items' && Array.isArray(data.items)) {
     data.items = data.items.map((item: any, i: number) => ({ ...item, index: i + 1 }));
   }
+  if (scene.type === 'logic-flow') {
+    data.flowDataJSON = JSON.stringify({
+      nodes: data.nodes || [],
+      edges: data.edges || [],
+      direction: data.direction || 'TB',
+    });
+  }
   return data;
 }
 

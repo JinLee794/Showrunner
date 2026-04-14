@@ -54,6 +54,7 @@ export const SceneTypeSchema = z.enum([
   'bullet-list',
   'stat-counter',
   'text-reveal',
+  'logic-flow',
 ]);
 
 export const PacingPhasesSchema = z.object({
@@ -288,6 +289,33 @@ export const TextRevealDataSchema = z.object({
   footnote: z.string().optional(),
 });
 
+export const LogicFlowNodeSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  shape: z.enum(['start', 'end', 'process', 'decision', 'io', 'subprocess']).optional(),
+  sublabel: z.string().optional(),
+  icon: z.string().optional(),
+  color: z.string().optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
+});
+
+export const LogicFlowEdgeSchema = z.object({
+  from: z.string(),
+  to: z.string(),
+  label: z.string().optional(),
+  highlight: z.boolean().optional(),
+});
+
+export const LogicFlowDataSchema = z.object({
+  title: z.string().optional(),
+  nodes: z.array(LogicFlowNodeSchema).min(2).max(12),
+  edges: z.array(LogicFlowEdgeSchema).min(1),
+  direction: z.enum(['TB', 'LR']).optional(),
+  maxNodes: z.number().min(2).max(12).optional(),
+  annotation: z.string().optional(),
+});
+
 export const sceneDataSchemas: Record<string, z.ZodType> = {
   'title-card': TitleCardDataSchema,
   'section-header': SectionHeaderDataSchema,
@@ -310,6 +338,7 @@ export const sceneDataSchemas: Record<string, z.ZodType> = {
   'bullet-list': BulletListDataSchema,
   'stat-counter': StatCounterDataSchema,
   'text-reveal': TextRevealDataSchema,
+  'logic-flow': LogicFlowDataSchema,
 };
 
 /**

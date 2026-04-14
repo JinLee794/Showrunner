@@ -156,6 +156,15 @@ function preprocessSceneData(scene: Scene): Record<string, unknown> {
     });
   }
 
+  // Inject serialized JSON for logic-flow scene
+  if (scene.type === 'logic-flow') {
+    data.flowDataJSON = JSON.stringify({
+      nodes: data.nodes,
+      edges: data.edges,
+      direction: data.direction,
+    });
+  }
+
   return data;
 }
 
