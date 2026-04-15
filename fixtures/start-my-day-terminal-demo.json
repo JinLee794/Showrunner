@@ -1,0 +1,131 @@
+{
+  "title": "A Day in the Life - Terminal Agent Flow",
+  "theme": "microsoft",
+  "fps": 30,
+  "resolution": [1280, 720],
+  "branding": {
+    "accent": "#0078D4"
+  },
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 3.2,
+      "transition": "fade",
+      "data": {
+        "title": "A Day in the Life",
+        "subtitle": "What used to take 45+ minutes now starts with one terminal prompt.",
+        "date": "April 14, 2026"
+      },
+      "animation": { "easing": "spring", "textEffect": "word-reveal" }
+    },
+    {
+      "type": "code-terminal",
+      "duration": 8.4,
+      "transition": "fade",
+      "data": {
+        "title": "8:30 AM - Morning Brief",
+        "shell": "zsh",
+        "lines": [
+          { "kind": "prompt", "text": "start my day" },
+          { "kind": "blank" },
+          { "kind": "output", "text": "◐ The user wants me to invoke the \"morning-brief\" skill. Let me do that immediately." },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "● skill(morning-brief)" },
+          { "kind": "blank" },
+          { "kind": "output", "text": "◐ The morning-brief skill is now loaded. I will follow Phase 1 - Parallel Medium Probe." },
+          { "kind": "output", "text": "  1. Vault: oil:get_vault_context()" },
+          { "kind": "output", "text": "  2. CRM: msx:crm_auth_status" },
+          { "kind": "output", "text": "  3. WorkIQ: check EULA accepted" },
+          { "kind": "blank" },
+          { "kind": "output", "text": "● Starting your morning brief — launching parallel medium probes now." },
+          { "kind": "output", "text": "◐ Probe results: Vault connected, CRM authenticated, WorkIQ ready." },
+          { "kind": "output", "text": "◐ Correlating notes + deals + meetings + signal threads..." },
+          { "kind": "success", "text": "✅ Context-aware morning brief generated." }
+        ]
+      },
+      "animation": { "easing": "power4", "stagger": 0.07 }
+    },
+    {
+      "type": "code-terminal",
+      "duration": 6.2,
+      "transition": "fade",
+      "data": {
+        "title": "9:00 AM - Meeting Prep",
+        "shell": "zsh",
+        "lines": [
+          { "kind": "prompt", "text": "prep me for the contoso call" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "● Running meeting-prep(agent: Contoso)" },
+          { "kind": "output", "text": "◐ Pulling account context, recent emails, and milestone status..." },
+          { "kind": "output", "text": "◐ Building talk track with open risks and exec asks." },
+          { "kind": "success", "text": "✅ Meeting brief ready: goals, objections, next best actions." }
+        ]
+      },
+      "animation": { "easing": "power4", "stagger": 0.07 }
+    },
+    {
+      "type": "code-terminal",
+      "duration": 5.8,
+      "transition": "fade",
+      "data": {
+        "title": "10:30 AM - Quick Wins",
+        "shell": "zsh",
+        "lines": [
+          { "kind": "prompt", "text": "any crm hygiene i can fix right now?" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "● Running quick-wins(hygiene-scan)" },
+          { "kind": "output", "text": "◐ Scanning stale milestones, missing tasks, and date drift..." },
+          { "kind": "output", "text": "◐ Found 7 fixes safe to apply with approval." },
+          { "kind": "success", "text": "✅ 7 quick wins applied in 5 minutes." }
+        ]
+      },
+      "animation": { "easing": "power4", "stagger": 0.07 }
+    },
+    {
+      "type": "code-terminal",
+      "duration": 6.2,
+      "transition": "fade",
+      "data": {
+        "title": "2:00 PM - Pipeline Review",
+        "shell": "zsh",
+        "lines": [
+          { "kind": "prompt", "text": "run my weekly pipeline review" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "● Running pipeline-review(full-hygiene-sweep)" },
+          { "kind": "output", "text": "◐ Checking risk flags, commitment gates, and owner coverage..." },
+          { "kind": "output", "text": "◐ Creating shareable summary for deal desk and leadership." },
+          { "kind": "success", "text": "✅ Pipeline review posted with prioritized follow-ups." }
+        ]
+      },
+      "animation": { "easing": "power4", "stagger": 0.07 }
+    },
+    {
+      "type": "code-terminal",
+      "duration": 5.8,
+      "transition": "fade",
+      "data": {
+        "title": "4:00 PM - Update CRM",
+        "shell": "zsh",
+        "lines": [
+          { "kind": "prompt", "text": "close the poc task on contoso ai milestone" },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "● Running update-crm(task: Contoso AI PoC)" },
+          { "kind": "output", "text": "◐ Showing diff: status, owner notes, completion date." },
+          { "kind": "output", "text": "◐ Awaiting your approval to write back to CRM." },
+          { "kind": "success", "text": "✅ Approved. Update committed and timeline synced." }
+        ]
+      },
+      "animation": { "easing": "power4", "stagger": 0.07 }
+    },
+    {
+      "type": "closing",
+      "duration": 3.2,
+      "transition": "fade",
+      "data": {
+        "tagline": "Simple prompting. Context-aware execution. Repeatable every day.",
+        "cta": "Start with: start my day"
+      },
+      "animation": { "easing": "spring", "exitAnimation": "fade" }
+    }
+  ]
+}

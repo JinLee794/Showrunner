@@ -1,0 +1,203 @@
+{
+  "title": "Morning Brief — Agentic Workflow Demo",
+  "theme": "microsoft",
+  "branding": {
+    "accent": "#0078D4"
+  },
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "title": "Morning Brief",
+        "subtitle": "One prompt. Every signal. Your day, prepared.",
+        "date": "April 14, 2026"
+      },
+      "animation": { "easing": "spring", "textEffect": "word-reveal" }
+    },
+    {
+      "type": "code-terminal",
+      "duration": 12,
+      "transition": "fade",
+      "data": {
+        "title": "Copilot Chat",
+        "shell": "zsh",
+        "lines": [
+          { "kind": "prompt", "text": "/morning-brief" },
+          { "kind": "blank" },
+          { "kind": "output", "text": "◐ Invoking morning-brief skill… loading instructions." },
+          { "kind": "output", "text": "● Phase 1 — Launching parallel medium probes." },
+          { "kind": "blank" },
+          { "kind": "highlight", "text": "  → Vault     (Obsidian knowledge base)" },
+          { "kind": "highlight", "text": "  → CRM       (MSX opportunity data)" },
+          { "kind": "highlight", "text": "  → WorkIQ    (Email + Teams signals)" },
+          { "kind": "highlight", "text": "  → Calendar  (Graph API — today's schedule)" },
+          { "kind": "blank" },
+          { "kind": "success", "text": "✅ All mediums online. CRM auth'd · Vault connected · WorkIQ ready." },
+          { "kind": "blank" },
+          { "kind": "output", "text": "● Phase 2 — Parallel data retrieval across 4 lanes." },
+          { "kind": "output", "text": "  Lane A: Vault → querying 20 customer notes, action items, risks…" },
+          { "kind": "output", "text": "  Lane B: CRM → fetching 22 active opportunities + milestones…" },
+          { "kind": "output", "text": "  Lane C: Calendar → pulling 9 meetings for today (CDT)…" },
+          { "kind": "output", "text": "  Lane D: Signals → surfacing flagged emails + Teams threads…" },
+          { "kind": "blank" },
+          { "kind": "output", "text": "◐ All lanes returned. Correlating meetings ↔ CRM ↔ vault ↔ signals…" },
+          { "kind": "output", "text": "  Matching attendees to opportunity records…" },
+          { "kind": "output", "text": "  Flagging stale milestones and overdue items…" },
+          { "kind": "output", "text": "  Cross-referencing Teams threads with active customers…" },
+          { "kind": "blank" },
+          { "kind": "success", "text": "✅ Morning brief synthesized. Rendering output now." }
+        ]
+      },
+      "notes": "Expanded terminal showing the full agent reasoning — probes, data retrieval, correlation, and final synthesis — scrolling through as lines fill the screen."
+    },
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-up",
+      "data": {
+        "heading": "So what just happened?",
+        "subheading": "From one prompt to a fully correlated daily brief",
+        "icon": "🧠"
+      },
+      "animation": { "textEffect": "word-reveal", "easing": "expo" }
+    },
+    {
+      "type": "logic-flow",
+      "duration": 10,
+      "transition": "fade",
+      "data": {
+        "title": "End-to-End: Prompt → Personalized Brief",
+        "direction": "LR",
+        "nodes": [
+          { "id": "prompt", "label": "/morning-brief", "shape": "start", "icon": "💬" },
+          { "id": "orchestrator", "label": "Agent Orchestrator", "shape": "process", "icon": "🤖", "sublabel": "Skill loaded" },
+          { "id": "vault", "label": "Vault", "shape": "io", "icon": "🗄️", "sublabel": "20 customer notes" },
+          { "id": "crm", "label": "CRM", "shape": "io", "icon": "📊", "sublabel": "22 opportunities" },
+          { "id": "calendar", "label": "Calendar", "shape": "io", "icon": "📅", "sublabel": "9 meetings" },
+          { "id": "signals", "label": "Signals", "shape": "io", "icon": "📧", "sublabel": "2 threads flagged" },
+          { "id": "correlate", "label": "Correlate & Synthesize", "shape": "subprocess", "icon": "🧠", "sublabel": "Match · Flag · Prioritize" },
+          { "id": "brief", "label": "Morning Brief", "shape": "end", "icon": "📋" }
+        ],
+        "edges": [
+          { "from": "prompt", "to": "orchestrator", "highlight": true },
+          { "from": "orchestrator", "to": "vault", "label": "parallel" },
+          { "from": "orchestrator", "to": "crm", "label": "parallel" },
+          { "from": "orchestrator", "to": "calendar", "label": "parallel" },
+          { "from": "orchestrator", "to": "signals", "label": "parallel" },
+          { "from": "vault", "to": "correlate", "highlight": true },
+          { "from": "crm", "to": "correlate", "highlight": true },
+          { "from": "calendar", "to": "correlate", "highlight": true },
+          { "from": "signals", "to": "correlate", "highlight": true },
+          { "from": "correlate", "to": "brief", "highlight": true }
+        ],
+        "annotation": "4 data sources queried in parallel → correlated by customer, attendee, and timeline → unified prioritized output"
+      },
+      "notes": "Single diagram showing the full pipeline: user prompt → orchestrator fans out to 4 data sources in parallel → all converge into correlation engine → final brief."
+    },
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-up",
+      "data": {
+        "heading": "Your Personalized Daily Brief",
+        "subheading": "Tailored insights from your data — ready in seconds",
+        "icon": "📋"
+      },
+      "animation": { "textEffect": "word-reveal", "easing": "expo" }
+    },
+    {
+      "type": "kpi-scorecard",
+      "duration": 7,
+      "transition": "fade",
+      "data": {
+        "kpis": [
+          { "label": "Active Opportunities", "value": 22, "trend": "flat", "animateCount": true },
+          { "label": "Monthly Pipeline", "value": "$2.5M+", "trend": "up" },
+          { "label": "Milestones Tracked", "value": 69, "trend": "flat", "animateCount": true },
+          { "label": "At-Risk Items", "value": 11, "trend": "up", "animateCount": true }
+        ]
+      },
+      "animation": { "stagger": 0.15, "easing": "power4" },
+      "notes": "Portfolio-level KPIs surfaced by correlating CRM opportunities with milestone data."
+    },
+    {
+      "type": "action-items",
+      "duration": 8,
+      "transition": "slide-left",
+      "data": {
+        "items": [
+          { "text": "Priority Account A — deployment milestone due TODAY", "owner": "Specialist", "due": "Apr 14", "priority": "high" },
+          { "text": "Priority Account A — PoC milestone 11 days overdue", "owner": "Specialist", "due": "Apr 3", "priority": "high" },
+          { "text": "Strategic Account B — model routing meeting happening NOW", "owner": "You (SE)", "priority": "high" },
+          { "text": "Priority Program C workshop — confirm deck sections", "owner": "You (SE)", "due": "Apr 22", "priority": "high" },
+          { "text": "Architecture thread — governance decision requires response", "owner": "You (SE)", "priority": "normal" }
+        ]
+      },
+      "animation": { "stagger": 0.14, "easing": "spring", "direction": "left" },
+      "notes": "The 'Act Now' and 'Today' priority items that the agent surfaced by cross-referencing stale milestones, live meetings, and Teams threads."
+    },
+    {
+      "type": "table",
+      "duration": 8,
+      "transition": "fade",
+      "data": {
+        "title": "Today's Remaining Meetings",
+        "columns": [
+          { "key": "time", "label": "Time (CDT)", "width": "18%" },
+          { "key": "meeting", "label": "Meeting", "width": "30%" },
+          { "key": "customer", "label": "Customer / Context", "width": "30%" },
+          { "key": "prep", "label": "Prep Notes", "width": "22%" }
+        ],
+        "rows": [
+          { "time": "6:00 PM 🔴", "meeting": "Model Router + PTU", "customer": "Strategic Account B ($220K/mo)", "prep": "PTU sizing + routing" },
+          { "time": "6:30 PM", "meeting": "auto-mate demo prep", "customer": "Internal", "prep": "You're organizer" },
+          { "time": "8:00 PM", "meeting": "Azure pipe review", "customer": "Customer Cluster D ($8K/mo)", "prep": "Pipeline positioning" },
+          { "time": "9:30 PM", "meeting": "End-of-day sync", "customer": "Internal", "prep": "1:1 alignment" }
+        ],
+        "highlightRows": [0]
+      },
+      "animation": { "stagger": 0.1, "easing": "spring" },
+      "notes": "Calendar events enriched with CRM opportunity data — the agent matched meeting attendees to opportunity records to add revenue context."
+    },
+    {
+      "type": "milestone-timeline",
+      "duration": 8,
+      "transition": "slide-left",
+      "data": {
+        "milestones": [
+          { "name": "Priority Account A — PoC", "due": "2026-04-03", "status": "overdue", "owner": "Specialist", "note": "11 days overdue, status stale" },
+          { "name": "Priority Account A — PTU Deploy", "due": "2026-04-14", "status": "at-risk", "owner": "Specialist", "note": "Due today, no tasks assigned" },
+          { "name": "Priority Account A — App Gateway", "due": "2026-04-20", "status": "at-risk", "owner": "Specialist", "note": "6 days out, needs task plan" },
+          { "name": "Enterprise Program D (4 blocked)", "due": "2026-04-30", "status": "at-risk", "owner": "Specialist", "note": "$365K/mo pipeline at risk" },
+          { "name": "Strategic Program E — 3 regions", "due": "2026-05-15", "status": "at-risk", "owner": "CSA", "note": "Service availability blocked" },
+          { "name": "Priority Workshop C", "due": "2026-04-22", "status": "on-track", "owner": "You (SE)", "note": "Confirm deck sections today" }
+        ]
+      },
+      "animation": { "stagger": 0.12, "easing": "spring" },
+      "notes": "At-risk milestones aggregated from CRM milestone data — the agent flagged stale statuses and missing task plans automatically."
+    },
+    {
+      "type": "text-reveal",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "eyebrow": "One Prompt",
+        "headline": "4 data sources. <em>22 opportunities</em>. 69 milestones. Your entire day — <em>correlated and prioritized</em>.",
+        "body": "The morning brief turns fragmented signals into a unified action plan."
+      },
+      "animation": { "textEffect": "word-reveal", "easing": "slow", "exitAnimation": "fade" }
+    },
+    {
+      "type": "closing",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "tagline": "Morning brief complete.",
+        "cta": "Run /morning-brief to start your day."
+      },
+      "animation": { "easing": "spring", "exitAnimation": "fade" }
+    }
+  ]
+}

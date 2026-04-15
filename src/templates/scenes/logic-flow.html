@@ -277,6 +277,7 @@
     var src = nodeMap[e.from];
     var tgt = nodeMap[e.to];
     var isBack = !!backEdges[e.from + '->' + e.to];
+    var endInset = 10;
 
     // For back-edges (cycles), route below/above the graph
     if (isBack) {
@@ -321,7 +322,7 @@
                ', ' + tx + ' ' + ty;
       }
       sx += src._w / 2;
-      tx -= tgt._w / 2;
+      tx -= (tgt._w / 2 + endInset);
     } else {
       if (src.shape === 'decision' && Math.abs(tgt._x - src._x) > 10) {
         sx = src._x + (tgt._x > src._x ? src._w * 0.5 : -src._w * 0.5);
@@ -335,7 +336,7 @@
                ', ' + tx + ' ' + ty;
       }
       sy += src._h / 2;
-      ty -= tgt._h / 2;
+      ty -= (tgt._h / 2 + endInset);
     }
 
     // Default: smooth cubic bezier
@@ -359,7 +360,7 @@
       .attr('d', edgePath(e))
       .attr('fill', 'none')
       .attr('stroke', isHighlight ? 'var(--accent, #4fc3f7)' : isBack ? 'rgba(148,163,184,0.35)' : 'rgba(148,163,184,0.5)')
-      .attr('stroke-width', isHighlight ? 2.5 : 1.5)
+      .attr('stroke-width', isHighlight ? 4 : 2.5)
       .attr('stroke-linecap', 'round')
       .attr('stroke-linejoin', 'round')
       .attr('opacity', 0);
@@ -372,7 +373,7 @@
     var arrowColor = isHighlight ? 'var(--accent, #4fc3f7)' : isBack ? 'rgba(148,163,184,0.35)' : 'rgba(148,163,184,0.6)';
     var arrowEl = mainG.append('polygon')
       .attr('class', 'flow-arrowhead')
-      .attr('points', '-6,-4 6,0 -6,4')
+      .attr('points', '-8,-6 8,0 -8,6')
       .attr('fill', arrowColor)
       .attr('opacity', 0);
 
