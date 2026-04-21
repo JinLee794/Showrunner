@@ -18,7 +18,7 @@
             {{#each data.steps}}
             <div class="code-terminal-with-captions__step" data-step="{{@index}}">
               {{#each this.lines}}
-              <div class="code-terminal-with-captions__line code-terminal-with-captions__line--{{this.kind}}">
+              <div class="code-terminal-with-captions__line code-terminal-with-captions__line--{{this.kind}}{{#if this.emphasize}} code-terminal-with-captions__line--emphasize{{/if}}">
                 {{#if (eq this.kind 'prompt')}}<span class="code-terminal-with-captions__prompt-symbol">❯</span>{{/if}}
                 {{#if (eq this.kind 'comment')}}<span class="code-terminal-with-captions__comment-symbol">#</span>{{/if}}
                 <span class="code-terminal-with-captions__text">{{{this.text}}}</span>
@@ -200,6 +200,15 @@
 
   .code-terminal-with-captions__line--blank {
     height: 1.7em;
+  }
+
+  .code-terminal-with-captions__line--emphasize {
+    background: linear-gradient(90deg, rgba(122, 162, 247, 0.15), rgba(187, 154, 247, 0.1), rgba(122, 162, 247, 0.15));
+    border-radius: 6px;
+    padding: 0 8px;
+    margin: 0 -8px;
+    position: relative;
+    box-shadow: 0 0 0 1px rgba(122, 162, 247, 0.3);
   }
 
   .code-terminal-with-captions__prompt-symbol {
