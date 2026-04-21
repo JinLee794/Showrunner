@@ -339,6 +339,8 @@
 
     gsap.set(steps, { autoAlpha: 0 });
     gsap.set(terminalTrack, { y: 0 });
+    var emphasizedLines = document.querySelectorAll('.code-terminal-with-captions__line--emphasize');
+    gsap.set(emphasizedLines, { boxShadow: '0 0 0 1px rgba(122, 162, 247, 0.3)' });
     if (liveCaption) {
       liveCaption.innerHTML = initialCaptionHtml;
     }
@@ -388,6 +390,32 @@
           stagger: lineStagger,
           ease: ease
         }, stepStartLabel + '+=0.03');
+
+        // Add emphasis pulse for emphasized lines in this step
+        var emphasizedInStep = step.querySelectorAll('.code-terminal-with-captions__line--emphasize');
+        if (emphasizedInStep.length > 0) {
+          tl.to(emphasizedInStep, {
+            boxShadow: '0 0 20px 2px rgba(122, 162, 247, 0.6), inset 0 0 10px rgba(122, 162, 247, 0.2)',
+            duration: 0.25,
+            ease: 'back.out(1.5)'
+          }, stepStartLabel + '+=0.18');
+
+          // Pulse with scale effect
+          tl.to(emphasizedInStep, {
+            scale: 1.02,
+            duration: 0.3,
+            yoyo: true,
+            repeat: 1,
+            ease: 'power2.inOut'
+          }, '<');
+
+          // Fade glow back to normal
+          tl.to(emphasizedInStep, {
+            boxShadow: '0 0 0 1px rgba(122, 162, 247, 0.3)',
+            duration: 0.4,
+            ease: 'power2.inOut'
+          }, '>-0.1');
+        }
 
         tl.to('.code-terminal-with-captions__cursor', {
           opacity: 1,
