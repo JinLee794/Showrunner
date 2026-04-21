@@ -1,0 +1,105 @@
+{
+  "title": "Developer Review Storyboard",
+  "theme": "corporate-dark",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 4,
+      "data": {
+        "title": "Proposed Change Review",
+        "subtitle": "Low-cognitive-load walkthrough for reviewers",
+        "date": "April 2026"
+      }
+    },
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "fade",
+      "data": {
+        "heading": "What Changed",
+        "subheading": "Start with behavior, then inspect implementation",
+        "icon": "🧭"
+      }
+    },
+    {
+      "type": "code-diff",
+      "duration": 7,
+      "transition": "slide-left",
+      "data": {
+        "title": "Primary Diff",
+        "filePath": "src/renderer/preview.ts",
+        "language": "ts",
+        "summary": "Adds a guard for empty storyboards so previews fail explicitly instead of rendering an empty shell.",
+        "focusLabel": "Behavioral change",
+        "metrics": [
+          { "label": "Added", "value": "+6", "tone": "positive" },
+          { "label": "Removed", "value": "-1", "tone": "caution" },
+          { "label": "Blast Radius", "value": "Preview only", "tone": "neutral" }
+        ],
+        "callouts": [
+          "The new branch is front-loaded, so readers can validate the edge case without scanning the entire file.",
+          "Added lines are grouped contiguously to reduce context switching.",
+          "Use one callout per review question, not per line."
+        ],
+        "hunks": [
+          {
+            "heading": "generatePreview()",
+            "lines": [
+              { "kind": "context", "oldNumber": 18, "newNumber": 18, "text": "export async function generatePreview(" },
+              { "kind": "context", "oldNumber": 19, "newNumber": 19, "text": "  storyboard: Storyboard," },
+              { "kind": "context", "oldNumber": 20, "newNumber": 20, "text": "  outputPath: string" },
+              { "kind": "context", "oldNumber": 21, "newNumber": 21, "text": "): Promise<{ path: string }> {" },
+              { "kind": "add", "newNumber": 22, "text": "  if (storyboard.scenes.length === 0) {" },
+              { "kind": "add", "newNumber": 23, "text": "    throw new Error('Storyboard must contain at least one scene');" },
+              { "kind": "add", "newNumber": 24, "text": "  }" },
+              { "kind": "context", "oldNumber": 22, "newNumber": 26, "text": "  const theme = storyboard.theme ?? 'corporate-dark';" },
+              { "kind": "emphasis", "oldNumber": 23, "newNumber": 27, "text": "  const fps = storyboard.fps ?? 30;" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "risk-callout",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "risks": [
+          {
+            "signal": "No regression if storyboard validation already rejects empty scene arrays",
+            "severity": "low",
+            "context": "Confirm whether this is a defense-in-depth change or newly reachable path."
+          },
+          {
+            "signal": "Error message becomes part of user experience",
+            "severity": "medium",
+            "context": "Review wording for tool-facing and user-facing clarity."
+          }
+        ]
+      }
+    },
+    {
+      "type": "action-items",
+      "duration": 5,
+      "transition": "slide-left",
+      "data": {
+        "items": [
+          { "text": "Verify empty-storyboard path in preview command", "priority": "high" },
+          { "text": "Check whether render-video and render-gif should share the same guard", "priority": "normal" },
+          { "text": "Keep callouts scoped to reviewer decisions, not implementation trivia", "priority": "normal" }
+        ]
+      }
+    },
+    {
+      "type": "closing",
+      "duration": 4,
+      "transition": "fade",
+      "data": {
+        "tagline": "Orient first. Inspect second. Decide faster.",
+        "cta": "Use code-diff scenes for the highest-risk hunks only"
+      }
+    }
+  ]
+}

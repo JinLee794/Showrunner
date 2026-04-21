@@ -1,0 +1,101 @@
+{
+  "title": "Single-Scene Continuous Terminal + Caption Feed",
+  "theme": "corporate-dark",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "scenes": [
+    {
+      "type": "code-terminal-with-captions",
+      "duration": 26,
+      "data": {
+        "title": "End-to-End Build Pipeline (Continuous Feed)",
+        "shell": "zsh",
+        "captionPosition": "right",
+        "steps": [
+          {
+            "lines": [
+              { "kind": "prompt", "text": "git checkout -b feat/continuous-caption-feed" },
+              { "kind": "success", "text": "Switched to a new branch 'feat/continuous-caption-feed'" }
+            ],
+            "caption": "Step 1: Create an isolated branch so all terminal and scene work stays easy to review."
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "npm ci" },
+              { "kind": "output", "text": "added 412 packages in 6s" }
+            ],
+            "caption": "Step 2: Install a deterministic dependency tree before we generate any artifacts."
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "npm run generate:catalog" },
+              { "kind": "output", "text": "scene catalog refreshed" }
+            ],
+            "caption": "Step 3: Refresh the scene catalog so new scene types and schema details are discoverable."
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "npx tsx src/cli.ts validate fixtures/code-terminal-with-captions-10step-single-scene.json" },
+              { "kind": "success", "text": "Valid storyboard: 1 scene, 26.0s total" }
+            ],
+            "caption": "Step 4: Validate the storyboard early, so timing and data shape errors fail fast."
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "npx tsx src/cli.ts scenes | rg code-terminal-with-captions" },
+              { "kind": "highlight", "text": "\"code-terminal-with-captions\"" }
+            ],
+            "caption": "Step 5: Confirm the enhanced scene is registered and available in the CLI scene list."
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "npx tsx src/cli.ts render fixtures/code-terminal-with-captions-10step-single-scene.json --output output/continuous-feed-demo.mp4 --skip-narration" },
+              { "kind": "output", "text": "Rendering frame sequence..." }
+            ],
+            "caption": "Step 6: Start rendering. The terminal feed keeps moving as new work appears."
+          },
+          {
+            "lines": [
+              { "kind": "output", "text": "[34%] encoded 265 / 780 frames" },
+              { "kind": "output", "text": "[61%] encoded 476 / 780 frames" }
+            ],
+            "caption": "Step 7: Mid-render progress updates arrive while older logs and captions shift upward."
+          },
+          {
+            "lines": [
+              { "kind": "output", "text": "[92%] encoded 718 / 780 frames" },
+              { "kind": "success", "text": "Render complete: output/continuous-feed-demo.mp4" }
+            ],
+            "caption": "Step 8: The render finalizes and produces the mp4 artifact."
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "stat -f 'mp4: %N | %z bytes | modified %Sm' output/continuous-feed-demo.mp4" },
+              { "kind": "output", "text": "mp4: output/continuous-feed-demo.mp4 | 19873412 bytes | modified Apr 21 16:20:02 2026" }
+            ],
+            "caption": "Step 9: Verify file size and timestamp so we know the artifact is fresh."
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "npx tsx src/cli.ts render fixtures/code-terminal-with-captions-10step-single-scene.json --output output/continuous-feed-demo-no-caption-move.mp4 --skip-narration" },
+              { "kind": "comment", "text": "comparing against previous scene behavior" }
+            ],
+            "caption": "Step 10: Run a comparison render to highlight how the continuous feed improves readability."
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "open output/continuous-feed-demo.mp4" },
+              { "kind": "success", "text": "✓ Playback opened" }
+            ],
+            "caption": "Step 11: Review final output and confirm both code logs and captions scroll continuously in one scene."
+          }
+        ]
+      },
+      "animation": {
+        "easing": "power1",
+        "stagger": 0.07,
+        "delay": 0.15
+      }
+    }
+  ]
+}

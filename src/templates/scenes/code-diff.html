@@ -1,0 +1,360 @@
+<div class="scene code-diff">
+  <div class="code-diff__layout">
+    <div class="code-diff__main">
+      {{#if data.title}}
+      <div class="code-diff__eyebrow">{{data.title}}</div>
+      {{/if}}
+
+      <div class="code-diff__header">
+        <div>
+          <h2 class="code-diff__path">{{data.filePath}}</h2>
+          {{#if data.summary}}
+          <p class="code-diff__summary">{{data.summary}}</p>
+          {{/if}}
+        </div>
+        <div class="code-diff__meta">
+          {{#if data.language}}
+          <span class="code-diff__pill">{{data.language}}</span>
+          {{/if}}
+          {{#if data.focusLabel}}
+          <span class="code-diff__pill code-diff__pill--focus">{{data.focusLabel}}</span>
+          {{/if}}
+        </div>
+      </div>
+
+      {{#if data.metrics}}
+      <div class="code-diff__metrics">
+        {{#each data.metrics}}
+        <div class="code-diff__metric code-diff__metric--{{#if this.tone}}{{this.tone}}{{else}}neutral{{/if}}">
+          <span class="code-diff__metric-label">{{this.label}}</span>
+          <span class="code-diff__metric-value">{{this.value}}</span>
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+
+      <div class="code-diff__panel">
+        {{#each data.hunks}}
+        <div class="code-diff__hunk">
+          {{#if this.heading}}
+          <div class="code-diff__hunk-heading">{{this.heading}}</div>
+          {{/if}}
+          <div class="code-diff__lines">
+            {{#each this.lines}}
+            <div class="code-diff__line code-diff__line--{{this.kind}}">
+              <span class="code-diff__gutter code-diff__gutter--old">{{#if this.oldNumber}}{{this.oldNumber}}{{else}}&nbsp;{{/if}}</span>
+              <span class="code-diff__gutter code-diff__gutter--new">{{#if this.newNumber}}{{this.newNumber}}{{else}}&nbsp;{{/if}}</span>
+              <span class="code-diff__marker">{{#if (eq this.kind 'add')}}+{{else}}{{#if (eq this.kind 'remove')}}-{{else}} {{/if}}{{/if}}</span>
+              <span class="code-diff__text">{{this.text}}</span>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    {{#if data.callouts}}
+    <aside class="code-diff__sidebar">
+      <div class="code-diff__sidebar-card">
+        <div class="code-diff__sidebar-title">Review Guide</div>
+        <div class="code-diff__callouts">
+          {{#each data.callouts}}
+          <div class="code-diff__callout">{{this}}</div>
+          {{/each}}
+        </div>
+      </div>
+    </aside>
+    {{/if}}
+  </div>
+</div>
+
+<style>
+  .code-diff {
+    padding: calc(var(--spacing-unit) * 5) calc(var(--spacing-unit) * 6);
+    background:
+      radial-gradient(circle at top right, rgba(0, 120, 212, 0.12), transparent 28%),
+      linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+  }
+
+  .code-diff__layout {
+    width: 100%;
+    max-width: 1380px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(280px, 0.8fr);
+    gap: calc(var(--spacing-unit) * 3);
+    align-items: start;
+  }
+
+  .code-diff__main {
+    min-width: 0;
+  }
+
+  .code-diff__eyebrow {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-secondary);
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+    font-weight: 700;
+  }
+
+  .code-diff__header {
+    display: flex;
+    justify-content: space-between;
+    gap: calc(var(--spacing-unit) * 2);
+    align-items: flex-start;
+    margin-bottom: calc(var(--spacing-unit) * 2);
+  }
+
+  .code-diff__path {
+    margin: 0;
+    font-family: var(--font-mono, 'Cascadia Code', monospace);
+    font-size: 1.65rem;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .code-diff__summary {
+    margin: calc(var(--spacing-unit) * 1) 0 0;
+    color: var(--text-secondary);
+    max-width: 880px;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .code-diff__meta,
+  .code-diff__metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--spacing-unit) * 1);
+  }
+
+  .code-diff__pill,
+  .code-diff__metric {
+    border-radius: 999px;
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.08));
+    background: rgba(255,255,255,0.03);
+    box-shadow: var(--shadow-card);
+  }
+
+  .code-diff__pill {
+    padding: 0.55rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .code-diff__pill--focus {
+    color: var(--accent);
+    border-color: rgba(0, 120, 212, 0.45);
+  }
+
+  .code-diff__metrics {
+    margin-bottom: calc(var(--spacing-unit) * 2);
+  }
+
+  .code-diff__metric {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 0.95rem;
+  }
+
+  .code-diff__metric-label {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .code-diff__metric-value {
+    font-family: var(--font-mono, 'Cascadia Code', monospace);
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  .code-diff__metric--positive .code-diff__metric-value { color: #4fd38a; }
+  .code-diff__metric--caution .code-diff__metric-value { color: #ffb86b; }
+
+  .code-diff__panel,
+  .code-diff__sidebar-card {
+    background: rgba(8, 12, 18, 0.78);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 18px;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.32);
+    overflow: hidden;
+  }
+
+  .code-diff__hunk + .code-diff__hunk {
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .code-diff__hunk-heading {
+    padding: 0.9rem 1.1rem;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-secondary);
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+
+  .code-diff__lines {
+    font-family: var(--font-mono, 'Cascadia Code', monospace);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .code-diff__line {
+    display: grid;
+    grid-template-columns: 64px 64px 22px minmax(0, 1fr);
+    gap: 0;
+    align-items: baseline;
+    color: #d8e0ef;
+    min-height: 2rem;
+  }
+
+  .code-diff__line:nth-child(even) {
+    background: rgba(255,255,255,0.018);
+  }
+
+  .code-diff__line--add {
+    background: rgba(67, 160, 71, 0.13);
+  }
+
+  .code-diff__line--remove {
+    background: rgba(229, 83, 83, 0.13);
+  }
+
+  .code-diff__line--emphasis {
+    background: rgba(0, 120, 212, 0.14);
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+
+  .code-diff__gutter,
+  .code-diff__marker,
+  .code-diff__text {
+    padding: 0.26rem 0.7rem;
+  }
+
+  .code-diff__gutter {
+    text-align: right;
+    color: #75829a;
+    border-right: 1px solid rgba(255,255,255,0.04);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .code-diff__marker {
+    text-align: center;
+    color: #9aa9c5;
+  }
+
+  .code-diff__line--add .code-diff__marker { color: #4fd38a; }
+  .code-diff__line--remove .code-diff__marker { color: #ff8c8c; }
+  .code-diff__line--emphasis .code-diff__marker { color: #6db7ff; }
+
+  .code-diff__text {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .code-diff__sidebar {
+    min-width: 0;
+  }
+
+  .code-diff__sidebar-card {
+    padding: 1.15rem;
+  }
+
+  .code-diff__sidebar-title {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    font-weight: 700;
+    margin-bottom: 0.9rem;
+  }
+
+  .code-diff__callouts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .code-diff__callout {
+    padding: 0.9rem 1rem;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 1100px) {
+    .code-diff__layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+
+    tl.from('.code-diff__eyebrow, .code-diff__path, .code-diff__summary', {
+      y: 14,
+      opacity: 0,
+      duration: 0.35,
+      stagger: 0.06,
+      ease: 'power2.out'
+    });
+
+    tl.from('.code-diff__pill, .code-diff__metric', {
+      y: 10,
+      opacity: 0,
+      duration: 0.24,
+      stagger: 0.05,
+      ease: 'power2.out'
+    }, '-=0.18');
+
+    tl.from('.code-diff__panel', {
+      y: 18,
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.out'
+    }, '-=0.08');
+
+    tl.from('.code-diff__hunk-heading', {
+      opacity: 0,
+      y: 8,
+      duration: 0.2,
+      stagger: 0.08,
+      ease: 'power1.out'
+    }, '-=0.12');
+
+    tl.from('.code-diff__line', {
+      opacity: 0,
+      x: -6,
+      duration: 0.16,
+      stagger: 0.035,
+      ease: 'power1.out'
+    }, '-=0.08');
+
+    tl.from('.code-diff__sidebar-card, .code-diff__callout', {
+      opacity: 0,
+      x: 14,
+      duration: 0.24,
+      stagger: 0.06,
+      ease: 'power2.out'
+    }, '-=0.32');
+
+    tl.to({}, { duration: 0.35 });
+    return tl;
+  };
+</script>

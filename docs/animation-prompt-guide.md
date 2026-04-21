@@ -148,6 +148,69 @@ Slower stagger so items appear gradually. More hold time to read.
 - No text effect needed — count-up is built in
 - `speed: 0.8` to savor the count-up
 
+### Review scenes (code-diff, table, comparison, risk-callout)
+- Lead with orientation: file path, one-line summary, and 2-4 reviewer metrics
+- Keep motion restrained: `easing: "easeOut"`, `stagger: 0.03–0.08`, `speed: 0.9–1.0`
+- Prefer one focused hunk per scene instead of packing a full PR into one frame
+- Use callouts for review questions or risk framing, not to restate every changed line
+
+---
+
+## Reviewer-Oriented Storyboards
+
+When the audience is code reviewers, the storyboard should reduce scanning effort instead of maximizing spectacle.
+
+### Recommended sequence
+
+1. Use `title-card` or `section-header` to state the review goal.
+2. Use `code-diff` for the most behaviorally important hunk.
+3. Use `risk-callout` or `comparison` to frame regressions, tradeoffs, or before/after behavior.
+4. Use `action-items` to end with explicit reviewer checks.
+
+### Good prompt pattern
+
+```text
+Create a reviewer-focused storyboard for this proposed change. Minimize cognitive load.
+Start with the user-visible behavior change, show only the highest-risk diff hunk,
+include 2-3 callouts that tell reviewers what to verify, and end with explicit review checks.
+Use restrained animation and avoid decorative motion.
+```
+
+### Recommended `code-diff` shape
+
+```json
+{
+  "type": "code-diff",
+  "duration": 7,
+  "data": {
+    "title": "Primary Diff",
+    "filePath": "src/example.ts",
+    "summary": "Explains the behavioral change before the reviewer reads code.",
+    "focusLabel": "Behavioral change",
+    "metrics": [
+      { "label": "Added", "value": "+8", "tone": "positive" },
+      { "label": "Risk", "value": "Medium", "tone": "caution" }
+    ],
+    "callouts": [
+      "Call out the test or edge case reviewers should inspect.",
+      "Note whether the blast radius is localized or cross-cutting."
+    ],
+    "hunks": [
+      {
+        "heading": "handleRequest()",
+        "lines": [
+          { "kind": "context", "oldNumber": 41, "newNumber": 41, "text": "export async function handleRequest(req: Request) {" },
+          { "kind": "add", "newNumber": 42, "text": "  if (!req.headers.authorization) {" },
+          { "kind": "add", "newNumber": 43, "text": "    return unauthorized();" },
+          { "kind": "add", "newNumber": 44, "text": "  }" }
+        ]
+      }
+    ]
+  },
+  "animation": { "easing": "easeOut", "stagger": 0.05, "speed": 0.95 }
+}
+```
+
 ---
 
 ## Example: Mixed-Pace Storyboard

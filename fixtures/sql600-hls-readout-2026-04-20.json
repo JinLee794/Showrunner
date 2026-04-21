@@ -1,0 +1,574 @@
+{
+  "title": "SQL600 HLS Executive Readout — April 2026",
+  "theme": "microsoft",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "branding": {
+    "accent": "#6C5CE7"
+  },
+  "narration": {
+    "voice": "en-US-GuyNeural",
+    "language": "en-US",
+    "style": "newscast-casual",
+    "autoExtendScenes": true,
+    "gapMs": 200,
+    "transcriptFormat": "vtt"
+  },
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "title": "SQL600 HLS Executive Readout",
+        "subtitle": "Database Compete · Healthcare Industry · 43 Accounts",
+        "date": "April 20, 2026",
+        "presenter": "Chief of Staff Tooling"
+      },
+      "animation": {
+        "easing": "expo",
+        "textEffect": "word-reveal",
+        "exitAnimation": "fade",
+        "pacing": { "entrance": 0.35, "hold": 0.5, "exit": 0.15 }
+      },
+      "voiceover": {
+        "text": "Here's your SQL 600 Healthcare readout for April. Forty-three accounts, one story: momentum is real, but it's concentrated.",
+        "style": "newscast-casual"
+      }
+    },
+
+    {
+      "type": "text-reveal",
+      "duration": 8,
+      "transition": "fade",
+      "data": {
+        "eyebrow": "Executive Read · Where HLS Stands",
+        "headline": "<strong>#4 of 13</strong> SQL600 industries.<br>$<em>15.4M</em> ACR · <strong>+23%</strong> YoY.<br>$<em>196.3M</em> annualized growth since June '25.",
+        "body": "After oscillating in a $13.5M–$14.4M band for 8 months, HLS broke out to $15.4M — a net +$1.76M (+13%) FY26 gain. HLS ACR now sits 76% above the SQL600 industry average of $8.7M, with the highest committed pipeline of any non-Software industry.",
+        "footnote": "Source: SQL 600 Performance Tracking + Azure All-in-One · Generated 2026-04-20"
+      },
+      "animation": {
+        "easing": "slow",
+        "textEffect": "fade-lines",
+        "stagger": 0.35,
+        "speed": 0.9,
+        "exitAnimation": "fade",
+        "pacing": { "entrance": 0.45, "hold": 0.45, "exit": 0.1 }
+      },
+      "notes": "fade-lines preserves inline HTML — each line cascades in with <em>/<strong> rendering as gradient-filled numbers.",
+      "voiceover": {
+        "text": "HLS ranks fourth out of thirteen SQL 600 industries — and after eight months of oscillating between thirteen-and-a-half and fourteen-and-a-half million, we finally broke out. That's a net plus-thirteen percent FY26 gain, and HLS ACR is now seventy-six percent above the SQL600 industry average."
+      }
+    },
+
+    {
+      "type": "text-reveal",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "eyebrow": "The Catch",
+        "headline": "<strong>31 of 43</strong> accounts carry<br>zero committed pipe.",
+        "body": "UnitedHealth alone holds <strong>68%</strong> of committed pipe. Meanwhile, <strong>Pharma's $66.7M</strong> uncommitted sits entirely untouched — Pfizer alone drives $69M in pipeline with a <em>101:1</em> uncommitted-to-committed ratio. Provider's 25 accounts hold <strong>$40.8M</strong> uncommitted but only $168K committed.",
+        "footnote": "Concentration risk · DBC coverage gap"
+      },
+      "animation": {
+        "easing": "slow",
+        "textEffect": "fade-lines",
+        "stagger": 0.3,
+        "speed": 0.9,
+        "exitAnimation": "fade",
+        "pacing": { "entrance": 0.45, "hold": 0.45, "exit": 0.1 }
+      },
+      "notes": "fade-lines cascades each line in; gradient-filled <strong> numbers carry the emphasis without a confusing highlight bar.",
+      "voiceover": {
+        "text": "But here's the catch. UnitedHealth holds sixty-eight percent of committed pipe. The Pharma vertical has a hundred-to-one uncommitted-to-committed ratio — Pfizer alone has sixty-nine million in pipeline that's entirely uncommitted. And Provider's twenty-five accounts hold forty million in uncommitted pipe but only a hundred and sixty-eight thousand committed."
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-up",
+      "data": {
+        "heading": "Portfolio Snapshot",
+        "subheading": "FY26 · Last Closed Month · April 2026",
+        "icon": "📊"
+      },
+      "animation": { "easing": "expo", "textEffect": "word-reveal" },
+      "voiceover": {
+        "text": "Let's start with the full portfolio snapshot."
+      }
+    },
+
+    {
+      "type": "kpi-scorecard",
+      "duration": 8,
+      "transition": "fade",
+      "data": {
+        "kpis": [
+          { "label": "ACR (LCM)", "value": "$15.4M", "trend": "up", "target": "+23% YoY" },
+          { "label": "Annualized Growth", "value": "$196.3M", "trend": "up" },
+          { "label": "Committed Pipe", "value": "$12.8M", "trend": "up", "target": "$179.5M qualified total" },
+          { "label": "Uncommitted Pipe", "value": "$160.8M", "trend": "flat", "target": "248 opps · 151 qualified" },
+          { "label": "Pipeline Penetration", "value": "76.7%", "trend": "up" },
+          { "label": "SQL TAM", "value": "$280.4M", "trend": "flat" },
+          { "label": "On-Prem SQL Cores", "value": "208,484", "trend": "flat" },
+          { "label": "Modernization Opps", "value": 203, "trend": "up", "animateCount": true }
+        ]
+      },
+      "animation": {
+        "easing": "power4",
+        "stagger": 0.09,
+        "speed": 0.95,
+        "pacing": { "entrance": 0.3, "hold": 0.6, "exit": 0.1 },
+        "emphasis": [0, 2]
+      },
+      "notes": "Open-the-book scorecard. Emphasize ACR and Committed Pipe — that's the new-high story.",
+      "voiceover": {
+        "text": "Two numbers to anchor on: fifteen-point-four million in ACR — a new high — and twelve-point-eight million in committed pipe, which finally moved after months of stalling. The uncommitted side sits at a hundred and sixty-three million, so there's plenty of upside if we can convert."
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-up",
+      "data": {
+        "heading": "Momentum",
+        "subheading": "March broke the $15M ceiling for the first time in FY26",
+        "icon": "📈"
+      },
+      "animation": { "easing": "expo", "textEffect": "word-reveal" },
+      "voiceover": {
+        "text": "Now let's look at how we got here."
+      }
+    },
+
+    {
+      "type": "chart-line",
+      "duration": 9,
+      "transition": "fade",
+      "data": {
+        "title": "ACR Trajectory — FY26",
+        "labels": ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"],
+        "datasets": [
+          {
+            "label": "ACR ($M)",
+            "values": [13.6, 13.6, 13.5, 14.3, 14.0, 14.4, 14.4, 13.9, 15.4],
+            "color": "#6C5CE7"
+          }
+        ],
+        "annotation": "March rebound: +10.9% MoM, +23% YoY. After 8 months in a $13.5M–$14.4M band, the breakout to $15.4M = net +$1.76M (+13%) FY26 gain. Triggered by first major committed-pipe conversion (UHG + Elevance)."
+      },
+      "animation": {
+        "easing": "easeOut",
+        "speed": 0.9,
+        "pacing": { "entrance": 0.3, "hold": 0.6, "exit": 0.1 },
+        "emphasis": [8]
+      },
+      "voiceover": {
+        "text": "Watch the chart: eight months of oscillating between thirteen-and-a-half and fourteen-and-a-half million, then a clean breakout in March. That one-point-seven-six million net gain from July start lined up exactly with UnitedHealth and Elevance converting committed pipeline."
+      }
+    },
+
+    {
+      "type": "stat-counter",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "title": "March By The Numbers",
+        "stats": [
+          { "value": 15.4, "prefix": "$", "suffix": "M", "label": "ACR (LCM)", "change": "+10.9% MoM", "changeDirection": "up", "progress": 100 },
+          { "value": 23, "suffix": "%", "label": "YoY Growth", "change": "new FY26 high", "changeDirection": "up", "progress": 85 },
+          { "value": 12.8, "prefix": "$", "suffix": "M", "label": "Committed Pipe", "change": "first meaningful conversion", "changeDirection": "up", "progress": 70 }
+        ]
+      },
+      "animation": {
+        "easing": "power4",
+        "stagger": 0.18,
+        "speed": 0.85,
+        "pacing": { "entrance": 0.25, "hold": 0.65, "exit": 0.1 }
+      },
+      "voiceover": {
+        "text": "March by the numbers — ten-point-nine percent month over month, twenty-three percent year over year, and the first meaningful committed-pipe conversion of the fiscal year."
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-up",
+      "data": {
+        "heading": "Concentration Risk",
+        "subheading": "Where the ACR and the pipeline actually live",
+        "icon": "🎯"
+      },
+      "animation": { "easing": "expo", "textEffect": "word-reveal" },
+      "voiceover": {
+        "text": "Good growth numbers, but let's be honest about where that growth is actually coming from."
+      }
+    },
+
+    {
+      "type": "chart-donut",
+      "duration": 8,
+      "transition": "fade",
+      "data": {
+        "title": "HLS ACR by Vertical — $15.4M across 43 accounts",
+        "labels": ["Health Payor (6)", "MedTech (9)", "Health Provider (25)", "Health Pharma (3)"],
+        "datasets": [
+          {
+            "label": "ACR ($M)",
+            "values": [8.2, 4.6, 1.8, 0.785]
+          }
+        ],
+        "annotation": "Payor (6 accts): $8.2M ACR, $11.2M committed, $49.3M uncommitted. Provider (25 accts): $1.8M ACR, $168K committed, $40.8M uncommitted. Pharma: $660K committed vs $66.7M uncommitted — 101:1 ratio."
+      },
+      "animation": {
+        "easing": "easeOut",
+        "speed": 0.9,
+        "pacing": { "entrance": 0.3, "hold": 0.6, "exit": 0.1 }
+      },
+      "voiceover": {
+        "text": "Six Payor accounts generate over half the ACR. But look at Provider — twenty-five accounts, forty million in uncommitted pipe, and only a hundred and sixty-eight thousand committed. And Pharma's even more stark: a hundred-to-one uncommitted-to-committed ratio. Both segments are essentially dormant."
+      }
+    },
+
+    {
+      "type": "chart-bar",
+      "duration": 8,
+      "transition": "fade",
+      "data": {
+        "title": "Committed Pipe Concentration — Top 5 Accounts",
+        "labels": ["UnitedHealth", "Elevance", "Humana", "IQVIA", "eClinicalWorks"],
+        "datasets": [
+          {
+            "label": "Committed Pipe ($M)",
+            "values": [8.73, 2.31, 0.006, 0.36, 0.384],
+            "color": "#6C5CE7"
+          }
+        ],
+        "annotation": "UHG = 68% of HLS committed pipe. Diversification into HCA ($32.2M uncommitted) and Elevance ($12.5M uncommitted) is the highest-leverage move."
+      },
+      "animation": {
+        "easing": "spring",
+        "stagger": 0.12,
+        "speed": 0.95,
+        "emphasis": [0],
+        "pacing": { "entrance": 0.3, "hold": 0.6, "exit": 0.1 }
+      },
+      "voiceover": {
+        "text": "UnitedHealth is sixty-eight percent of committed pipe on its own. Getting HCA and Elevance to convert even a fraction of their uncommitted would dramatically change the diversification picture."
+      }
+    },
+
+    {
+      "type": "table",
+      "duration": 10,
+      "transition": "fade",
+      "data": {
+        "title": "Top Accounts by ACR",
+        "columns": [
+          { "key": "rank", "label": "#", "width": "40px" },
+          { "key": "account", "label": "Account" },
+          { "key": "vertical", "label": "Vertical" },
+          { "key": "acr", "label": "ACR (LCM)" },
+          { "key": "committed", "label": "Committed" },
+          { "key": "uncommitted", "label": "Uncommitted" }
+        ],
+        "rows": [
+          { "rank": "1", "account": "UnitedHealth Group", "vertical": "Payor",    "acr": "$4.82M", "committed": "$8.73M", "uncommitted": "$27.98M" },
+          { "rank": "2", "account": "eClinicalWorks",    "vertical": "MedTech",  "acr": "$1.34M", "committed": "$384K",  "uncommitted": "$270K"  },
+          { "rank": "3", "account": "Molina Healthcare", "vertical": "Payor",    "acr": "$1.10M", "committed": "—",       "uncommitted": "$60K"   },
+          { "rank": "4", "account": "Veradigm",          "vertical": "MedTech",  "acr": "$904K",  "committed": "—",       "uncommitted": "$60K"   },
+          { "rank": "5", "account": "Elevance Health (Anthem)",   "vertical": "Payor",    "acr": "$883K",  "committed": "$2.31M", "uncommitted": "$12.5M" },
+          { "rank": "6", "account": "Vizient",           "vertical": "MedTech",  "acr": "$805K",  "committed": "$40K",    "uncommitted": "$642K"  },
+          { "rank": "7", "account": "IQVIA",             "vertical": "Pharma",   "acr": "$744K",  "committed": "$360K",   "uncommitted": "—"       },
+          { "rank": "8", "account": "HCA Healthcare",    "vertical": "Provider", "acr": "$541K",  "committed": "—",       "uncommitted": "$32.2M" }
+        ],
+        "highlightRows": [0, 4, 7]
+      },
+      "animation": {
+        "easing": "easeOut",
+        "stagger": 0.06,
+        "speed": 0.95,
+        "pacing": { "entrance": 0.25, "hold": 0.65, "exit": 0.1 }
+      },
+      "notes": "Highlight UHG (dependency), Elevance (next conversion), HCA (largest latent opportunity).",
+      "voiceover": {
+        "text": "Here's the account-level view. Three names to watch: UnitedHealth for dependency risk, Elevance as the most likely next commit, and HCA sitting on thirty-two million uncommitted with nothing committed."
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-up",
+      "data": {
+        "heading": "Renewal Pressure",
+        "subheading": "~71.5K SQL cores up for renewal in FY26 across 24 accounts — only 1 has committed pipe",
+        "icon": "⏱️"
+      },
+      "animation": { "easing": "expo", "textEffect": "word-reveal" },
+      "voiceover": {
+        "text": "Now the part that should keep us up at night — seventy-one thousand five hundred SQL cores across twenty-four accounts are up for renewal in Q3 and Q4. Only one of those twenty-four has committed pipeline."
+      }
+    },
+
+    {
+      "type": "chart-bar",
+      "duration": 8,
+      "transition": "fade",
+      "data": {
+        "title": "SQL Cores at Renewal — FY26",
+        "labels": ["FY26-Q3", "FY26-Q4"],
+        "datasets": [
+          {
+            "label": "Arc-Enabled Cores",
+            "values": [2702, 12535],
+            "color": "#00B894"
+          },
+          {
+            "label": "No Arc (GCP Risk)",
+            "values": [6755, 49511],
+            "color": "#FF6B6B"
+          }
+        ],
+        "annotation": "Q4 renewal: ~62K cores (21 accounts), 18 with no committed pipe. Q3: ~9.5K cores (3 accounts), 2 with no committed pipe. Highest risk: Kaiser (13,872) and Advocate (8,670), no Arc, no commit."
+      },
+      "animation": {
+        "easing": "easeOut",
+        "stagger": 0.1,
+        "speed": 0.9,
+        "emphasis": [1]
+      },
+      "voiceover": {
+        "text": "The red bars are the problem. Q4 alone has nearly fifty thousand cores with no Arc coverage across twenty-one accounts — eighteen of them with zero committed pipe. That's GCP's entire shopping list in our portfolio."
+      }
+    },
+
+    {
+      "type": "risk-callout",
+      "duration": 10,
+      "transition": "fade",
+      "data": {
+        "risks": [
+          {
+            "signal": "Kaiser Permanente — FY26-Q4 renewal",
+            "severity": "critical",
+            "context": "13,872 SQL cores · no Arc · $0 committed pipe. Largest single renewal exposure — GCP's #1 target in the portfolio."
+          },
+          {
+            "signal": "Advocate Health — FY26-Q4 renewal",
+            "severity": "high",
+            "context": "8,670 cores · no Arc · no committed pipe. Large Q4 exposure with minimal realized cloud footprint."
+          },
+          {
+            "signal": "Intermountain Healthcare — FY26-Q3 renewal",
+            "severity": "high",
+            "context": "2,702 cores · only 8% Arc attach · $102K committed. Needs acceleration before Q3 close."
+          },
+          {
+            "signal": "Renewal DBC coverage gap",
+            "severity": "medium",
+            "context": "Only 1 of 21 FY26-Q4 renewal accounts (IQVIA, $360K) carries any committed pipeline. BD (93% Arc) and IQVIA (84% Arc) are better positioned but still have zero committed modernization deals."
+          }
+        ]
+      },
+      "animation": {
+        "easing": "easeOut",
+        "stagger": 0.15,
+        "speed": 0.9,
+        "pacing": { "entrance": 0.25, "hold": 0.65, "exit": 0.1 },
+        "emphasis": [0]
+      },
+      "voiceover": {
+        "text": "Kaiser is the single biggest exposure — nearly fourteen thousand cores, no Arc, no committed pipe. Advocate adds eight thousand six hundred more in Q4. The broader pattern: only one of twenty-four renewal accounts has committed pipeline. Even BD and IQVIA, who have the strongest Arc adoption at ninety-three and eighty-four percent, have no committed modernization deals."
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-up",
+      "data": {
+        "heading": "GCP Leakage & Conversion Upside",
+        "subheading": "31 of 43 HLS accounts carry zero committed pipe",
+        "icon": "🔴"
+      },
+      "animation": { "easing": "expo", "textEffect": "word-reveal" },
+      "voiceover": {
+        "text": "Zooming out — this is the conversion opportunity and the GCP leakage risk, side by side."
+      }
+    },
+
+    {
+      "type": "comparison",
+      "duration": 9,
+      "transition": "fade",
+      "data": {
+        "title": "Coverage vs. Gap",
+        "left": {
+          "label": "Covered (12 accounts · $12.8M committed)",
+          "items": [
+            "UnitedHealth Group — $8.73M committed",
+            "Elevance Health — $2.31M committed",
+            "eClinicalWorks — $384K",
+            "IQVIA — $360K",
+            "Abbott — $276K"
+          ]
+        },
+        "right": {
+          "label": "Zero-Commit GCP Exposure (31 accounts)",
+          "items": [
+            "HCA Healthcare — 21,100 cores · $32.2M uncommitted · zero committed",
+            "Kaiser Permanente — 13,872 cores · Q4 renewal · no Arc",
+            "CommonSpirit Health — 13,794 cores · no pipe of any kind",
+            "Epic Systems — 12,296 cores · zero pipeline of any kind",
+            "Advocate Health — 8,670 cores · Q4 renewal · no Arc · no commit"
+          ]
+        }
+      },
+      "animation": {
+        "easing": "easeOut",
+        "stagger": 0.1,
+        "speed": 0.95,
+        "direction": "up",
+        "pacing": { "entrance": 0.3, "hold": 0.6, "exit": 0.1 }
+      },
+      "voiceover": {
+        "text": "On the left, twelve accounts carrying all the committed pipe. On the right, thirty-one accounts with zero commits. The top five gap accounts — HCA, Kaiser, CommonSpirit, Epic, and Advocate — hold sixty-nine thousand seven hundred and sixty SQL cores of unprotected exposure. That's a third of all HLS SQL cores."
+      }
+    },
+
+    {
+      "type": "stat-counter",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "title": "The Execution Gap",
+        "stats": [
+          { "value": 31, "label": "Accounts with Zero Committed Pipe", "suffix": " / 43", "progress": 72 },
+          { "value": 12.8, "prefix": "", "suffix": "%", "label": "Factory Attach Rate", "description": "203 mod opps · only ~26 with Factory engineering", "progress": 13 },
+          { "value": 12, "label": "Accounts with No Mod Pipeline", "description": "Pure GCP capture targets", "progress": 28 }
+        ]
+      },
+      "animation": {
+        "easing": "power4",
+        "stagger": 0.18,
+        "speed": 0.85
+      },
+      "voiceover": {
+        "text": "The execution gap in three numbers: thirty-one accounts with no commits, a twelve-percent Factory attach rate, and twelve accounts with no modernization pipeline whatsoever."
+      }
+    },
+
+    {
+      "type": "section-header",
+      "duration": 3,
+      "transition": "slide-up",
+      "data": {
+        "heading": "Decisions & Asks",
+        "subheading": "What we need from leadership this quarter",
+        "icon": "✅"
+      },
+      "animation": { "easing": "expo", "textEffect": "word-reveal" },
+      "voiceover": {
+        "text": "So — what do we need from leadership."
+      }
+    },
+
+    {
+      "type": "action-items",
+      "duration": 10,
+      "transition": "fade",
+      "data": {
+        "items": [
+          {
+            "text": "Lock Kaiser Permanente DBC motion before FY26-Q4 renewal — Arc pilot + exec sponsor alignment.",
+            "owner": "Account Team + WW DBC",
+            "due": "FY26-Q3",
+            "priority": "high"
+          },
+          {
+            "text": "Convert HCA's $32.2M uncommitted (Capgemini partnership) into committed pipe this quarter.",
+            "owner": "Account Team",
+            "due": "FY26-Q4",
+            "priority": "high"
+          },
+          {
+            "text": "Accelerate Elevance Dagabah SQL modernization ($10.8M) — highest-probability commit expansion.",
+            "owner": "Account Team + Factory",
+            "due": "FY26-Q4",
+            "priority": "high"
+          },
+          {
+            "text": "Double Factory attach on the 203 mod opps from 12.8% to 25% — engineering depth over breadth.",
+            "owner": "Factory Leadership",
+            "due": "FY26",
+            "priority": "normal"
+          },
+          {
+            "text": "Validate the $1.3B WoW movement (Realized + Baseline + Pipe) with Carlton / Judson before any external reference.",
+            "owner": "Chief of Staff",
+            "due": "This week",
+            "priority": "normal"
+          }
+        ]
+      },
+      "animation": {
+        "easing": "spring",
+        "stagger": 0.18,
+        "speed": 0.9,
+        "direction": "left",
+        "pacing": { "entrance": 0.3, "hold": 0.6, "exit": 0.1 },
+        "emphasis": [0, 1, 2]
+      },
+      "voiceover": {
+        "text": "Five asks. The top three are urgent: lock Kaiser before their Q4 renewal, convert HCA's thirty-two million in uncommitted pipe, and accelerate the Elevance Dagabah modernization. Operationally — double Factory attach from thirteen to twenty-five percent. And validate the one-point-three billion in week-over-week pipeline movement before referencing it externally."
+      }
+    },
+
+    {
+      "type": "quote-highlight",
+      "duration": 6,
+      "transition": "fade",
+      "data": {
+        "quote": "HLS's 23% YoY growth is masking a concentration problem: growth is flowing to Payors while Provider's 25-account long tail sits dormant.",
+        "attribution": "SQL600 HLS Readout · April 2026",
+        "sentiment": "neutral"
+      },
+      "animation": {
+        "easing": "slow",
+        "textEffect": "word-reveal",
+        "speed": 0.85,
+        "exitAnimation": "fade"
+      },
+      "voiceover": {
+        "text": "Bottom line — the growth headline is strong, but it's masking a structural concentration problem that needs fixing before Q4 renewals hit."
+      }
+    },
+
+    {
+      "type": "closing",
+      "duration": 5,
+      "transition": "fade",
+      "data": {
+        "tagline": "Diversify committed pipe. Protect Q4 renewals. Deepen Factory attach.",
+        "timestamp": "SQL600 HLS · April 20, 2026",
+        "cta": "Full readout → sql600-hls-readout-2026-04-20.html"
+      },
+      "animation": {
+        "easing": "expo",
+        "textEffect": "word-reveal",
+        "speed": 0.9,
+        "exitAnimation": "fade"
+      },
+      "voiceover": {
+        "text": "Diversify committed pipe. Protect Q4 renewals. Deepen Factory attach. That's the playbook.",
+        "style": "calm",
+        "rate": "-5%"
+      }
+    }
+  ]
+}

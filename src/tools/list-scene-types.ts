@@ -1,15 +1,20 @@
 import type { SceneTypeInfo } from '../types/index.js';
+import { readdirSync, statSync } from 'node:fs';
+import { join, extname, basename, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export const listSceneTypesTool = {
   name: 'list_scene_types',
-  description: 'Discovery tool. Returns all available scene types with descriptions and data schemas. Image fields accept $asset:key references (resolved from the storyboard-level assets map), HTTPS URLs, or data URIs.',
+  description: 'Discovery tool. Dynamically returns available scene types (with descriptions/schemas) and available themes from the current workspace/runtime. Image fields accept $asset:key references (resolved from the storyboard-level assets map), HTTPS URLs, or data URIs.',
   inputSchema: {
     type: 'object' as const,
     properties: {},
   },
 };
 
-const sceneTypes: SceneTypeInfo[] = [
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const KNOWN_SCENE_TYPES: SceneTypeInfo[] = [
   {
     type: 'title-card',
     description: 'Full-screen branded intro. Logo fades in with scale spring, title slides up with easeOut. Optional image replaces accent bar (logo/icon via $asset:key or data URI).',
@@ -442,14 +447,120 @@ const sceneTypes: SceneTypeInfo[] = [
       },
     },
   },
+  {
+    type: 'code-diff',
+    description: 'Reviewer-first diff view with low-motion line reveals, semantic add/remove coloring, and optional callouts to orient attention before deep reading.',
+    dataSchema: {
+      type: 'object',
+      required: ['filePath', 'hunks'],
+      properties: {
+        title: { type: 'string' },
+        filePath: { type: 'string', description: 'Relative path for the changed file' },
+        language: { type: 'string', description: 'Optional syntax hint such as ts, js, py, md' },
+        summary: { type: 'string', description: 'One-line explanation of what changed and why' },
+        focusLabel: { type: 'string', description: 'Short label for the primary review lens' },
+        metrics: {
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['label', 'value'],
+            properties: {
+              label: { type: 'string' },
+              value: { type: ['string', 'number'] },
+              tone: { type: 'string', enum: ['neutral', 'positive', 'caution'] },
+            },
+          },
+        },
+        callouts: { type: 'array', items: { type: 'string' } },
+        hunks: {
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['lines'],
+            properties: {
+              heading: { type: 'string' },
+              lines: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  required: ['kind', 'text'],
+                  properties: {
+                    kind: { type: 'string', enum: ['context', 'add', 'remove', 'emphasis'] },
+                    text: { type: 'string' },
+                    oldNumber: { type: 'number' },
+                    newNumber: { type: 'number' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 ];
 
+function listFilesByExt(candidates: string[], extension: string): string[] {
+  for (const dirPath of candidates) {
+    try {
+      if (!statSync(dirPath).isDirectory()) continue;
+      return readdirSync(dirPath)
+        .filter((name) => extname(name) === extension)
+        .map((name) => basename(name, extension));
+    } catch {
+      // try next candidate
+    }
+  }
+  return [];
+}
+
+function discoverTemplateSceneTypes(): string[] {
+  const sceneDirs = [
+    join(__dirname, '..', 'templates', 'scenes'),
+    join(__dirname, '..', '..', 'src', 'templates', 'scenes'),
+  ];
+  return listFilesByExt(sceneDirs, '.html');
+}
+
+function discoverThemeNames(): string[] {
+  const themeDirs = [
+    join(__dirname, '..', 'themes'),
+    join(__dirname, '..', '..', 'src', 'themes'),
+  ];
+  return listFilesByExt(themeDirs, '.css');
+}
+
+function buildDynamicSceneTypes(): Array<SceneTypeInfo | { type: string; description: string; dataSchema: Record<string, unknown> }> {
+  const knownByType = new Map(KNOWN_SCENE_TYPES.map((scene) => [scene.type, scene]));
+  const discovered = discoverTemplateSceneTypes();
+
+  const discoveredOnly = discovered
+    .filter((type) => !knownByType.has(type as SceneTypeInfo['type']))
+    .map((type) => ({
+      type,
+      description: 'Scene discovered from templates. Add schema/description metadata in src/tools/list-scene-types.ts for richer agent guidance.',
+      dataSchema: {
+        type: 'object',
+        additionalProperties: true,
+      },
+    }));
+
+  return [...KNOWN_SCENE_TYPES, ...discoveredOnly].sort((a, b) => a.type.localeCompare(b.type));
+}
+
 export async function handleListSceneTypes() {
+  const sceneTypes = buildDynamicSceneTypes();
+  const themes = discoverThemeNames().sort((a, b) => a.localeCompare(b));
+  const payload = {
+    sceneTypes,
+    themes,
+  };
+
   return {
     content: [
       {
         type: 'text' as const,
-        text: JSON.stringify(sceneTypes, null, 2),
+        text: JSON.stringify(payload, null, 2),
       },
     ],
   };

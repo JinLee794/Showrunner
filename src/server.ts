@@ -11,6 +11,7 @@ import { handleValidateStoryboard, validateStoryboardTool } from './tools/valida
 import { handlePreviewStoryboard, previewStoryboardTool } from './tools/preview-storyboard.js';
 import { handleListSceneTypes, listSceneTypesTool } from './tools/list-scene-types.js';
 import { handleRenderGif, renderGifTool } from './tools/render-gif.js';
+import { handleSynthesizeNarration, synthesizeNarrationTool } from './tools/synthesize-narration.js';
 
 const pool = new BrowserPool();
 const renderer = new Renderer(pool);
@@ -90,6 +91,18 @@ function createServer(): McpServer {
     listSceneTypesTool.description,
     {},
     async () => handleListSceneTypes()
+  );
+
+  // synthesize_narration (Azure Speech TTS + transcript)
+  server.tool(
+    synthesizeNarrationTool.name,
+    synthesizeNarrationTool.description,
+    {
+      storyboard: z.record(z.unknown()),
+      audioOutputPath: z.string().optional(),
+      transcriptBasePath: z.string().optional(),
+    },
+    async (args) => handleSynthesizeNarration(args)
   );
 
   return server;

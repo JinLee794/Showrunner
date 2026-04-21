@@ -39,12 +39,14 @@ export type SceneType =
   | 'comparison'
   | 'closing'
   | 'code-terminal'
+  | 'code-terminal-with-captions'
   | 'scene-showcase'
   | 'image-card'
   | 'bullet-list'
   | 'stat-counter'
   | 'text-reveal'
   | 'logic-flow'
+  | 'code-diff'
   | 'tool-call';
 
 export interface PacingPhases {
@@ -81,6 +83,16 @@ export interface AnimationOverrides {
   exitAnimation?: 'fade' | 'slide-up' | 'slide-down' | 'scale-down' | 'none';
 }
 
+export interface Voiceover {
+  text?: string;
+  ssml?: string;
+  voice?: string;
+  style?: string;
+  styleDegree?: number;
+  rate?: string | number;
+  pitch?: string | number;
+}
+
 export interface Scene {
   type: SceneType;
   duration: number;
@@ -88,12 +100,25 @@ export interface Scene {
   data: Record<string, unknown>;
   animation?: AnimationOverrides;
   notes?: string;
+  voiceover?: Voiceover;
 }
 
 export interface Branding {
   logo?: string;
   accent?: string;
   font?: string;
+}
+
+export interface NarrationConfig {
+  enabled?: boolean;
+  voice?: string;
+  language?: string;
+  style?: string;
+  autoExtendScenes?: boolean;
+  gapMs?: number;
+  transcriptFormat?: 'vtt' | 'srt' | 'both' | 'none';
+  region?: string;
+  endpoint?: string;
 }
 
 export interface Storyboard {
@@ -104,6 +129,7 @@ export interface Storyboard {
   scenes: Scene[];
   branding?: Branding;
   assets?: Record<string, string>;
+  narration?: NarrationConfig;
 }
 
 export type RenderQuality = 'high' | 'medium' | 'fast';
@@ -114,6 +140,17 @@ export interface RenderResult {
   duration: number;
   frames: number;
   fileSize: number;
+  /** Absolute path to the generated VTT transcript, if narration was produced. */
+  transcriptPath?: string;
+  /** Absolute path to the generated SRT transcript, if requested. */
+  srtPath?: string;
+  /** Narration metadata when a voice-over track was muxed into the video. */
+  narration?: {
+    audioPath?: string;
+    durationSec: number;
+    sceneCount: number;
+    voice: string;
+  };
 }
 
 export interface ValidationResult {
