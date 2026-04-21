@@ -1,0 +1,112 @@
+{
+  "title": "Line Emphasis Animation Demo",
+  "theme": "corporate-dark",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 3,
+      "data": {
+        "title": "Line Emphasis in Code Terminal",
+        "subtitle": "Highlighting critical lines for viewer attention",
+        "date": "April 2026"
+      }
+    },
+    {
+      "type": "code-terminal-with-captions",
+      "duration": 20,
+      "data": {
+        "title": "Deploying Production API with Emphasis",
+        "shell": "bash",
+        "captionPosition": "right",
+        "steps": [
+          {
+            "lines": [
+              { "kind": "prompt", "text": "npm run build" },
+              { "kind": "output", "text": "Building application..." }
+            ],
+            "caption": "Step 1: Start the build process"
+          },
+          {
+            "lines": [
+              { "kind": "success", "text": "✓ Build successful", "emphasize": true },
+              { "kind": "output", "text": "Size: 245KB (gzipped: 62KB)" }
+            ],
+            "caption": "Step 2: Build completes successfully - notice the green success line highlighted!"
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "npm run test" },
+              { "kind": "output", "text": "Running test suite..." },
+              { "kind": "output", "text": "✓ Unit tests: 247 passed" }
+            ],
+            "caption": "Step 3: Execute test suite"
+          },
+          {
+            "lines": [
+              { "kind": "success", "text": "✓ All tests passed", "emphasize": true },
+              { "kind": "output", "text": "Coverage: 94.2%" }
+            ],
+            "caption": "Step 4: All tests pass - this critical line gets emphasized so viewers know it's important!"
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "docker build -t api:v1.2.3 ." },
+              { "kind": "output", "text": "Building Docker image..." }
+            ],
+            "caption": "Step 5: Build Docker container"
+          },
+          {
+            "lines": [
+              { "kind": "success", "text": "✓ Image built: sha256:abc123def456", "emphasize": true },
+              { "kind": "output", "text": "Size: 156MB" }
+            ],
+            "caption": "Step 6: Docker build succeeds with image ID - emphasized to confirm successful build"
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "docker push api:v1.2.3" },
+              { "kind": "output", "text": "Pushing to registry..." }
+            ],
+            "caption": "Step 7: Push image to registry"
+          },
+          {
+            "lines": [
+              { "kind": "success", "text": "✓ Push complete: registry.example.com/api:v1.2.3", "emphasize": true },
+              { "kind": "output", "text": "Digest: sha256:xyz789" }
+            ],
+            "caption": "Step 8: Push succeeds - this is a critical checkpoint, so we emphasize it!"
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "kubectl apply -f deployment.yaml" },
+              { "kind": "output", "text": "deployment.apps/api updated" }
+            ],
+            "caption": "Step 9: Deploy to Kubernetes cluster"
+          },
+          {
+            "lines": [
+              { "kind": "success", "text": "✓ Deployment rolling out: 3 replicas ready", "emphasize": true },
+              { "kind": "output", "text": "Rollout progressing..." }
+            ],
+            "caption": "Step 10: Deployment confirms ready state - emphasized for validation!"
+          }
+        ]
+      },
+      "animation": {
+        "easing": "power1",
+        "stagger": 0.07,
+        "delay": 0.1
+      }
+    },
+    {
+      "type": "closing",
+      "duration": 3,
+      "data": {
+        "tagline": "Emphasis animations draw attention to critical outcomes",
+        "cta": "Use emphasize: true on any line for focus"
+      }
+    }
+  ]
+}
