@@ -1,0 +1,118 @@
+{
+  "title": "Code Terminal with Captions Demo",
+  "theme": "corporate-dark",
+  "fps": 30,
+  "resolution": [1920, 1080],
+  "scenes": [
+    {
+      "type": "title-card",
+      "duration": 4,
+      "data": {
+        "title": "Building a React Component",
+        "subtitle": "Step-by-step walkthrough with live explanations",
+        "date": "April 2026"
+      }
+    },
+    {
+      "type": "code-terminal-with-captions",
+      "duration": 12,
+      "data": {
+        "title": "Creating a Custom Hook",
+        "shell": "zsh",
+        "captionPosition": "right",
+        "steps": [
+          {
+            "lines": [
+              { "kind": "prompt", "text": "touch useCounter.ts" },
+              { "kind": "output", "text": "" },
+              { "kind": "prompt", "text": "cat > useCounter.ts << 'EOF'" }
+            ],
+            "caption": "First, we create a new file and start writing our custom hook using a TypeScript template."
+          },
+          {
+            "lines": [
+              { "kind": "output", "text": "import { useState } from 'react';" },
+              { "kind": "blank", "text": "" },
+              { "kind": "output", "text": "export function useCounter(initialValue = 0) {" }
+            ],
+            "caption": "We import <code>useState</code> from React and define our hook with an optional initial value parameter."
+          },
+          {
+            "lines": [
+              { "kind": "output", "text": "  const [count, setCount] = useState(initialValue);" },
+              { "kind": "blank", "text": "" },
+              { "kind": "output", "text": "  const increment = () => setCount(c => c + 1);" },
+              { "kind": "output", "text": "  const decrement = () => setCount(c => c - 1);" }
+            ],
+            "caption": "The hook maintains <strong>count</strong> state and provides two methods: <code>increment</code> and <code>decrement</code>."
+          },
+          {
+            "lines": [
+              { "kind": "output", "text": "  const reset = () => setCount(initialValue);" },
+              { "kind": "blank", "text": "" },
+              { "kind": "output", "text": "  return { count, increment, decrement, reset };" },
+              { "kind": "output", "text": "}" }
+            ],
+            "caption": "We add a <strong>reset</strong> method and return all the state and handlers as an object."
+          },
+          {
+            "lines": [
+              { "kind": "output", "text": "EOF" },
+              { "kind": "prompt", "text": "cat useCounter.ts" },
+              { "kind": "success", "text": "✓ Hook created successfully" }
+            ],
+            "caption": "The hook is complete and ready to use in your React components! Save and verify the file."
+          }
+        ]
+      },
+      "animation": {
+        "easing": "easeOut",
+        "delay": 0.2
+      }
+    },
+    {
+      "type": "code-terminal-with-captions",
+      "duration": 10,
+      "data": {
+        "title": "Using the Hook",
+        "shell": "bash",
+        "captionPosition": "below",
+        "steps": [
+          {
+            "lines": [
+              { "kind": "prompt", "text": "npx create-react-app my-counter-app" },
+              { "kind": "output", "text": "Creating a new React app..." },
+              { "kind": "output", "text": "Initialized empty Git repository" }
+            ],
+            "caption": "First, we create a new React application using Create React App."
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "cd my-counter-app && npm start" },
+              { "kind": "success", "text": "✓ Starting development server on port 3000" }
+            ],
+            "caption": "Navigate to the project and start the development server to see changes in real-time."
+          },
+          {
+            "lines": [
+              { "kind": "prompt", "text": "cp ../useCounter.ts src/" },
+              { "kind": "prompt", "text": "cat src/App.tsx" },
+              { "kind": "output", "text": "// Updated to use useCounter hook" },
+              { "kind": "output", "text": "const { count, increment, decrement } = useCounter(0);" }
+            ],
+            "caption": "Copy the hook to your project and import it in your components to start using it."
+          }
+        ]
+      },
+      "transition": "fade"
+    },
+    {
+      "type": "closing",
+      "duration": 3,
+      "data": {
+        "tagline": "Custom hooks make your React code reusable and testable",
+        "cta": "Learn more about hooks at react.dev"
+      }
+    }
+  ]
+}

@@ -1,0 +1,459 @@
+<div class="scene code-terminal-with-captions">
+  {{#if data.title}}
+  <div class="code-terminal-with-captions__title">{{data.title}}</div>
+  {{/if}}
+  
+  <div class="code-terminal-with-captions__container code-terminal-with-captions__container--{{data.captionPosition}}">
+    <!-- Terminal pane (2/3) -->
+    <div class="code-terminal-with-captions__terminal-pane">
+      <div class="code-terminal-with-captions__window">
+        <div class="code-terminal-with-captions__titlebar">
+          <span class="code-terminal-with-captions__dot code-terminal-with-captions__dot--red"></span>
+          <span class="code-terminal-with-captions__dot code-terminal-with-captions__dot--yellow"></span>
+          <span class="code-terminal-with-captions__dot code-terminal-with-captions__dot--green"></span>
+          <span class="code-terminal-with-captions__titlebar-text">{{data.shell}}</span>
+        </div>
+        <div class="code-terminal-with-captions__body">
+          <div class="code-terminal-with-captions__terminal-track">
+            {{#each data.steps}}
+            <div class="code-terminal-with-captions__step" data-step="{{@index}}">
+              {{#each this.lines}}
+              <div class="code-terminal-with-captions__line code-terminal-with-captions__line--{{this.kind}}">
+                {{#if (eq this.kind 'prompt')}}<span class="code-terminal-with-captions__prompt-symbol">❯</span>{{/if}}
+                {{#if (eq this.kind 'comment')}}<span class="code-terminal-with-captions__comment-symbol">#</span>{{/if}}
+                <span class="code-terminal-with-captions__text">{{{this.text}}}</span>
+              </div>
+              {{/each}}
+            </div>
+            {{/each}}
+          </div>
+          <div class="code-terminal-with-captions__cursor"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Captions pane (1/3) -->
+    <div class="code-terminal-with-captions__captions-pane">
+      <div class="code-terminal-with-captions__caption-box code-terminal-with-captions__caption-box--live">
+        <div class="code-terminal-with-captions__caption-content"></div>
+      </div>
+      <div class="code-terminal-with-captions__caption-source" aria-hidden="true">
+        {{#each data.steps}}
+        <div class="code-terminal-with-captions__caption-item" data-step="{{@index}}">{{{this.caption}}}</div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .code-terminal-with-captions {
+    padding: calc(var(--spacing-unit) * 6) calc(var(--spacing-unit) * 8);
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .code-terminal-with-captions__title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    margin-bottom: calc(var(--spacing-unit) * 3);
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .code-terminal-with-captions__container {
+    width: 100%;
+    max-width: 1400px;
+    display: grid;
+    gap: calc(var(--spacing-unit) * 3);
+  }
+
+  /* Layout variations based on caption position */
+  .code-terminal-with-captions__container--right {
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  .code-terminal-with-captions__container--left {
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 1fr;
+  }
+
+  .code-terminal-with-captions__container--below {
+    grid-template-columns: 1fr;
+    grid-template-rows: 2fr 1fr;
+  }
+
+  .code-terminal-with-captions__container--above {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 2fr;
+  }
+
+  /* Terminal pane */
+  .code-terminal-with-captions__terminal-pane {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .code-terminal-with-captions__window {
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 12px 60px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 0 40px rgba(122, 162, 247, 0.06);
+    background: #1a1b26;
+  }
+
+  .code-terminal-with-captions__titlebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    background: linear-gradient(180deg, #1d1e2a, #16171f);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .code-terminal-with-captions__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .code-terminal-with-captions__dot--red { background: #ff5f57; }
+  .code-terminal-with-captions__dot--yellow { background: #febc2e; }
+  .code-terminal-with-captions__dot--green { background: #28c840; }
+
+  .code-terminal-with-captions__titlebar-text {
+    color: #565869;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    margin-left: 8px;
+  }
+
+  .code-terminal-with-captions__body {
+    padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 3);
+    font-family: 'Cascadia Code', 'SF Mono', 'Fira Code', monospace;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 500px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .code-terminal-with-captions__terminal-track {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .code-terminal-with-captions__step {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 4px;
+  }
+
+  .code-terminal-with-captions__line {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .code-terminal-with-captions__line--prompt {
+    color: #c0caf5;
+  }
+
+  .code-terminal-with-captions__line--output {
+    color: #565f89;
+    padding-left: 22px;
+  }
+
+  .code-terminal-with-captions__line--comment {
+    color: #565f89;
+    font-style: italic;
+  }
+
+  .code-terminal-with-captions__line--success {
+    color: #9ece6a;
+    padding-left: 22px;
+  }
+
+  .code-terminal-with-captions__line--error {
+    color: #f7768e;
+    padding-left: 22px;
+  }
+
+  .code-terminal-with-captions__line--highlight {
+    color: #7aa2f7;
+    padding-left: 22px;
+  }
+
+  .code-terminal-with-captions__line--blank {
+    height: 1.7em;
+  }
+
+  .code-terminal-with-captions__prompt-symbol {
+    color: #7aa2f7;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .code-terminal-with-captions__comment-symbol {
+    color: #565f89;
+    flex-shrink: 0;
+  }
+
+  .code-terminal-with-captions__text .accent {
+    color: #bb9af7;
+  }
+
+  .code-terminal-with-captions__text .string {
+    color: #9ece6a;
+  }
+
+  .code-terminal-with-captions__text .keyword {
+    color: #7aa2f7;
+  }
+
+  .code-terminal-with-captions__text .number {
+    color: #ff9e64;
+  }
+
+  .code-terminal-with-captions__text .dim {
+    color: #565f89;
+  }
+
+  .code-terminal-with-captions__cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1.2em;
+    background: #7aa2f7;
+    margin-left: 22px;
+    margin-top: 4px;
+    opacity: 0;
+    border-radius: 1px;
+    position: sticky;
+    bottom: 0;
+  }
+
+  /* Captions pane */
+  .code-terminal-with-captions__captions-pane {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .code-terminal-with-captions__caption-box {
+    background: linear-gradient(135deg, rgba(122, 162, 247, 0.1), rgba(187, 154, 247, 0.08));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(122, 162, 247, 0.2);
+    border-radius: 12px;
+    padding: calc(var(--spacing-unit) * 3);
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+  }
+
+  .code-terminal-with-captions__caption-box--live {
+    min-height: 220px;
+  }
+
+  .code-terminal-with-captions__caption-source {
+    display: none;
+  }
+
+  .code-terminal-with-captions__caption-content {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    text-align: center;
+    font-weight: 400;
+  }
+
+  .code-terminal-with-captions__caption-content strong {
+    color: #7aa2f7;
+    font-weight: 600;
+  }
+
+  .code-terminal-with-captions__caption-content em {
+    color: #bb9af7;
+    font-style: italic;
+  }
+
+  .code-terminal-with-captions__caption-content code {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    color: #9ece6a;
+    font-size: 0.95em;
+  }
+</style>
+
+<script>
+  window.__buildTimeline = function() {
+    var tl = gsap.timeline({ paused: true });
+    var anim = window.__anim || {};
+    var sceneDuration = window.__duration || 10;
+    var steps = document.querySelectorAll('.code-terminal-with-captions__step');
+    var captionItems = document.querySelectorAll('.code-terminal-with-captions__caption-item');
+    var liveCaption = document.querySelector('.code-terminal-with-captions__caption-box--live .code-terminal-with-captions__caption-content');
+    var liveCaptionBox = document.querySelector('.code-terminal-with-captions__caption-box--live');
+    var terminalTrack = document.querySelector('.code-terminal-with-captions__terminal-track');
+    var stepCount = Math.max(steps.length, captionItems.length);
+    var introDuration = 0.8;
+    var outroDuration = 0.6;
+    var usableDuration = Math.max(0.1, sceneDuration - introDuration - outroDuration);
+    var stepDuration = stepCount > 0 ? usableDuration / stepCount : usableDuration;
+    var lineStagger = anim.stagger || 0.08;
+    var ease = anim.easing || 'power2.out';
+    var terminalOffset = 0;
+    var terminalViewport = document.querySelector('.code-terminal-with-captions__body');
+    var terminalViewportHeight = terminalViewport ? terminalViewport.clientHeight : 500;
+    var terminalScrollThreshold = terminalViewportHeight * 0.66;
+    var terminalConsumedHeight = 0;
+    var initialCaptionHtml = captionItems.length ? captionItems[0].innerHTML : '';
+
+    gsap.set(steps, { autoAlpha: 0 });
+    gsap.set(terminalTrack, { y: 0 });
+    if (liveCaption) {
+      liveCaption.innerHTML = initialCaptionHtml;
+    }
+    if (liveCaptionBox) {
+      gsap.set(liveCaptionBox, { autoAlpha: initialCaptionHtml ? 1 : 0 });
+    }
+
+    // Window slides in
+    tl.from('.code-terminal-with-captions__window', {
+      y: 30,
+      opacity: 0,
+      scale: 0.97,
+      duration: 0.4,
+      ease: 'back.out(1.4)'
+    });
+
+    // Title bar dots appear
+    tl.from('.code-terminal-with-captions__dot', {
+      scale: 0,
+      duration: 0.2,
+      stagger: 0.05,
+      ease: 'back.out(2)'
+    }, '-=0.1');
+
+    // Captions pane fades in
+    tl.from('.code-terminal-with-captions__captions-pane', {
+      opacity: 0,
+      duration: 0.3
+    }, '<0.15');
+
+    // Process each step: reveal, then scroll feed upward for terminal and captions.
+    for (var i = 0; i < stepCount; i++) {
+      var step = steps[i];
+      var holdDuration = Math.max(0.1, stepDuration * 0.28);
+      var captionDwellDuration = Math.max(0.7, stepDuration * 0.52);
+      var stepStartLabel = 'step-' + i;
+
+      tl.add(stepStartLabel);
+
+      if (step) {
+        var stepLines = step.querySelectorAll('.code-terminal-with-captions__line');
+        tl.set(step, { autoAlpha: 1 }, stepStartLabel);
+        tl.from(stepLines, {
+          opacity: 0,
+          x: -6,
+          duration: 0.14,
+          stagger: lineStagger,
+          ease: ease
+        }, stepStartLabel + '+=0.03');
+
+        tl.to('.code-terminal-with-captions__cursor', {
+          opacity: 1,
+          duration: 0.05
+        }, stepStartLabel + '+=0.05');
+        tl.to('.code-terminal-with-captions__cursor', {
+          opacity: 0,
+          duration: 0.15,
+          ease: 'steps(1)',
+          yoyo: true,
+          repeat: 1
+        }, stepStartLabel + '+=0.18');
+      }
+
+      if (liveCaption && captionItems[i]) {
+        (function(captionHtml) {
+          tl.to(liveCaptionBox, {
+            opacity: 0.2,
+            duration: 0.14,
+            ease: 'power1.out',
+            onComplete: function() {
+              liveCaption.innerHTML = captionHtml;
+            }
+          }, stepStartLabel + '+=0.04');
+          tl.to(liveCaptionBox, {
+            opacity: 1,
+            duration: 0.22,
+            ease: 'power2.out'
+          }, '>');
+        })(captionItems[i].innerHTML);
+
+        // Keep updated caption visible long enough to read.
+        tl.to({}, { duration: captionDwellDuration }, '>');
+      }
+
+      tl.to({}, { duration: holdDuration });
+
+      if (i > 0 && terminalTrack && steps[i - 1]) {
+        var terminalStepHeight = (steps[i - 1].offsetHeight || 0) + 4;
+        terminalConsumedHeight += terminalStepHeight;
+        if (terminalConsumedHeight > terminalScrollThreshold) {
+          terminalOffset += terminalStepHeight;
+          tl.to(terminalTrack, {
+            y: -terminalOffset,
+            duration: Math.max(0.18, stepDuration * 0.24),
+            ease: 'power1.inOut'
+          }, '>-0.01');
+        }
+      }
+
+      var usedSoFar = tl.duration();
+      var targetSoFar = introDuration + (stepDuration * (i + 1));
+      if (usedSoFar < targetSoFar) {
+        tl.to({}, { duration: targetSoFar - usedSoFar });
+      }
+    }
+
+    // Final cursor blink
+    tl.to('.code-terminal-with-captions__cursor', {
+      opacity: 1,
+      duration: 0.05
+    });
+    tl.to('.code-terminal-with-captions__cursor', {
+      opacity: 0,
+      duration: 0.3,
+      ease: 'steps(1)',
+      yoyo: true,
+      repeat: 3
+    });
+
+    var remaining = sceneDuration - tl.duration();
+    if (remaining > 0) {
+      tl.to({}, { duration: remaining });
+    }
+
+    return tl;
+  };
+</script>

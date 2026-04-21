@@ -178,6 +178,45 @@
       ]
     }
   },
+  "code-terminal-with-captions": {
+    "duration": 12,
+    "data": {
+      "title": "End-to-End Build Pipeline",
+      "shell": "zsh",
+      "captionPosition": "right",
+      "steps": [
+        {
+          "lines": [
+            { "kind": "prompt", "text": "git checkout -b feat/continuous-caption-feed" },
+            { "kind": "success", "text": "Switched to a new branch 'feat/continuous-caption-feed'" }
+          ],
+          "caption": "Step 1: Create an isolated branch so terminal and scene changes are easy to review."
+        },
+        {
+          "lines": [
+            { "kind": "prompt", "text": "npm run generate:catalog" },
+            { "kind": "output", "text": "scene catalog refreshed" }
+          ],
+          "caption": "Step 2: Regenerate catalog assets and markdown with one command."
+        },
+        {
+          "lines": [
+            { "kind": "prompt", "text": "npx tsx src/cli.ts validate fixtures/code-terminal-with-captions-10step-single-scene.json" },
+            { "kind": "success", "text": "Valid storyboard: 1 scene, 26.0s total" }
+          ],
+          "caption": "Step 3: Validate the storyboard before rendering media artifacts."
+        },
+        {
+          "lines": [
+            { "kind": "prompt", "text": "npx tsx src/cli.ts render fixtures/code-terminal-with-captions-10step-single-scene.json --output output/continuous-feed-demo.mp4 --skip-narration" },
+            { "kind": "output", "text": "Rendering frame sequence..." },
+            { "kind": "success", "text": "Render complete: output/continuous-feed-demo.mp4" }
+          ],
+          "caption": "Step 4: Render final output while keeping captions synchronized with terminal progression."
+        }
+      ]
+    }
+  },
   "scene-showcase": {
     "duration": 5,
     "data": {
@@ -262,6 +301,44 @@
         { "from": "ship", "to": "end", "highlight": true }
       ],
       "annotation": "Happy path highlighted — 5-8 nodes per segment is ideal"
+    }
+  },
+  "code-diff": {
+    "duration": 7,
+    "data": {
+      "title": "Review Focus: Guarding Empty Inputs",
+      "filePath": "src/renderer/preview.ts",
+      "language": "ts",
+      "summary": "Adds an early return so empty storyboard input fails closed instead of producing a misleading preview shell.",
+      "focusLabel": "Behavioral change",
+      "metrics": [
+        { "label": "Added", "value": "+6", "tone": "positive" },
+        { "label": "Removed", "value": "-1", "tone": "caution" },
+        { "label": "Risk", "value": "Low", "tone": "neutral" }
+      ],
+      "callouts": [
+        "New guard is isolated to preview generation; render pipeline remains unchanged.",
+        "Reviewer can verify expected behavior by checking the empty-scenes path only.",
+        "Motion is intentionally restrained so line semantics stay primary."
+      ],
+      "hunks": [
+        {
+          "heading": "generatePreview() input guard",
+          "lines": [
+            { "kind": "context", "oldNumber": 18, "newNumber": 18, "text": "export async function generatePreview(" },
+            { "kind": "context", "oldNumber": 19, "newNumber": 19, "text": "  storyboard: Storyboard," },
+            { "kind": "context", "oldNumber": 20, "newNumber": 20, "text": "  outputPath: string" },
+            { "kind": "context", "oldNumber": 21, "newNumber": 21, "text": "): Promise<{ path: string }> {" },
+            { "kind": "remove", "oldNumber": 22, "text": "  const theme = storyboard.theme ?? 'corporate-dark';" },
+            { "kind": "add", "newNumber": 22, "text": "  if (storyboard.scenes.length === 0) {" },
+            { "kind": "add", "newNumber": 23, "text": "    throw new Error('Storyboard must contain at least one scene');" },
+            { "kind": "add", "newNumber": 24, "text": "  }" },
+            { "kind": "add", "newNumber": 25, "text": "" },
+            { "kind": "add", "newNumber": 26, "text": "  const theme = storyboard.theme ?? 'corporate-dark';" },
+            { "kind": "emphasis", "newNumber": 27, "text": "  const fps = storyboard.fps ?? 30;" }
+          ]
+        }
+      ]
     }
   },
   "tool-call": {

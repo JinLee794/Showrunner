@@ -8,7 +8,9 @@
  *
  * Usage:
  *   npx tsx scripts/generate-scene-catalog.ts
+ *     # render only missing GIFs + regenerate markdown
  *   npx tsx scripts/generate-scene-catalog.ts --skip-gifs   # regenerate markdown only
+ *   npx tsx scripts/generate-scene-catalog.ts --refresh-gifs # re-render all GIFs + regenerate markdown
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
@@ -63,6 +65,7 @@ function schemaTable(schema: SceneTypeInfo['dataSchema']): string {
 
 async function main() {
   const skipGifs = process.argv.includes('--skip-gifs');
+  const refreshGifs = process.argv.includes('--refresh-gifs');
 
   // Load scene catalog data
   const catalogData: Record<string, { duration: number; data: Record<string, unknown> }> =
@@ -71,13 +74,17 @@ async function main() {
   // Load scene type metadata from list-scene-types tool
   const { handleListSceneTypes } = await import('../src/tools/list-scene-types.js');
   const result = await handleListSceneTypes();
-  const sceneTypes: SceneTypeInfo[] = JSON.parse(result.content[0].text);
+  const parsed = JSON.parse(result.content[0].text);
+  const sceneTypes: SceneTypeInfo[] = Array.isArray(parsed)
+    ? parsed
+    : parsed.sceneTypes;
 
   mkdirSync(GIF_DIR, { recursive: true });
 
   // ── Render GIFs ───────────────────────────────────────────────────────────
   const rendered: string[] = [];
   const skipped: string[] = [];
+  const alreadyPresent: string[] = [];
 
   if (!skipGifs) {
     const { Renderer } = await import('../src/renderer/index.js');
@@ -95,6 +102,13 @@ async function main() {
       }
 
       const gifPath = join(GIF_DIR, `${info.type}.gif`);
+      const gifExists = existsSync(gifPath);
+
+      if (!refreshGifs && gifExists) {
+        console.log(`⏭  ${info.type} — GIF exists, skipping`);
+        alreadyPresent.push(info.type);
+        continue;
+      }
 
       try {
         const storyboard = {
@@ -127,7 +141,9 @@ async function main() {
     }
 
     await pool.close();
-    console.log(`\nRendered ${rendered.length} GIFs, skipped ${skipped.length}.`);
+    console.log(
+      `\nRendered ${rendered.length} GIFs, reused ${alreadyPresent.length}, skipped ${skipped.length}.`,
+    );
   } else {
     console.log('Skipping GIF rendering (--skip-gifs)');
     // Mark all scene types that have existing GIFs as rendered

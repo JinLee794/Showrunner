@@ -49,12 +49,14 @@ export const SceneTypeSchema = z.enum([
   'comparison',
   'closing',
   'code-terminal',
+  'code-terminal-with-captions',
   'scene-showcase',
   'image-card',
   'bullet-list',
   'stat-counter',
   'text-reveal',
   'logic-flow',
+  'code-diff',
   'tool-call',
 ]);
 
@@ -85,6 +87,27 @@ export const AnimationOverridesSchema = z.object({
   exitAnimation: z.enum(['fade', 'slide-up', 'slide-down', 'scale-down', 'none']).optional(),
 });
 
+export const VoiceoverSchema = z
+  .object({
+    /** Plain narration text. Mutually exclusive with ssml. */
+    text: z.string().optional(),
+    /** Raw SSML. If provided, overrides text/voice/style overrides. */
+    ssml: z.string().optional(),
+    /** Azure Neural voice name override (e.g. en-US-JennyNeural). */
+    voice: z.string().optional(),
+    /** Expressive style override (e.g. "cheerful", "newscast"). */
+    style: z.string().optional(),
+    /** Style degree 0.01-2.0 (Azure expressive voices). */
+    styleDegree: z.number().min(0.01).max(2).optional(),
+    /** Prosody rate ("+10%", "0.9", "slow"). */
+    rate: z.union([z.string(), z.number()]).optional(),
+    /** Prosody pitch ("+2st", "medium"). */
+    pitch: z.union([z.string(), z.number()]).optional(),
+  })
+  .refine((v) => !!(v.text || v.ssml), {
+    message: 'voiceover requires either text or ssml',
+  });
+
 export const SceneSchema = z.object({
   type: SceneTypeSchema,
   duration: z.number().min(0.5).max(120),
@@ -92,12 +115,41 @@ export const SceneSchema = z.object({
   data: z.record(z.unknown()),
   animation: AnimationOverridesSchema.optional(),
   notes: z.string().optional(),
+  /** Optional scene-level narration. Rendered only when narration is enabled. */
+  voiceover: VoiceoverSchema.optional(),
 });
 
 export const BrandingSchema = z.object({
   logo: z.string().optional(),
   accent: z.string().optional(),
   font: z.string().optional(),
+});
+
+export const NarrationConfigSchema = z.object({
+  /** Enable synthesis. Defaults to true when any scene has a voiceover. */
+  enabled: z.boolean().optional(),
+  /** Default Azure Neural voice (e.g. en-US-JennyNeural). */
+  voice: z.string().optional().default('en-US-JennyNeural'),
+  /** Locale used when wrapping plain text in SSML. */
+  language: z.string().optional().default('en-US'),
+  /** Default expressive style applied to plain-text scenes. */
+  style: z.string().optional(),
+  /** If a scene's narration is longer than its duration, extend the scene automatically. */
+  autoExtendScenes: z.boolean().optional().default(true),
+  /** Silence padding (ms) appended after each scene's narration. */
+  gapMs: z.number().min(0).max(5000).optional().default(150),
+  /** Transcript sidecar format to emit alongside the video. */
+  transcriptFormat: z.enum(['vtt', 'srt', 'both', 'none']).optional().default('vtt'),
+  /**
+   * Azure region override. Falls back to env AZURE_SPEECH_REGION.
+   * Auth credentials themselves are NEVER read from the storyboard —
+   * they come from the local process environment (passthrough auth):
+   *   AZURE_SPEECH_KEY                  (subscription key) OR
+   *   AZURE_SPEECH_TOKEN                (Entra/STS bearer token)
+   */
+  region: z.string().optional(),
+  /** Custom speech endpoint host (sovereign/private clouds). */
+  endpoint: z.string().optional(),
 });
 
 export const StoryboardSchema = z.object({
@@ -108,6 +160,8 @@ export const StoryboardSchema = z.object({
   scenes: z.array(SceneSchema).min(1),
   branding: BrandingSchema.optional(),
   assets: z.record(z.string()).optional(),
+  /** Optional voice-over / transcript configuration. */
+  narration: NarrationConfigSchema.optional(),
 });
 
 export const RenderQualitySchema = z.enum(['high', 'medium', 'fast']);
@@ -235,6 +289,20 @@ export const CodeTerminalDataSchema = z.object({
   })),
 });
 
+export const CodeTerminalWithCaptionsDataSchema = z.object({
+  title: z.string().optional(),
+  shell: z.string().optional(),
+  captionPosition: z.enum(['left', 'right', 'above', 'below']).optional().default('right'),
+  steps: z.array(z.object({
+    lines: z.array(z.object({
+      kind: z.enum(['prompt', 'output', 'comment', 'success', 'error', 'highlight', 'blank']),
+      text: z.string().optional(),
+    })).min(1),
+    caption: z.string().min(1),
+    duration: z.number().min(0.5).optional(),
+  })).min(1),
+});
+
 export const SceneShowcaseDataSchema = z.object({
   title: z.string().optional(),
   subtitle: z.string().optional(),
@@ -317,6 +385,35 @@ export const LogicFlowDataSchema = z.object({
   annotation: z.string().optional(),
 });
 
+export const CodeDiffLineSchema = z.object({
+  kind: z.enum(['context', 'add', 'remove', 'emphasis']),
+  text: z.string(),
+  oldNumber: z.number().int().positive().optional(),
+  newNumber: z.number().int().positive().optional(),
+});
+
+export const CodeDiffHunkSchema = z.object({
+  heading: z.string().optional(),
+  lines: z.array(CodeDiffLineSchema).min(1).max(40),
+});
+
+export const CodeDiffMetricSchema = z.object({
+  label: z.string(),
+  value: z.union([z.string(), z.number()]),
+  tone: z.enum(['neutral', 'positive', 'caution']).optional(),
+});
+
+export const CodeDiffDataSchema = z.object({
+  title: z.string().optional(),
+  filePath: z.string(),
+  language: z.string().optional(),
+  summary: z.string().optional(),
+  focusLabel: z.string().optional(),
+  metrics: z.array(CodeDiffMetricSchema).max(4).optional(),
+  callouts: z.array(z.string()).max(4).optional(),
+  hunks: z.array(CodeDiffHunkSchema).min(1).max(4),
+});
+
 export const ToolCallParamSchema = z.object({
   key: z.string(),
   value: z.string(),
@@ -357,12 +454,14 @@ export const sceneDataSchemas: Record<string, z.ZodType> = {
   'comparison': ComparisonDataSchema,
   'closing': ClosingDataSchema,
   'code-terminal': CodeTerminalDataSchema,
+  'code-terminal-with-captions': CodeTerminalWithCaptionsDataSchema,
   'scene-showcase': SceneShowcaseDataSchema,
   'image-card': ImageCardDataSchema,
   'bullet-list': BulletListDataSchema,
   'stat-counter': StatCounterDataSchema,
   'text-reveal': TextRevealDataSchema,
   'logic-flow': LogicFlowDataSchema,
+  'code-diff': CodeDiffDataSchema,
   'tool-call': ToolCallDataSchema,
 };
 

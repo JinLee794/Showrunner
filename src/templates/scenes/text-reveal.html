@@ -5,7 +5,7 @@
     {{/if}}
     <div class="text-reveal__headline">{{{data.headline}}}</div>
     {{#if data.body}}
-    <div class="text-reveal__body">{{data.body}}</div>
+    <div class="text-reveal__body">{{{data.body}}}</div>
     {{/if}}
     {{#if data.footnote}}
     <div class="text-reveal__footnote">{{data.footnote}}</div>
@@ -61,6 +61,17 @@
     color: var(--text-secondary);
     line-height: 1.5;
     max-width: 700px;
+  }
+
+  .text-reveal__body em,
+  .text-reveal__body strong {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-style: normal;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .text-reveal__footnote {

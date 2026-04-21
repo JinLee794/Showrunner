@@ -17,6 +17,7 @@ if (command === 'render') {
   const outputIdx = args.indexOf('--output');
   const qualityIdx = args.indexOf('--quality');
   const isGif = args.includes('--gif');
+  const skipNarration = args.includes('--skip-narration');
 
   const quality = (qualityIdx !== -1 ? args[qualityIdx + 1] : 'medium') as 'high' | 'medium' | 'fast';
   const ext = isGif ? '.gif' : '.mp4';
@@ -49,8 +50,16 @@ if (command === 'render') {
       const result = await renderer.renderGif(storyboard, outputPath, { quality });
       console.log(`✅ GIF saved: ${outputPath} (${result.frames} frames)`);
     } else {
-      const result = await renderer.renderStoryboard(storyboard, outputPath, quality);
+      const result = await renderer.renderStoryboard(storyboard, outputPath, quality, { skipNarration });
       console.log(`✅ Video saved: ${outputPath} (${result.frames} frames)`);
+      if (result.transcriptPath) {
+        console.log(`   🎙  Transcript: ${result.transcriptPath}`);
+      }
+      if (result.narration) {
+        console.log(
+          `   🔊 Narration: ${result.narration.sceneCount} scene(s), voice=${result.narration.voice}`,
+        );
+      }
     }
   } catch (e: any) {
     console.error('Render failed:', e.message);
@@ -101,6 +110,13 @@ Usage:
     --gif                                  Output as GIF instead of MP4
   npx showrunner-mcp validate <file.json>  Validate a storyboard JSON file
   npx showrunner-mcp scenes                List available scene types
+
+Voice-over (optional):
+  Add a \`narration\` block and per-scene \`voiceover\` fields to your storyboard, then set:
+    AZURE_SPEECH_REGION  e.g. eastus
+    AZURE_SPEECH_KEY     subscription key, OR
+    AZURE_SPEECH_TOKEN   short-lived Entra/STS bearer token
+  Renders with a muxed MP3 + synced .vtt transcript sidecar.
 `);
   if (command !== 'help' && command !== '--help' && command !== '-h') {
     process.exit(1);

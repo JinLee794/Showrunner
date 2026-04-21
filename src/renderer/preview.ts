@@ -8,6 +8,8 @@ import { getGsapBundle } from '../motion/gsap-bundle.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+Handlebars.registerHelper('eq', (a: unknown, b: unknown) => a === b);
+
 function tryRead(...paths: string[]): string {
   for (const p of paths) {
     try { return readFileSync(p, 'utf-8'); } catch { /* next */ }

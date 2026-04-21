@@ -13,6 +13,12 @@ import { getGsapBundle } from '../motion/gsap-bundle.js';
 import { getD3Bundle } from '../motion/d3-bundle.js';
 import { buildAnimationRuntime } from '../motion/runtime.js';
 import { resolveAssets, injectAssetRefs } from './assets.js';
+import {
+  prepareNarration,
+  finalizeNarration,
+  cleanupNarration,
+  type NarrationPipelineResult,
+} from '../narration/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
@@ -185,20 +191,48 @@ export class Renderer {
   async renderStoryboard(
     storyboard: Storyboard,
     outputPath: string,
-    quality: RenderQuality = 'medium'
+    quality?: RenderQuality
+  ): Promise<RenderResult>;
+  async renderStoryboard(
+    storyboard: Storyboard,
+    outputPath: string,
+    quality: RenderQuality,
+    options: { skipNarration?: boolean }
+  ): Promise<RenderResult>;
+  async renderStoryboard(
+    storyboard: Storyboard,
+    outputPath: string,
+    quality: RenderQuality = 'medium',
+    options: { skipNarration?: boolean } = {}
   ): Promise<RenderResult> {
-    const fps = storyboard.fps ?? 30;
-    const [width, height] = storyboard.resolution ?? [1920, 1080];
-    const theme = storyboard.theme ?? 'corporate-dark';
+    // Deep-clone so narration prep (which may extend scene durations) does
+    // not mutate the caller's storyboard.
+    const workingStoryboard: Storyboard = JSON.parse(JSON.stringify(storyboard));
+
+    // Run narration synthesis FIRST so any auto-extended scene durations
+    // are reflected in frame capture.
+    let narration: NarrationPipelineResult | null = null;
+    try {
+      if (!options.skipNarration) {
+        narration = await prepareNarration(workingStoryboard);
+      }
+    } catch (err) {
+      await cleanupNarration(narration);
+      throw err;
+    }
+
+    const fps = workingStoryboard.fps ?? 30;
+    const [width, height] = workingStoryboard.resolution ?? [1920, 1080];
+    const theme = workingStoryboard.theme ?? 'corporate-dark';
 
     const themeCSS = loadThemeCSS(theme);
     const gsapBundle = getGsapBundle();
     const d3Bundle = getD3Bundle();
-    const resolvedAssets = await resolveAssets(storyboard.assets);
+    const resolvedAssets = await resolveAssets(workingStoryboard.assets);
     // Resolve branding logo to a data URI if present (supports $asset: refs)
     let brandingLogo: string | undefined;
-    if (storyboard.branding?.logo) {
-      const logoVal = storyboard.branding.logo;
+    if (workingStoryboard.branding?.logo) {
+      const logoVal = workingStoryboard.branding.logo;
       if (logoVal.startsWith('$asset:')) {
         brandingLogo = resolvedAssets.get(logoVal.slice('$asset:'.length));
       } else {
@@ -217,8 +251,8 @@ export class Renderer {
       // Collect all frame dirs for concatenation
       const sceneDirs: Array<{ dir: string; pattern: string; count: number; duration: number }> = [];
 
-      for (let i = 0; i < storyboard.scenes.length; i++) {
-        const scene = storyboard.scenes[i]!;
+      for (let i = 0; i < workingStoryboard.scenes.length; i++) {
+        const scene = workingStoryboard.scenes[i]!;
         const resolved = { ...scene, data: injectAssetRefs(scene.data, resolvedAssets) };
         const sceneHTML = buildSceneHTML(resolved, themeCSS, gsapBundle, d3Bundle, width, height, brandingLogo);
         const sceneDir = join(tempBase, `scene-${i}`);
@@ -263,6 +297,18 @@ export class Renderer {
         outputPath,
       });
 
+      let transcriptPath: string | undefined;
+      let srtPath: string | undefined;
+      if (narration) {
+        const finalized = await finalizeNarration(
+          outputPath,
+          narration,
+          workingStoryboard.narration ?? {},
+        );
+        transcriptPath = finalized.vttPath;
+        srtPath = finalized.srtPath;
+      }
+
       const stats = statSync(outputPath);
 
       return {
@@ -270,11 +316,22 @@ export class Renderer {
         duration: totalDuration,
         frames: totalFrameCount,
         fileSize: stats.size,
+        transcriptPath,
+        srtPath,
+        narration: narration
+          ? {
+              audioPath: narration.concatenatedAudioPath,
+              durationSec: narration.totalDurationSec,
+              sceneCount: narration.timeline.filter((t) => t.synthesis.audioPath).length,
+              voice: narration.voice,
+            }
+          : undefined,
       };
     } finally {
       await this.pool.release(context);
       // Clean up temp frames
       await rm(tempBase, { recursive: true, force: true }).catch(() => {});
+      await cleanupNarration(narration);
     }
   }
 
