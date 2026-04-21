@@ -2,292 +2,65 @@
 
 > **Auto-generated** — do not edit manually. Run `npm run generate:catalog` to regenerate.
 
-This catalog showcases every scene type available in Showrunner with animated previews, descriptions, and data schemas. Last updated: 2026-04-14.
+This catalog showcases every scene type available in Showrunner with animated previews, descriptions, and data schemas. Last updated: 2026-04-21.
 
 ## Table of Contents
 
-- [Title Card](#title-card)
-- [Section Header](#section-header)
-- [Pipeline Funnel](#pipeline-funnel)
-- [Milestone Timeline](#milestone-timeline)
-- [Risk Callout](#risk-callout)
 - [Action Items](#action-items)
-- [Deal Team](#deal-team)
-- [Kpi Scorecard](#kpi-scorecard)
-- [Chart Bar](#chart-bar)
-- [Chart Line](#chart-line)
-- [Chart Donut](#chart-donut)
-- [Table](#table)
-- [Quote Highlight](#quote-highlight)
-- [Comparison](#comparison)
-- [Closing](#closing)
-- [Image Card](#image-card)
 - [Bullet List](#bullet-list)
-- [Stat Counter](#stat-counter)
-- [Text Reveal](#text-reveal)
+- [Chart Bar](#chart-bar)
+- [Chart Donut](#chart-donut)
+- [Chart Line](#chart-line)
+- [Closing](#closing)
+- [Code Diff](#code-diff)
+- [Code Terminal](#code-terminal)
+- [Code Terminal With Captions](#code-terminal-with-captions)
+- [Comparison](#comparison)
+- [Deal Team](#deal-team)
+- [Image Card](#image-card)
+- [Kpi Scorecard](#kpi-scorecard)
 - [Logic Flow](#logic-flow)
+- [Milestone Timeline](#milestone-timeline)
+- [Pipeline Funnel](#pipeline-funnel)
+- [Quote Highlight](#quote-highlight)
+- [Risk Callout](#risk-callout)
+- [Scene Showcase](#scene-showcase)
+- [Section Header](#section-header)
+- [Stat Counter](#stat-counter)
+- [Table](#table)
+- [Text Reveal](#text-reveal)
+- [Title Card](#title-card)
 - [Tool Call](#tool-call)
 
 ## Quick Reference
 
 | Scene Type | Description |
 |------------|-------------|
-| [`title-card`](#title-card) | Full-screen branded intro. |
-| [`section-header`](#section-header) | Transition slide between sections. |
-| [`pipeline-funnel`](#pipeline-funnel) | Horizontal bars grow left-to-right with staggered spring easing. |
-| [`milestone-timeline`](#milestone-timeline) | Vertical timeline draws downward. |
-| [`risk-callout`](#risk-callout) | Cards slide in from right with spring. |
 | [`action-items`](#action-items) | Numbered list. |
-| [`deal-team`](#deal-team) | Grid of avatar circles. |
-| [`kpi-scorecard`](#kpi-scorecard) | Grid of KPI cards with count-up number animation and trend arrows. |
-| [`chart-bar`](#chart-bar) | Bars grow upward with staggered spring. |
-| [`chart-line`](#chart-line) | Line draws left-to-right using path interpolation. |
-| [`chart-donut`](#chart-donut) | Segments fill clockwise with easeInOut. |
-| [`table`](#table) | Data table with staggered row entrance. |
-| [`quote-highlight`](#quote-highlight) | Quote text with attribution. |
-| [`comparison`](#comparison) | Side-by-side comparison with center divider. |
-| [`closing`](#closing) | Branded outro. |
-| [`image-card`](#image-card) | Full-bleed image with optional caption overlay. |
 | [`bullet-list`](#bullet-list) | Animated bullet list with staggered entrance. |
-| [`stat-counter`](#stat-counter) | Big animated numbers that count up from 0. |
-| [`text-reveal`](#text-reveal) | Cinematic text reveal scene. |
+| [`chart-bar`](#chart-bar) | Bars grow upward with staggered spring. |
+| [`chart-donut`](#chart-donut) | Segments fill clockwise with easeInOut. |
+| [`chart-line`](#chart-line) | Line draws left-to-right using path interpolation. |
+| [`closing`](#closing) | Branded outro. |
+| [`code-diff`](#code-diff) | Reviewer-first diff view with low-motion line reveals, semantic add/remove coloring, and optional callouts to orient attention before deep reading. |
+| [`code-terminal`](#code-terminal) | Scene discovered from templates. |
+| [`code-terminal-with-captions`](#code-terminal-with-captions) | Scene discovered from templates. |
+| [`comparison`](#comparison) | Side-by-side comparison with center divider. |
+| [`deal-team`](#deal-team) | Grid of avatar circles. |
+| [`image-card`](#image-card) | Full-bleed image with optional caption overlay. |
+| [`kpi-scorecard`](#kpi-scorecard) | Grid of KPI cards with count-up number animation and trend arrows. |
 | [`logic-flow`](#logic-flow) | Animated flowchart / decision-tree diagram. |
+| [`milestone-timeline`](#milestone-timeline) | Vertical timeline draws downward. |
+| [`pipeline-funnel`](#pipeline-funnel) | Horizontal bars grow left-to-right with staggered spring easing. |
+| [`quote-highlight`](#quote-highlight) | Quote text with attribution. |
+| [`risk-callout`](#risk-callout) | Cards slide in from right with spring. |
+| [`scene-showcase`](#scene-showcase) | Scene discovered from templates. |
+| [`section-header`](#section-header) | Transition slide between sections. |
+| [`stat-counter`](#stat-counter) | Big animated numbers that count up from 0. |
+| [`table`](#table) | Data table with staggered row entrance. |
+| [`text-reveal`](#text-reveal) | Cinematic text reveal scene. |
+| [`title-card`](#title-card) | Full-screen branded intro. |
 | [`tool-call`](#tool-call) | Animated tool/API call visualization. |
-
----
-
-## Title Card
-
-**Type:** `title-card`
-
-Full-screen branded intro. Logo fades in with scale spring, title slides up with easeOut. Optional image replaces accent bar (logo/icon via $asset:key or data URI).
-
-![Title Card preview](assets/scenes/title-card.gif)
-
-### Data Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `title` | string | ✅ |  |
-| `subtitle` | string |  |  |
-| `date` | string |  |  |
-| `presenter` | string |  |  |
-| `image` | string |  | Logo/icon — use $asset:key reference or data URI |
-
-<details>
-<summary>Sample JSON</summary>
-
-```json
-{
-  "type": "title-card",
-  "duration": 4,
-  "data": {
-    "title": "Quarterly Business Review",
-    "subtitle": "Enterprise Cloud Division",
-    "date": "April 2026",
-    "presenter": "Strategy Team"
-  }
-}
-```
-
-</details>
-
----
-
-## Section Header
-
-**Type:** `section-header`
-
-Transition slide between sections. Heading enters with spring, accent line draws left-to-right.
-
-![Section Header preview](assets/scenes/section-header.gif)
-
-### Data Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `heading` | string | ✅ |  |
-| `subheading` | string |  |  |
-| `icon` | string |  |  |
-
-<details>
-<summary>Sample JSON</summary>
-
-```json
-{
-  "type": "section-header",
-  "duration": 3,
-  "data": {
-    "heading": "Pipeline Overview",
-    "subheading": "Current quarter deal progression",
-    "icon": "📊"
-  }
-}
-```
-
-</details>
-
----
-
-## Pipeline Funnel
-
-**Type:** `pipeline-funnel`
-
-Horizontal bars grow left-to-right with staggered spring easing. Values count up from 0.
-
-![Pipeline Funnel preview](assets/scenes/pipeline-funnel.gif)
-
-### Data Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `stages` | array | ✅ |  |
-
-<details>
-<summary>Sample JSON</summary>
-
-```json
-{
-  "type": "pipeline-funnel",
-  "duration": 5,
-  "data": {
-    "stages": [
-      {
-        "name": "Qualified",
-        "count": 142,
-        "value": "$28.4M"
-      },
-      {
-        "name": "Technical Win",
-        "count": 87,
-        "value": "$19.1M"
-      },
-      {
-        "name": "Proposal",
-        "count": 34,
-        "value": "$11.2M",
-        "highlight": true
-      },
-      {
-        "name": "Negotiate",
-        "count": 18,
-        "value": "$7.8M"
-      },
-      {
-        "name": "Closed Won",
-        "count": 9,
-        "value": "$4.2M"
-      }
-    ]
-  }
-}
-```
-
-</details>
-
----
-
-## Milestone Timeline
-
-**Type:** `milestone-timeline`
-
-Vertical timeline draws downward. Status dots appear with spring scale-in.
-
-![Milestone Timeline preview](assets/scenes/milestone-timeline.gif)
-
-### Data Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `milestones` | array | ✅ |  |
-
-<details>
-<summary>Sample JSON</summary>
-
-```json
-{
-  "type": "milestone-timeline",
-  "duration": 5,
-  "data": {
-    "milestones": [
-      {
-        "name": "Discovery Complete",
-        "due": "2026-03-15",
-        "status": "completed",
-        "owner": "Sarah Chen"
-      },
-      {
-        "name": "Technical Validation",
-        "due": "2026-04-01",
-        "status": "on-track",
-        "owner": "Priya Patel"
-      },
-      {
-        "name": "Executive Briefing",
-        "due": "2026-04-15",
-        "status": "at-risk",
-        "owner": "Marcus Johnson",
-        "note": "CTO availability pending"
-      },
-      {
-        "name": "Contract Negotiation",
-        "due": "2026-05-01",
-        "status": "overdue",
-        "owner": "James Wilson"
-      }
-    ]
-  }
-}
-```
-
-</details>
-
----
-
-## Risk Callout
-
-**Type:** `risk-callout`
-
-Cards slide in from right with spring. Severity stripe animates color.
-
-![Risk Callout preview](assets/scenes/risk-callout.gif)
-
-### Data Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `risks` | array | ✅ |  |
-
-<details>
-<summary>Sample JSON</summary>
-
-```json
-{
-  "type": "risk-callout",
-  "duration": 4,
-  "data": {
-    "risks": [
-      {
-        "signal": "Champion left the organization",
-        "severity": "critical",
-        "context": "Need to re-establish executive sponsorship"
-      },
-      {
-        "signal": "Budget cycle pushed to Q3",
-        "severity": "high",
-        "context": "Proposal timeline at risk"
-      },
-      {
-        "signal": "Competitor POC underway",
-        "severity": "medium",
-        "context": "Differentiation deck needed"
-      }
-    ]
-  }
-}
-```
-
-</details>
 
 ---
 
@@ -347,105 +120,55 @@ Numbered list. Each item slides up with spring easing, staggered 100ms.
 
 ---
 
-## Deal Team
+## Bullet List
 
-**Type:** `deal-team`
+**Type:** `bullet-list`
 
-Grid of avatar circles. Each scales in with bouncy spring.
+Animated bullet list with staggered entrance. Items slide in with spring easing. Supports icons, highlight borders, and sub-text. Respects animation.textEffect, animation.stagger, animation.direction overrides.
 
-![Deal Team preview](assets/scenes/deal-team.gif)
+![Bullet List preview](assets/scenes/bullet-list.gif)
 
 ### Data Schema
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `members` | array | ✅ |  |
+| `title` | string |  |  |
+| `subtitle` | string |  |  |
+| `items` | array | ✅ |  |
 
 <details>
 <summary>Sample JSON</summary>
 
 ```json
 {
-  "type": "deal-team",
-  "duration": 4,
+  "type": "bullet-list",
+  "duration": 5,
   "data": {
-    "members": [
+    "title": "Key Takeaways",
+    "subtitle": "From this quarter's review",
+    "items": [
       {
-        "name": "Sarah Chen",
-        "role": "Account Executive",
-        "initials": "SC",
+        "text": "Pipeline grew 18% quarter-over-quarter",
+        "icon": "📈",
         "highlight": true
       },
       {
-        "name": "Priya Patel",
-        "role": "Solutions Architect",
-        "initials": "PP"
+        "text": "Three new enterprise logos added",
+        "icon": "🏢"
       },
       {
-        "name": "Marcus Johnson",
-        "role": "Technical Lead",
-        "initials": "MJ"
+        "text": "Average deal size increased to $1.2M",
+        "icon": "💰"
       },
       {
-        "name": "James Wilson",
-        "role": "Deal Strategy",
-        "initials": "JW"
-      }
-    ]
-  }
-}
-```
-
-</details>
-
----
-
-## Kpi Scorecard
-
-**Type:** `kpi-scorecard`
-
-Grid of KPI cards with count-up number animation and trend arrows.
-
-![Kpi Scorecard preview](assets/scenes/kpi-scorecard.gif)
-
-### Data Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `kpis` | array | ✅ |  |
-
-<details>
-<summary>Sample JSON</summary>
-
-```json
-{
-  "type": "kpi-scorecard",
-  "duration": 5,
-  "data": {
-    "kpis": [
-      {
-        "label": "Pipeline Value",
-        "value": "$42.8M",
-        "trend": "up",
-        "target": "$40M"
+        "text": "Technical win rate improved by 5 points",
+        "sub": "Up from 62% to 67%",
+        "icon": "🎯"
       },
       {
-        "label": "Win Rate",
-        "value": "34%",
-        "trend": "down",
-        "target": "38%"
-      },
-      {
-        "label": "Avg Deal Size",
-        "value": "$1.2M",
-        "trend": "up",
-        "target": "$1M"
-      },
-      {
-        "label": "Sales Cycle",
-        "value": "67 days",
-        "trend": "flat",
-        "target": "60 days"
+        "text": "Two deals moved to negotiation stage",
+        "sub": "Contoso and Fabrikam",
+        "icon": "🤝"
       }
     ]
   }
@@ -505,6 +228,59 @@ Bars grow upward with staggered spring. Values appear at bar tops.
           9.3,
           7.8,
           4.2
+        ]
+      }
+    ]
+  }
+}
+```
+
+</details>
+
+---
+
+## Chart Donut
+
+**Type:** `chart-donut`
+
+Segments fill clockwise with easeInOut. Center label counts up.
+
+![Chart Donut preview](assets/scenes/chart-donut.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string |  |  |
+| `labels` | array | ✅ |  |
+| `datasets` | array | ✅ |  |
+| `annotation` | string |  |  |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "chart-donut",
+  "duration": 5,
+  "data": {
+    "title": "Deal Stage Distribution",
+    "labels": [
+      "Qualified",
+      "Technical Win",
+      "Proposal",
+      "Negotiate",
+      "Closed"
+    ],
+    "datasets": [
+      {
+        "label": "Deals",
+        "values": [
+          142,
+          87,
+          34,
+          18,
+          9
         ]
       }
     ]
@@ -582,48 +358,161 @@ Line draws left-to-right using path interpolation. Data points pop in.
 
 ---
 
-## Chart Donut
+## Closing
 
-**Type:** `chart-donut`
+**Type:** `closing`
 
-Segments fill clockwise with easeInOut. Center label counts up.
+Branded outro. Logo scales in with spring. Tagline fades up. Optional image (logo/icon via $asset:key or data URI).
 
-![Chart Donut preview](assets/scenes/chart-donut.gif)
+![Closing preview](assets/scenes/closing.gif)
 
 ### Data Schema
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `title` | string |  |  |
-| `labels` | array | ✅ |  |
-| `datasets` | array | ✅ |  |
-| `annotation` | string |  |  |
+| `tagline` | string |  |  |
+| `timestamp` | string |  |  |
+| `cta` | string |  |  |
+| `image` | string |  | Logo/icon — use $asset:key reference or data URI |
 
 <details>
 <summary>Sample JSON</summary>
 
 ```json
 {
-  "type": "chart-donut",
-  "duration": 5,
+  "type": "closing",
+  "duration": 4,
   "data": {
-    "title": "Deal Stage Distribution",
-    "labels": [
-      "Qualified",
-      "Technical Win",
-      "Proposal",
-      "Negotiate",
-      "Closed"
-    ],
-    "datasets": [
+    "tagline": "Transforming enterprise workflows with intelligent automation",
+    "cta": "Next review: April 20, 2026",
+    "timestamp": "Generated April 13, 2026"
+  }
+}
+```
+
+</details>
+
+---
+
+## Code Diff
+
+**Type:** `code-diff`
+
+Reviewer-first diff view with low-motion line reveals, semantic add/remove coloring, and optional callouts to orient attention before deep reading.
+
+![Code Diff preview](assets/scenes/code-diff.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string |  |  |
+| `filePath` | string | ✅ | Relative path for the changed file |
+| `language` | string |  | Optional syntax hint such as ts, js, py, md |
+| `summary` | string |  | One-line explanation of what changed and why |
+| `focusLabel` | string |  | Short label for the primary review lens |
+| `metrics` | array |  |  |
+| `callouts` | array |  |  |
+| `hunks` | array | ✅ |  |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "code-diff",
+  "duration": 7,
+  "data": {
+    "title": "Review Focus: Guarding Empty Inputs",
+    "filePath": "src/renderer/preview.ts",
+    "language": "ts",
+    "summary": "Adds an early return so empty storyboard input fails closed instead of producing a misleading preview shell.",
+    "focusLabel": "Behavioral change",
+    "metrics": [
       {
-        "label": "Deals",
-        "values": [
-          142,
-          87,
-          34,
-          18,
-          9
+        "label": "Added",
+        "value": "+6",
+        "tone": "positive"
+      },
+      {
+        "label": "Removed",
+        "value": "-1",
+        "tone": "caution"
+      },
+      {
+        "label": "Risk",
+        "value": "Low",
+        "tone": "neutral"
+      }
+    ],
+    "callouts": [
+      "New guard is isolated to preview generation; render pipeline remains unchanged.",
+      "Reviewer can verify expected behavior by checking the empty-scenes path only.",
+      "Motion is intentionally restrained so line semantics stay primary."
+    ],
+    "hunks": [
+      {
+        "heading": "generatePreview() input guard",
+        "lines": [
+          {
+            "kind": "context",
+            "oldNumber": 18,
+            "newNumber": 18,
+            "text": "export async function generatePreview("
+          },
+          {
+            "kind": "context",
+            "oldNumber": 19,
+            "newNumber": 19,
+            "text": "  storyboard: Storyboard,"
+          },
+          {
+            "kind": "context",
+            "oldNumber": 20,
+            "newNumber": 20,
+            "text": "  outputPath: string"
+          },
+          {
+            "kind": "context",
+            "oldNumber": 21,
+            "newNumber": 21,
+            "text": "): Promise<{ path: string }> {"
+          },
+          {
+            "kind": "remove",
+            "oldNumber": 22,
+            "text": "  const theme = storyboard.theme ?? 'corporate-dark';"
+          },
+          {
+            "kind": "add",
+            "newNumber": 22,
+            "text": "  if (storyboard.scenes.length === 0) {"
+          },
+          {
+            "kind": "add",
+            "newNumber": 23,
+            "text": "    throw new Error('Storyboard must contain at least one scene');"
+          },
+          {
+            "kind": "add",
+            "newNumber": 24,
+            "text": "  }"
+          },
+          {
+            "kind": "add",
+            "newNumber": 25,
+            "text": ""
+          },
+          {
+            "kind": "add",
+            "newNumber": 26,
+            "text": "  const theme = storyboard.theme ?? 'corporate-dark';"
+          },
+          {
+            "kind": "emphasis",
+            "newNumber": 27,
+            "text": "  const fps = storyboard.fps ?? 30;"
+          }
         ]
       }
     ]
@@ -635,79 +524,54 @@ Segments fill clockwise with easeInOut. Center label counts up.
 
 ---
 
-## Table
+## Code Terminal
 
-**Type:** `table`
+**Type:** `code-terminal`
 
-Data table with staggered row entrance. Highlighted rows get accent background.
+Scene discovered from templates. Add schema/description metadata in src/tools/list-scene-types.ts for richer agent guidance.
 
-![Table preview](assets/scenes/table.gif)
+![Code Terminal preview](assets/scenes/code-terminal.gif)
 
 ### Data Schema
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `title` | string |  |  |
-| `columns` | array | ✅ |  |
-| `rows` | array | ✅ |  |
-| `highlightRows` | array |  |  |
 
 <details>
 <summary>Sample JSON</summary>
 
 ```json
 {
-  "type": "table",
+  "type": "code-terminal",
   "duration": 5,
   "data": {
-    "title": "Top Opportunities",
-    "columns": [
+    "title": "Deployment Pipeline",
+    "shell": "bash",
+    "lines": [
       {
-        "key": "account",
-        "label": "Account"
+        "kind": "prompt",
+        "text": "npx showrunner render storyboard.json --gif"
       },
       {
-        "key": "value",
-        "label": "Value"
+        "kind": "output",
+        "text": "Rendering 5 scenes (150 frames) → output/demo.gif"
       },
       {
-        "key": "stage",
-        "label": "Stage"
+        "kind": "output",
+        "text": "Scene 1/5: title-card .............. ✓"
       },
       {
-        "key": "close",
-        "label": "Close Date"
+        "kind": "output",
+        "text": "Scene 2/5: pipeline-funnel ......... ✓"
+      },
+      {
+        "kind": "output",
+        "text": "Scene 3/5: chart-bar ............... ✓"
+      },
+      {
+        "kind": "success",
+        "text": "✅ GIF saved: output/demo.gif (150 frames)"
       }
-    ],
-    "rows": [
-      {
-        "account": "Contoso Ltd",
-        "value": "$4.2M",
-        "stage": "Negotiate",
-        "close": "May 15"
-      },
-      {
-        "account": "Fabrikam Inc",
-        "value": "$3.8M",
-        "stage": "Proposal",
-        "close": "Jun 01"
-      },
-      {
-        "account": "Northwind",
-        "value": "$2.1M",
-        "stage": "Technical Win",
-        "close": "May 30"
-      },
-      {
-        "account": "Woodgrove",
-        "value": "$1.9M",
-        "stage": "Qualified",
-        "close": "Jul 15"
-      }
-    ],
-    "highlightRows": [
-      0,
-      1
     ]
   }
 }
@@ -717,33 +581,88 @@ Data table with staggered row entrance. Highlighted rows get accent background.
 
 ---
 
-## Quote Highlight
+## Code Terminal With Captions
 
-**Type:** `quote-highlight`
+**Type:** `code-terminal-with-captions`
 
-Quote text with attribution. Quote mark scales in with spring.
+Scene discovered from templates. Add schema/description metadata in src/tools/list-scene-types.ts for richer agent guidance.
 
-![Quote Highlight preview](assets/scenes/quote-highlight.gif)
+![Code Terminal With Captions preview](assets/scenes/code-terminal-with-captions.gif)
 
 ### Data Schema
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `quote` | string | ✅ |  |
-| `attribution` | string |  |  |
-| `sentiment` | string (positive, negative, neutral) |  |  |
 
 <details>
 <summary>Sample JSON</summary>
 
 ```json
 {
-  "type": "quote-highlight",
-  "duration": 4,
+  "type": "code-terminal-with-captions",
+  "duration": 12,
   "data": {
-    "quote": "This solution reduced our deployment time from weeks to hours. The ROI was clear within the first quarter.",
-    "attribution": "VP of Engineering, Contoso Ltd",
-    "sentiment": "positive"
+    "title": "End-to-End Build Pipeline",
+    "shell": "zsh",
+    "captionPosition": "right",
+    "steps": [
+      {
+        "lines": [
+          {
+            "kind": "prompt",
+            "text": "git checkout -b feat/continuous-caption-feed"
+          },
+          {
+            "kind": "success",
+            "text": "Switched to a new branch 'feat/continuous-caption-feed'"
+          }
+        ],
+        "caption": "Step 1: Create an isolated branch so terminal and scene changes are easy to review."
+      },
+      {
+        "lines": [
+          {
+            "kind": "prompt",
+            "text": "npm run generate:catalog"
+          },
+          {
+            "kind": "output",
+            "text": "scene catalog refreshed"
+          }
+        ],
+        "caption": "Step 2: Regenerate catalog assets and markdown with one command."
+      },
+      {
+        "lines": [
+          {
+            "kind": "prompt",
+            "text": "npx tsx src/cli.ts validate fixtures/code-terminal-with-captions-10step-single-scene.json"
+          },
+          {
+            "kind": "success",
+            "text": "Valid storyboard: 1 scene, 26.0s total"
+          }
+        ],
+        "caption": "Step 3: Validate the storyboard before rendering media artifacts."
+      },
+      {
+        "lines": [
+          {
+            "kind": "prompt",
+            "text": "npx tsx src/cli.ts render fixtures/code-terminal-with-captions-10step-single-scene.json --output output/continuous-feed-demo.mp4 --skip-narration"
+          },
+          {
+            "kind": "output",
+            "text": "Rendering frame sequence..."
+          },
+          {
+            "kind": "success",
+            "text": "Render complete: output/continuous-feed-demo.mp4"
+          }
+        ],
+        "caption": "Step 4: Render final output while keeping captions synchronized with terminal progression."
+      }
+    ]
   }
 }
 ```
@@ -803,34 +722,51 @@ Side-by-side comparison with center divider. Items slide in from opposite sides.
 
 ---
 
-## Closing
+## Deal Team
 
-**Type:** `closing`
+**Type:** `deal-team`
 
-Branded outro. Logo scales in with spring. Tagline fades up. Optional image (logo/icon via $asset:key or data URI).
+Grid of avatar circles. Each scales in with bouncy spring.
 
-![Closing preview](assets/scenes/closing.gif)
+![Deal Team preview](assets/scenes/deal-team.gif)
 
 ### Data Schema
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `tagline` | string |  |  |
-| `timestamp` | string |  |  |
-| `cta` | string |  |  |
-| `image` | string |  | Logo/icon — use $asset:key reference or data URI |
+| `members` | array | ✅ |  |
 
 <details>
 <summary>Sample JSON</summary>
 
 ```json
 {
-  "type": "closing",
+  "type": "deal-team",
   "duration": 4,
   "data": {
-    "tagline": "Transforming enterprise workflows with intelligent automation",
-    "cta": "Next review: April 20, 2026",
-    "timestamp": "Generated April 13, 2026"
+    "members": [
+      {
+        "name": "Sarah Chen",
+        "role": "Account Executive",
+        "initials": "SC",
+        "highlight": true
+      },
+      {
+        "name": "Priya Patel",
+        "role": "Solutions Architect",
+        "initials": "PP"
+      },
+      {
+        "name": "Marcus Johnson",
+        "role": "Technical Lead",
+        "initials": "MJ"
+      },
+      {
+        "name": "James Wilson",
+        "role": "Deal Strategy",
+        "initials": "JW"
+      }
+    ]
   }
 }
 ```
@@ -878,157 +814,54 @@ Full-bleed image with optional caption overlay. Image fades in with subtle zoom.
 
 ---
 
-## Bullet List
+## Kpi Scorecard
 
-**Type:** `bullet-list`
+**Type:** `kpi-scorecard`
 
-Animated bullet list with staggered entrance. Items slide in with spring easing. Supports icons, highlight borders, and sub-text. Respects animation.textEffect, animation.stagger, animation.direction overrides.
+Grid of KPI cards with count-up number animation and trend arrows.
 
-![Bullet List preview](assets/scenes/bullet-list.gif)
+![Kpi Scorecard preview](assets/scenes/kpi-scorecard.gif)
 
 ### Data Schema
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `title` | string |  |  |
-| `subtitle` | string |  |  |
-| `items` | array | ✅ |  |
+| `kpis` | array | ✅ |  |
 
 <details>
 <summary>Sample JSON</summary>
 
 ```json
 {
-  "type": "bullet-list",
+  "type": "kpi-scorecard",
   "duration": 5,
   "data": {
-    "title": "Key Takeaways",
-    "subtitle": "From this quarter's review",
-    "items": [
+    "kpis": [
       {
-        "text": "Pipeline grew 18% quarter-over-quarter",
-        "icon": "📈",
-        "highlight": true
-      },
-      {
-        "text": "Three new enterprise logos added",
-        "icon": "🏢"
-      },
-      {
-        "text": "Average deal size increased to $1.2M",
-        "icon": "💰"
-      },
-      {
-        "text": "Technical win rate improved by 5 points",
-        "sub": "Up from 62% to 67%",
-        "icon": "🎯"
-      },
-      {
-        "text": "Two deals moved to negotiation stage",
-        "sub": "Contoso and Fabrikam",
-        "icon": "🤝"
-      }
-    ]
-  }
-}
-```
-
-</details>
-
----
-
-## Stat Counter
-
-**Type:** `stat-counter`
-
-Big animated numbers that count up from 0. Cards with optional progress bars, change indicators, and descriptions. Ideal for metrics, KPIs, and achievements.
-
-![Stat Counter preview](assets/scenes/stat-counter.gif)
-
-### Data Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `title` | string |  |  |
-| `stats` | array | ✅ |  |
-
-<details>
-<summary>Sample JSON</summary>
-
-```json
-{
-  "type": "stat-counter",
-  "duration": 5,
-  "data": {
-    "title": "Performance Metrics",
-    "stats": [
-      {
-        "value": 42.8,
         "label": "Pipeline Value",
-        "prefix": "$",
-        "suffix": "M",
-        "icon": "💰",
-        "change": "+18%",
-        "changeDirection": "up",
-        "progress": 85
+        "value": "$42.8M",
+        "trend": "up",
+        "target": "$40M"
       },
       {
-        "value": 94,
-        "label": "Customer Satisfaction",
-        "suffix": "%",
-        "icon": "⭐",
-        "change": "+3%",
-        "changeDirection": "up",
-        "progress": 94
+        "label": "Win Rate",
+        "value": "34%",
+        "trend": "down",
+        "target": "38%"
       },
       {
-        "value": 67,
-        "label": "Avg Sales Cycle",
-        "suffix": " days",
-        "icon": "⏱️",
-        "description": "Down from 82 days",
-        "change": "-18%",
-        "changeDirection": "down",
-        "progress": 45
+        "label": "Avg Deal Size",
+        "value": "$1.2M",
+        "trend": "up",
+        "target": "$1M"
+      },
+      {
+        "label": "Sales Cycle",
+        "value": "67 days",
+        "trend": "flat",
+        "target": "60 days"
       }
     ]
-  }
-}
-```
-
-</details>
-
----
-
-## Text Reveal
-
-**Type:** `text-reveal`
-
-Cinematic text reveal scene. Supports word-by-word, typewriter, char-cascade, fade-lines, and highlight-sweep text effects via animation.textEffect. Use <em> or <strong> in headline for gradient-colored emphasis. Great for key messages, quotes, or dramatic reveals.
-
-![Text Reveal preview](assets/scenes/text-reveal.gif)
-
-### Data Schema
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `eyebrow` | string |  | Small uppercase label above headline |
-| `headline` | string | ✅ | Main text. Supports <em>/<strong> for accent coloring |
-| `body` | string |  | Supporting body text below headline |
-| `footnote` | string |  | Small monospaced note at bottom |
-
-<details>
-<summary>Sample JSON</summary>
-
-```json
-{
-  "type": "text-reveal",
-  "duration": 4,
-  "data": {
-    "eyebrow": "THE BOTTOM LINE",
-    "headline": "We're <em>accelerating</em> growth with <strong>intelligent automation</strong>",
-    "body": "Our platform enables teams to move faster, reduce errors, and deliver more value to customers every single day.",
-    "footnote": "Source: Q2 2026 Internal Metrics"
   }
 }
 ```
@@ -1149,6 +982,521 @@ Animated flowchart / decision-tree diagram. Nodes appear in topological order wi
       }
     ],
     "annotation": "Happy path highlighted — 5-8 nodes per segment is ideal"
+  }
+}
+```
+
+</details>
+
+---
+
+## Milestone Timeline
+
+**Type:** `milestone-timeline`
+
+Vertical timeline draws downward. Status dots appear with spring scale-in.
+
+![Milestone Timeline preview](assets/scenes/milestone-timeline.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `milestones` | array | ✅ |  |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "milestone-timeline",
+  "duration": 5,
+  "data": {
+    "milestones": [
+      {
+        "name": "Discovery Complete",
+        "due": "2026-03-15",
+        "status": "completed",
+        "owner": "Sarah Chen"
+      },
+      {
+        "name": "Technical Validation",
+        "due": "2026-04-01",
+        "status": "on-track",
+        "owner": "Priya Patel"
+      },
+      {
+        "name": "Executive Briefing",
+        "due": "2026-04-15",
+        "status": "at-risk",
+        "owner": "Marcus Johnson",
+        "note": "CTO availability pending"
+      },
+      {
+        "name": "Contract Negotiation",
+        "due": "2026-05-01",
+        "status": "overdue",
+        "owner": "James Wilson"
+      }
+    ]
+  }
+}
+```
+
+</details>
+
+---
+
+## Pipeline Funnel
+
+**Type:** `pipeline-funnel`
+
+Horizontal bars grow left-to-right with staggered spring easing. Values count up from 0.
+
+![Pipeline Funnel preview](assets/scenes/pipeline-funnel.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `stages` | array | ✅ |  |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "pipeline-funnel",
+  "duration": 5,
+  "data": {
+    "stages": [
+      {
+        "name": "Qualified",
+        "count": 142,
+        "value": "$28.4M"
+      },
+      {
+        "name": "Technical Win",
+        "count": 87,
+        "value": "$19.1M"
+      },
+      {
+        "name": "Proposal",
+        "count": 34,
+        "value": "$11.2M",
+        "highlight": true
+      },
+      {
+        "name": "Negotiate",
+        "count": 18,
+        "value": "$7.8M"
+      },
+      {
+        "name": "Closed Won",
+        "count": 9,
+        "value": "$4.2M"
+      }
+    ]
+  }
+}
+```
+
+</details>
+
+---
+
+## Quote Highlight
+
+**Type:** `quote-highlight`
+
+Quote text with attribution. Quote mark scales in with spring.
+
+![Quote Highlight preview](assets/scenes/quote-highlight.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `quote` | string | ✅ |  |
+| `attribution` | string |  |  |
+| `sentiment` | string (positive, negative, neutral) |  |  |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "quote-highlight",
+  "duration": 4,
+  "data": {
+    "quote": "This solution reduced our deployment time from weeks to hours. The ROI was clear within the first quarter.",
+    "attribution": "VP of Engineering, Contoso Ltd",
+    "sentiment": "positive"
+  }
+}
+```
+
+</details>
+
+---
+
+## Risk Callout
+
+**Type:** `risk-callout`
+
+Cards slide in from right with spring. Severity stripe animates color.
+
+![Risk Callout preview](assets/scenes/risk-callout.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `risks` | array | ✅ |  |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "risk-callout",
+  "duration": 4,
+  "data": {
+    "risks": [
+      {
+        "signal": "Champion left the organization",
+        "severity": "critical",
+        "context": "Need to re-establish executive sponsorship"
+      },
+      {
+        "signal": "Budget cycle pushed to Q3",
+        "severity": "high",
+        "context": "Proposal timeline at risk"
+      },
+      {
+        "signal": "Competitor POC underway",
+        "severity": "medium",
+        "context": "Differentiation deck needed"
+      }
+    ]
+  }
+}
+```
+
+</details>
+
+---
+
+## Scene Showcase
+
+**Type:** `scene-showcase`
+
+Scene discovered from templates. Add schema/description metadata in src/tools/list-scene-types.ts for richer agent guidance.
+
+![Scene Showcase preview](assets/scenes/scene-showcase.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "scene-showcase",
+  "duration": 5,
+  "data": {
+    "title": "Available Scene Types",
+    "subtitle": "Building blocks for your storyboard",
+    "cards": [
+      {
+        "name": "Title Card",
+        "description": "Branded intro slide",
+        "icon": "🎬"
+      },
+      {
+        "name": "Chart Bar",
+        "description": "Animated bar charts",
+        "icon": "📊"
+      },
+      {
+        "name": "KPI Scorecard",
+        "description": "Metrics dashboard",
+        "icon": "📈"
+      },
+      {
+        "name": "Timeline",
+        "description": "Milestone tracking",
+        "icon": "📅"
+      },
+      {
+        "name": "Code Terminal",
+        "description": "Terminal output",
+        "icon": "💻"
+      },
+      {
+        "name": "Comparison",
+        "description": "Side-by-side",
+        "icon": "⚖️"
+      }
+    ]
+  }
+}
+```
+
+</details>
+
+---
+
+## Section Header
+
+**Type:** `section-header`
+
+Transition slide between sections. Heading enters with spring, accent line draws left-to-right.
+
+![Section Header preview](assets/scenes/section-header.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `heading` | string | ✅ |  |
+| `subheading` | string |  |  |
+| `icon` | string |  |  |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "section-header",
+  "duration": 3,
+  "data": {
+    "heading": "Pipeline Overview",
+    "subheading": "Current quarter deal progression",
+    "icon": "📊"
+  }
+}
+```
+
+</details>
+
+---
+
+## Stat Counter
+
+**Type:** `stat-counter`
+
+Big animated numbers that count up from 0. Cards with optional progress bars, change indicators, and descriptions. Ideal for metrics, KPIs, and achievements.
+
+![Stat Counter preview](assets/scenes/stat-counter.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string |  |  |
+| `stats` | array | ✅ |  |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "stat-counter",
+  "duration": 5,
+  "data": {
+    "title": "Performance Metrics",
+    "stats": [
+      {
+        "value": 42.8,
+        "label": "Pipeline Value",
+        "prefix": "$",
+        "suffix": "M",
+        "icon": "💰",
+        "change": "+18%",
+        "changeDirection": "up",
+        "progress": 85
+      },
+      {
+        "value": 94,
+        "label": "Customer Satisfaction",
+        "suffix": "%",
+        "icon": "⭐",
+        "change": "+3%",
+        "changeDirection": "up",
+        "progress": 94
+      },
+      {
+        "value": 67,
+        "label": "Avg Sales Cycle",
+        "suffix": " days",
+        "icon": "⏱️",
+        "description": "Down from 82 days",
+        "change": "-18%",
+        "changeDirection": "down",
+        "progress": 45
+      }
+    ]
+  }
+}
+```
+
+</details>
+
+---
+
+## Table
+
+**Type:** `table`
+
+Data table with staggered row entrance. Highlighted rows get accent background.
+
+![Table preview](assets/scenes/table.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string |  |  |
+| `columns` | array | ✅ |  |
+| `rows` | array | ✅ |  |
+| `highlightRows` | array |  |  |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "table",
+  "duration": 5,
+  "data": {
+    "title": "Top Opportunities",
+    "columns": [
+      {
+        "key": "account",
+        "label": "Account"
+      },
+      {
+        "key": "value",
+        "label": "Value"
+      },
+      {
+        "key": "stage",
+        "label": "Stage"
+      },
+      {
+        "key": "close",
+        "label": "Close Date"
+      }
+    ],
+    "rows": [
+      {
+        "account": "Contoso Ltd",
+        "value": "$4.2M",
+        "stage": "Negotiate",
+        "close": "May 15"
+      },
+      {
+        "account": "Fabrikam Inc",
+        "value": "$3.8M",
+        "stage": "Proposal",
+        "close": "Jun 01"
+      },
+      {
+        "account": "Northwind",
+        "value": "$2.1M",
+        "stage": "Technical Win",
+        "close": "May 30"
+      },
+      {
+        "account": "Woodgrove",
+        "value": "$1.9M",
+        "stage": "Qualified",
+        "close": "Jul 15"
+      }
+    ],
+    "highlightRows": [
+      0,
+      1
+    ]
+  }
+}
+```
+
+</details>
+
+---
+
+## Text Reveal
+
+**Type:** `text-reveal`
+
+Cinematic text reveal scene. Supports word-by-word, typewriter, char-cascade, fade-lines, and highlight-sweep text effects via animation.textEffect. Use <em> or <strong> in headline for gradient-colored emphasis. Great for key messages, quotes, or dramatic reveals.
+
+![Text Reveal preview](assets/scenes/text-reveal.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `eyebrow` | string |  | Small uppercase label above headline |
+| `headline` | string | ✅ | Main text. Supports <em>/<strong> for accent coloring |
+| `body` | string |  | Supporting body text below headline |
+| `footnote` | string |  | Small monospaced note at bottom |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "text-reveal",
+  "duration": 4,
+  "data": {
+    "eyebrow": "THE BOTTOM LINE",
+    "headline": "We're <em>accelerating</em> growth with <strong>intelligent automation</strong>",
+    "body": "Our platform enables teams to move faster, reduce errors, and deliver more value to customers every single day.",
+    "footnote": "Source: Q2 2026 Internal Metrics"
+  }
+}
+```
+
+</details>
+
+---
+
+## Title Card
+
+**Type:** `title-card`
+
+Full-screen branded intro. Logo fades in with scale spring, title slides up with easeOut. Optional image replaces accent bar (logo/icon via $asset:key or data URI).
+
+![Title Card preview](assets/scenes/title-card.gif)
+
+### Data Schema
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string | ✅ |  |
+| `subtitle` | string |  |  |
+| `date` | string |  |  |
+| `presenter` | string |  |  |
+| `image` | string |  | Logo/icon — use $asset:key reference or data URI |
+
+<details>
+<summary>Sample JSON</summary>
+
+```json
+{
+  "type": "title-card",
+  "duration": 4,
+  "data": {
+    "title": "Quarterly Business Review",
+    "subtitle": "Enterprise Cloud Division",
+    "date": "April 2026",
+    "presenter": "Strategy Team"
   }
 }
 ```
