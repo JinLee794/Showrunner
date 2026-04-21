@@ -297,6 +297,7 @@ export const CodeTerminalWithCaptionsDataSchema = z.object({
     lines: z.array(z.object({
       kind: z.enum(['prompt', 'output', 'comment', 'success', 'error', 'highlight', 'blank']),
       text: z.string().optional(),
+      emphasize: z.boolean().optional(),
     })).min(1),
     caption: z.string().min(1),
     duration: z.number().min(0.5).optional(),
