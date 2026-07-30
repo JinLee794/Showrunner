@@ -13,13 +13,14 @@
   },
   "files": [
     "dist/**/*",
+    "scripts/install-browser.mjs",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "build": "tsc && rm -rf dist/templates dist/themes && cp -r src/templates dist/templates && cp -r src/themes dist/themes",
     "prepublishOnly": "npm run build",
-    "postinstall": "playwright install chromium 2>/dev/null || true",
+    "postinstall": "node scripts/install-browser.mjs",
     "start": "node dist/server.js",
     "dev": "tsc --watch",
     "test": "vitest",

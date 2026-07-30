@@ -59,7 +59,14 @@ Each scene template builds a paused GSAP timeline. Chart scenes (`chart-bar`, `c
 
 - **Node.js** ≥ 20
 - **ffmpeg** on PATH
-- **Playwright Chromium** (auto-installed on first run)
+- **Playwright Chromium** (installed automatically with the package)
+
+Browser setup is best-effort so a blocked download does not prevent the MCP
+server from starting. If rendering reports a missing browser, run:
+
+```bash
+npx playwright install chromium
+```
 
 ## Install
 
